@@ -1,0 +1,87 @@
+target Cpp{
+    //cmake-include: "mujoco.cmake",
+};
+
+public preamble {=
+#include <mujoco/mujoco.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+#include <string>
+#include <array>
+#include <thread>
+
+// structs that handle user input
+struct KeyboardInput {
+    GLFWwindow* window;
+    int key;
+    int scancode;
+    int act;
+    int mods;
+};
+
+struct MouseButtonInput {
+    GLFWwindow* window;
+    int button;
+    int act;
+    int mods;
+};
+
+struct MouseMoveInput {
+    GLFWwindow* window;
+    double xpos;
+    double ypos;
+};
+
+struct ScrollInput {
+    GLFWwindow* window;
+    double xoffset;
+    double yoffset;
+};
+
+=}
+
+
+reactor MujocoSimulator(
+    file: std::string = "./example.xml", 
+    time_resolution: time = 1 msec, 
+    visualize: bool = true,
+    fps_period: time = 30 msec
+    ) {
+
+    timer simulation_step_timer(0, time_resolution);
+    timer draw_frame_timer(0, fps_period);
+
+    physical action keyboard_physical_action: KeyboardInput;
+    physical action mouse_button_physical_action: MouseButtonInput;
+    physical action mouse_move_physical_action: MouseMoveInput;
+    physical action scroll_physical_action: ScrollInput;
+
+    state error: char[1000];
+    state model: mjModel*;
+    state data: mjData*;
+
+    state camera: mjvCamera;                      // abstract camera
+    state options: mjvOption;                      // visualization options
+    state scene: mjvScene;                       // abstract scene
+    state context: mjrContext;                     // custom GPU context
+    state window: GLFWwindow*;
+    state button_left: bool;
+    state button_middle: bool;
+    state button_right: bool;
+    state lastx: double = 0;
+    state lasty: double = 0;
+    
+    output call_controller: mjData*;
+    output output_model: mjModel*;
+    input return_controller: void;
+
+    reaction initialize(startup) -> output_model, keyboard_physical_action, mouse_button_physical_action, mouse_move_physical_action, scroll_physical_action;
+    reaction deconstruct(shutdown);
+    reaction draw_frame(draw_frame_timer);
+    reaction simulation_advance(simulation_step_timer) -> call_controller;
+    reaction simulation_continue(return_controller);
+    reaction handle_keyboard_input(keyboard_physical_action);
+    reaction handle_mouse_button_input(mouse_button_physical_action);
+    reaction handle_mouse_move_input(mouse_move_physical_action);
+    reaction handle_scroll_input(scroll_physical_action);
+}

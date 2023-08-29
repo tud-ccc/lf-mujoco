@@ -2,7 +2,7 @@ target Cpp{
     cmake-include: "mujoco.cmake",
 };
 
-import MujocoSimulator from "./MujocoSimulator.lf";
+import MujocoSimulator from "./mujoco_simulator.lf";
 
 public preamble {=
 #include <chrono>
