@@ -1,0 +1,62 @@
+target Cpp{
+    cmake-include: "mujoco.cmake",
+};
+
+import MujocoSimulator from "./MujocoSimulator.lf";
+
+public preamble {=
+#include <chrono>
+=}
+
+reactor TestController {
+    input controll_data: mjData*;
+    input input_model: mjModel*;
+    output progress: void;
+
+    state model: mjModel*;
+    state controll_vector: mjtNum;
+    state position_history: mjtNum;
+    state last_update: mjtNum;
+
+    reaction (input_model) {=
+        model = *input_model.get();
+    =}
+
+    reaction (startup) {=
+        position_history = 0;
+        last_update = 0.0;
+    =}
+
+    reaction (controll_data) -> progress {=
+        const mjtNum sensor_factor = 10;
+        const mjtNum p_controller_value = 3.5;
+        auto simulation = *controll_data.get();
+
+        std::cout << "T = " << simulation->time << std::endl;
+
+        if (last_update == 0.0){
+            last_update = simulation->time;
+            return;
+        }
+        
+        mjtNum velolcity_vector = (simulation->sensordata[0] - position_history)/(simulation->time - last_update);
+        controll_vector = p_controller_value * (-velolcity_vector - sensor_factor * simulation->sensordata[0]);
+
+        std::cout << "correction = " << controll_vector << std::endl;
+
+        last_update = simulation->time;
+        position_history = simulation->sensordata[0];
+        simulation->ctrl[0] = controll_vector;
+        progress.set();
+    =}
+
+}
+
+main reactor Main {
+    controller = new TestController();
+    sim = new MujocoSimulator();
+
+    sim.call_controller -> controller.controll_data;
+    sim.output_model -> controller.input_model;
+    controller.progress -> sim.return_controller;
+}

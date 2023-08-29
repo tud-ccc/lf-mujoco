@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+.direnv
+src-gen
+lib64
+bin
+result
+share
+include
+build
+target

@@ -1,0 +1,14 @@
+[package]
+name = "lf-mujoco"
+version = "0.1.0"
+
+[properties]
+
+[[app]]
+target = "Cpp"
+platform = "Native"
+main_reactor = "src/Main.lf"
+
+[app.dependencies]
+
+[app.properties]
