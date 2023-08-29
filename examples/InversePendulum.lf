@@ -1,8 +1,9 @@
 target Cpp{
     cmake-include: "mujoco.cmake",
+    fast: true
 };
 
-import MujocoSimulator from "./mujoco_simulator.lf";
+import MujocoSimulator from "../src/mujoco_simulator.lf";
 
 public preamble {=
 #include <chrono>
@@ -52,9 +53,9 @@ reactor TestController {
 
 }
 
-main reactor Main {
+main reactor InversePendulum {
     controller = new TestController();
-    sim = new MujocoSimulator();
+    sim = new MujocoSimulator(file="examples/models/inverse_pendulum.xml");
 
     sim.call_controller -> controller.controll_data;
     sim.output_model -> controller.input_model;

@@ -42,7 +42,7 @@ struct ScrollInput {
 
 
 reactor MujocoSimulator(
-    file: std::string = "./example.xml", 
+    file: std::string, 
     time_resolution: time = 1 msec, 
     visualize: bool = true,
     fps_period: time = 30 msec
