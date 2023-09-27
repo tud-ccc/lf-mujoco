@@ -4,31 +4,22 @@ target Cpp{
 };
 
 import MujocoSimulator from "../src/mujoco_simulator.lf";
+import XArm7InterfaceSimulated from "../interfaces/XArm7.lf";
 
 public preamble {=
 #include <chrono>
 =}
 
 reactor TestController {
-    input controll_data: mjData*;
-    input input_model: mjModel*;
-    output progress: void;
-
-    state model: mjModel*;
-    state controll_vector: mjtNum;
-    state position_history: mjtNum;
-    state last_update: mjtNum
+    output[7] signals: double;
+    input world_data: mjData*;
+    
+    timer t(0s, 33ms);
 
     state direction: bool;
     logical action change_direction: void;
 
-    reaction (input_model) {=
-        model = *input_model.get();
-    =}
-
     reaction (startup) {=
-        position_history = 0;
-        last_update = 0.0;
         direction = false;
         srand(time(nullptr));
     =}
@@ -38,49 +29,29 @@ reactor TestController {
         direction = !direction;
     =}
 
-    reaction (controll_data) -> progress, change_direction {=
-        const mjtNum sensor_factor = 10;
-        const mjtNum p_controller_value = 3.5;
-        auto simulation = *controll_data.get();
-
-        std::cout << "T = " << simulation->time << std::endl;
-
-        if (last_update == 0.0){
-            last_update = simulation->time;
-            return;
-        }
-        
-        //mjtNum velolcity_vector = (simulation->sensordata[0] - position_history)/(simulation->time - last_update);
-        //controll_vector = p_controller_value * (-velolcity_vector - sensor_factor * simulation->sensordata[0]);
-
-        //std::cout << "correction = " << controll_vector << std::endl;
-
-
-        simulation->ctrl[0] = direction ? -0.5 * M_PI : 0.5 * M_PI;
-        
-        if (rand() % 500 == 0) {
+    reaction (t) -> signals, change_direction {=
+        std::cout << "SIM" << std::endl;
+        if (rand() % 100 == 0) {
             change_direction.schedule(std::chrono::milliseconds((rand() % 5) * 5000));
         }
 
-        /*simulation->ctrl[1] = 10;
-        simulation->ctrl[2] = 10;
-        simulation->ctrl[3] = 10;
-        simulation->ctrl[4] = 1;
-        simulation->ctrl[5] = 1;
-        simulation->ctrl[6] = 1;
-        simulation->ctrl[7] = 1;
-        simulation->ctrl[8] = 1;
-        simulation->ctrl[9] = 1;*/
-        progress.set();
+        signals[0].set(direction ? -1.0 : 1.0);
+        signals[1].set(0.0);
     =}
 
 }
 
 main reactor XArm7{
     controller = new TestController();
-    sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
-
-    sim.call_controller -> controller.controll_data;
-    sim.output_model -> controller.input_model;
-    controller.progress -> sim.return_controller;
+    sim = new MujocoSimulator(file="./examples/models/xarm7_motor/xarm7.xml");
+    interface = new XArm7InterfaceSimulated();
+    
+    // connecting the simulator to the interface
+    // This are all physical connections
+    interface.simulator_signals ~> sim.controll_signals;
+    sim.simulator_world_data ~> interface.simulator_world_data;
+   
+    // connecting the controller to the interface
+    controller.signals -> interface.controller_signals;
+    interface.controller_world_data -> controller.world_data;
 }

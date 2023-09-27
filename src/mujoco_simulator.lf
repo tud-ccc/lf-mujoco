@@ -40,48 +40,30 @@ struct ScrollInput {
 
 =}
 
-
 reactor MujocoSimulator(
-    file: std::string, 
-    time_resolution: time = 1 msec, 
+    file: std::string = "", 
     visualize: bool = true,
-    fps_period: time = 30 msec
+    collect_data: bool = false
     ) {
-
-    timer simulation_step_timer(0, time_resolution);
-    timer draw_frame_timer(0, fps_period);
-
-    physical action keyboard_physical_action: KeyboardInput;
-    physical action mouse_button_physical_action: MouseButtonInput;
-    physical action mouse_move_physical_action: MouseMoveInput;
-    physical action scroll_physical_action: ScrollInput;
-
+    // simulator thread and pointer to glfw window other things are sadly globally defined
+    state thread: std::thread;
     state error: char[1000];
-    state model: mjModel*;
-    state data: mjData*;
-
-    state camera: mjvCamera;                      // abstract camera
-    state options: mjvOption;                      // visualization options
-    state scene: mjvScene;                       // abstract scene
-    state context: mjrContext;                     // custom GPU context
     state window: GLFWwindow*;
-    state button_left: bool;
-    state button_middle: bool;
-    state button_right: bool;
-    state lastx: double = 0;
-    state lasty: double = 0;
+    state terminate: bool = false;
     
-    output call_controller: mjData*;
-    output output_model: mjModel*;
-    input return_controller: void;
+    // communicating controll inputs from controller to simulator thread
+    state last_controll_input: std::vector<double>;
+    state last_controll_input_lock: std::mutex;
+    
+    // communcation with the interface
+    output simulator_world_data: mjData*;
+    input controll_signals: {=std::vector<double>=}
+    
+    // the simulator thread pushes data into this physical action
+    physical action world_data: mjData*;
 
-    reaction initialize(startup) -> output_model, keyboard_physical_action, mouse_button_physical_action, mouse_move_physical_action, scroll_physical_action;
+    reaction initialize(startup) -> world_data;
     reaction deconstruct(shutdown);
-    reaction draw_frame(draw_frame_timer);
-    reaction simulation_advance(simulation_step_timer) -> call_controller;
-    reaction simulation_continue(return_controller);
-    reaction handle_keyboard_input(keyboard_physical_action);
-    reaction handle_mouse_button_input(mouse_button_physical_action);
-    reaction handle_mouse_move_input(mouse_move_physical_action);
-    reaction handle_scroll_input(scroll_physical_action);
+    reaction forward_world_data(world_data) -> simulator_world_data;
+    reaction handle_controll_signals(controll_signals);
 }

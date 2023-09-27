@@ -40,3 +40,5 @@ share
 include
 build
 target
+.vscode
+MUJOCO_LOG.txt

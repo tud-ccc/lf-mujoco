@@ -4,60 +4,70 @@ target Cpp{
 };
 
 import MujocoSimulator from "../src/mujoco_simulator.lf";
+import InversePendulumInterfaceSimulated from "../interfaces/InversePendulum.lf"
 
 public preamble {=
 #include <chrono>
 =}
 
 reactor TestController {
-    input controll_data: mjData*;
-    input input_model: mjModel*;
-    output progress: void;
-
+    output[1] signals: double;
+    input world_data: mjData*
+    state simulation: mjData*;
+    
     state model: mjModel*;
     state controll_vector: mjtNum;
     state position_history: mjtNum;
     state last_update: mjtNum;
 
-    reaction (input_model) {=
-        model = *input_model.get();
-    =}
+    timer t(0s, 33ms);
 
     reaction (startup) {=
         position_history = 0;
         last_update = 0.0;
+        simulation = nullptr;
     =}
 
-    reaction (controll_data) -> progress {=
-        const mjtNum sensor_factor = 10;
-        const mjtNum p_controller_value = 3.5;
-        auto simulation = *controll_data.get();
+    reaction (t) -> signals {=
+        if (simulation != nullptr) {
+            const mjtNum sensor_factor = 10;
+            const mjtNum p_controller_value = 3.5;
 
-        std::cout << "T = " << simulation->time << std::endl;
+            std::cout << "T = " << simulation->time << std::endl;
 
-        if (last_update == 0.0){
+            if (last_update == 0.0){
+                last_update = simulation->time;
+                return;
+            }
+            
+            mjtNum velolcity_vector = (simulation->sensordata[0] - position_history)/(simulation->time - last_update);
+            controll_vector = p_controller_value * (-velolcity_vector - sensor_factor * simulation->sensordata[0]);
+
+            std::cout << "correction = " << controll_vector << std::endl;
+
             last_update = simulation->time;
-            return;
+            position_history = simulation->sensordata[0];
+            signals[0].set(controll_vector);
+
         }
-        
-        mjtNum velolcity_vector = (simulation->sensordata[0] - position_history)/(simulation->time - last_update);
-        controll_vector = p_controller_value * (-velolcity_vector - sensor_factor * simulation->sensordata[0]);
-
-        std::cout << "correction = " << controll_vector << std::endl;
-
-        last_update = simulation->time;
-        position_history = simulation->sensordata[0];
-        simulation->ctrl[0] = controll_vector;
-        progress.set();
     =}
 
+    reaction (world_data) {=
+        simulation = *world_data.get();
+    =}
 }
 
 main reactor InversePendulum {
     controller = new TestController();
     sim = new MujocoSimulator(file="examples/models/inverse_pendulum.xml");
-
-    sim.call_controller -> controller.controll_data;
-    sim.output_model -> controller.input_model;
-    controller.progress -> sim.return_controller;
+    interface = new InversePendulumInterfaceSimulated();
+    
+    // connecting the simulator to the interface
+    // This are all physical connections
+    interface.simulator_signals ~> sim.controll_signals;
+    sim.simulator_world_data ~> interface.simulator_world_data;
+   
+    // connecting the controller to the interface
+    controller.signals -> interface.controller_signals;
+    interface.controller_world_data -> controller.world_data;
 }

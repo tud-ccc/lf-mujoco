@@ -1,0 +1,43 @@
+target Cpp;
+
+public preamble {=
+  #include <mujoco/mujoco.h>
+
+  template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+  }
+
+=}
+
+reactor XArm7InterfaceSimulated {
+  // controller facing
+  input[7] controller_signals: double;
+  output controller_world_data: mjData*;
+  
+  // simulator facing
+  input simulator_world_data: mjData*;
+  output simulator_signals: std::vector<double>;
+
+  // reactions forwarding data
+  reaction (controller_signals) -> simulator_signals {=
+    std::vector<double> input{0, 0, 0, 0 ,0, 0, 0};
+    input.resize(7);
+    
+    for (auto i: controller_signals.present_indices_unsorted()) {
+      input[i] = *controller_signals[i].get();
+    }
+    
+    for (auto i : input) {
+      std::cout << i << ", ";
+    }
+    std::cout << std::endl;
+    
+    simulator_signals.set(input);
+  =}
+
+  reaction (simulator_world_data) -> controller_world_data {=
+    std::cout << "Simultor -> Controller" << std::endl;
+    // TODO: maybe we need to do a deep copy here
+    controller_world_data.set(*simulator_world_data.get());
+  =}
+}
