@@ -12,10 +12,8 @@ public preamble {=
 
 reactor TestController {
     output[1] signals: double;
-    input world_data: mjData*
-    state simulation: mjData*;
+    input world_data: WorldData;
     
-    state model: mjModel*;
     state controll_vector: mjtNum;
     state position_history: mjtNum;
     state last_update: mjtNum;
@@ -25,35 +23,30 @@ reactor TestController {
     reaction (startup) {=
         position_history = 0;
         last_update = 0.0;
-        simulation = nullptr;
     =}
 
-    reaction (t) -> signals {=
-        if (simulation != nullptr) {
-            const mjtNum sensor_factor = 10;
-            const mjtNum p_controller_value = 3.5;
+    reaction (world_data) -> signals {=
+        auto simulation = *world_data.get();
 
-            std::cout << "T = " << simulation->time << std::endl;
+        const mjtNum sensor_factor = 10;
+        const mjtNum p_controller_value = 3.5;
 
-            if (last_update == 0.0){
-                last_update = simulation->time;
-                return;
-            }
-            
-            mjtNum velolcity_vector = (simulation->sensordata[0] - position_history)/(simulation->time - last_update);
-            controll_vector = p_controller_value * (-velolcity_vector - sensor_factor * simulation->sensordata[0]);
+        std::cout << "T = " << simulation.time() << std::endl;
+        auto sensor_data = simulation.sensor_data();
 
-            std::cout << "correction = " << controll_vector << std::endl;
-
-            last_update = simulation->time;
-            position_history = simulation->sensordata[0];
-            signals[0].set(controll_vector);
-
+        if (last_update == 0.0){
+            last_update = simulation.time();
+            return;
         }
-    =}
+        
+        mjtNum velolcity_vector = (sensor_data[0] - position_history)/(simulation.time() - last_update);
+        controll_vector = p_controller_value * (-velolcity_vector - sensor_factor * sensor_data[0]);
 
-    reaction (world_data) {=
-        simulation = *world_data.get();
+        std::cout << "correction = " << controll_vector << std::endl;
+
+        last_update = simulation.time();
+        position_history = sensor_data[0];
+        signals[0].set(controll_vector);
     =}
 }
 
@@ -64,8 +57,8 @@ main reactor InversePendulum {
     
     // connecting the simulator to the interface
     // This are all physical connections
-    interface.simulator_signals ~> sim.controll_signals;
-    sim.simulator_world_data ~> interface.simulator_world_data;
+    interface.simulator_signals -> sim.controll_signals;
+    sim.simulator_world_data -> interface.simulator_world_data;
    
     // connecting the controller to the interface
     controller.signals -> interface.controller_signals;

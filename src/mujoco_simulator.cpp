@@ -1,12 +1,15 @@
+#include <fstream>
+#include <iostream>
+#include <queue>
 
 #include "mujoco_simulator/MujocoSimulator.hh"
-
+#include "world.hpp"
 // PREAMBLE
 
-mjvCamera global_camera{};    // abstract camera
-mjvOption global_options{};   // visualization options
-mjvScene global_scene{};      // abstract scene
-mjrContext global_context{};  // custom GPU context
+mjvCamera global_camera{};   // abstract camera
+mjvOption global_options{};  // visualization options
+mjvScene global_scene{};     // abstract scene
+mjrContext global_context{}; // custom GPU context
 mjModel* global_model = nullptr;
 mjData* global_data = nullptr;
 bool global_button_left = false;
@@ -18,7 +21,7 @@ double global_lasty = 0;
 // keyboard callback
 void keyboard(GLFWwindow* window, int key, int scancode, int act, int mods) {
   std::cout << "KEYBOARD ACTION" << std::endl;
-  
+
   // backspace: reset simulation
   if (act == GLFW_PRESS && key == GLFW_KEY_BACKSPACE) {
     mj_resetData(global_model, global_data);
@@ -78,12 +81,10 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset) {
   mjv_moveCamera(global_model, mjMOUSE_ZOOM, 0, -0.05 * yoffset, &global_scene, &global_camera);
 }
 
-
-
 // REACTIONS
 
 void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupTrigger& startup,
-                                        reactor::PhysicalAction<mjData*>& world_data) {
+                                        reactor::PhysicalAction<WorldData>& world_data) {
   std::cout << "Starting Simulator with: " << file << std::endl;
 
   // load model from file and check for errors
@@ -96,6 +97,14 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
     // make data corresponding to model
     global_data = mj_makeData(global_model);
 
+
+    if (collect_data) {
+      auto data = WorldData{global_data, global_model}; 
+      data.write_csv_header("data.csv", global_model);
+    }
+  }
+
+  thread = std::thread([&]() {
     if (visualize) {
       // init GLFW, create window, make OpenGL contexttext current, request v-sync
       glfwInit();
@@ -122,38 +131,23 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
       // get framebuffer viewport
       mjrRect viewport = {0, 0, 0, 0};
       glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
-
-      // update scene and render
-      mjv_updateScene(global_model, global_data, &global_options, NULL, &global_camera, mjCAT_ALL, &global_scene);
-      mjr_render(viewport, &global_scene, &global_context);
-
-      // swap OpenGL buffers (blocking call due to v-sync)
-      glfwSwapBuffers(window);
     }
-  }
 
-  thread = std::thread([&](){
     while (!this->terminate) {
       mj_step(global_model, global_data);
 
       std::cout << "ADVANCING TIME: " << global_data->time << std::endl;
+
       {
         std::lock_guard<std::mutex> lock(this->last_controll_input_lock);
-        std::cout << "SIM: ";
-        for (int i = 0; i < this->last_controll_input.size(); i++) {
+        for (auto i = 0; i < this->last_controll_input.size(); i++) {
           global_data->ctrl[i] = last_controll_input[i];
-          std::cout << last_controll_input[i] << ", ";
         }
-        std::cout << std::endl;
+
         last_controll_input.clear();
       }
-      // TODO: we maybe need to make a deep copy here
-      world_data.schedule(global_data);
-
-      mj_step1(global_model, global_data);     
 
       if (visualize) {
-        std::cout << "RENDER" << std::endl;
         // get framebuffer viewport
         mjrRect viewport = {0, 0, 0, 0};
         glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
@@ -166,7 +160,21 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
         glfwSwapBuffers(window);
         // process pending GUI events, call GLFW callbacks
         glfwPollEvents();
+
+        if (glfwWindowShouldClose(window)) {
+          exit(0);
+        }
       }
+
+      mj_step1(global_model, global_data);
+
+      auto data = WorldData{global_data, global_model}; 
+
+      if (collect_data) {
+        data.write_to_csv("data.csv");
+      }
+
+      world_data.schedule(data);
     }
   });
 }
@@ -187,12 +195,14 @@ void MujocoSimulator::Inner::deconstruct([[maybe_unused]] const reactor::Shutdow
   }
 }
 
-void MujocoSimulator::Inner::handle_controll_signals([[maybe_unused]] const reactor::Input<std::vector<double>>& controller_signals) {
+void MujocoSimulator::Inner::handle_controll_signals(
+    [[maybe_unused]] const reactor::Input<std::vector<double>>& controller_signals) {
   std::lock_guard<std::mutex> lock(this->last_controll_input_lock);
   last_controll_input = *controller_signals.get();
 }
 
-void MujocoSimulator::Inner::forward_world_data([[maybe_unused]] const reactor::PhysicalAction<mjData*>& world_data,
-                                                [[maybe_unused]] reactor::Output<mjData*>& simulator_world_data) {
-  simulator_world_data.set(world_data.get());
+void MujocoSimulator::Inner::forward_world_data([[maybe_unused]] const reactor::PhysicalAction<WorldData>& world_data,
+                                                [[maybe_unused]] reactor::Output<WorldData>& simulator_world_data) {
+  simulator_world_data.set(*world_data.get());
 }
+

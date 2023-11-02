@@ -12,7 +12,7 @@ public preamble {=
 
 reactor TestController {
     output[7] signals: double;
-    input world_data: mjData*;
+    input world_data: WorldData;
     
     timer t(0s, 33ms);
 
@@ -48,8 +48,8 @@ main reactor XArm7{
     
     // connecting the simulator to the interface
     // This are all physical connections
-    interface.simulator_signals ~> sim.controll_signals;
-    sim.simulator_world_data ~> interface.simulator_world_data;
+    interface.simulator_signals -> sim.controll_signals;
+    sim.simulator_world_data -> interface.simulator_world_data;
    
     // connecting the controller to the interface
     controller.signals -> interface.controller_signals;
