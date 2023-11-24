@@ -35,6 +35,10 @@ public:
         return sensor_data_;
     }
 
+    auto position() const noexcept -> std::vector<double> {
+        return position_;
+    }
+
     void write_csv_header(const std::string file, const mjModel* model) {
 
         auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {

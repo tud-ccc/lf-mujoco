@@ -1,6 +1,9 @@
 target Cpp;
 
 public preamble {=
+
+#ifndef XARM7_INTERFACE
+#define XARM7_INTERFACE
   #include <mujoco/mujoco.h>
   #include "../src/world.hpp"
 
@@ -8,9 +11,74 @@ public preamble {=
     return (T(0) < val) - (val < T(0));
   }
 
+
+  #endif //XARM7_INTERFACE
 =}
 
 reactor XArm7InterfaceSimulated {
+ private preamble {=
+  
+  // validate ctrl data and make it save
+  const double ctrlrange_1_max = 2.0944;
+  const double ctrlrange_1_min = -2.059;
+  const double ctrlrange_3_max = 3.927;
+  const double ctrlrange_3_min = -0.19198;
+  const double ctrlrange_5_max = 3.13159;
+  const double ctrlrange_5_min = -1.69297;
+
+  const double extra_margin = 0.1;
+  const double decrease_margin = 0.5;
+  const double delta_x = decrease_margin - extra_margin;
+
+  const double ctrl_ranges[] = {
+    2.0944,
+    -2.059,
+    3.927,
+    -0.19197,
+    3.13159,
+    -1.69297
+  };
+  auto savety_function(double current_position, std::size_t joint) -> double {
+    double center = (ctrl_ranges[joint] + ctrl_ranges[joint + 1]) / 2.0;
+
+    if (current_position > ctrl_ranges[joint] - extra_margin or current_position < ctrl_ranges[joint + 1] + extra_margin) {
+        return 0.0;
+    }
+
+    if (ctrl_ranges[joint] - decrease_margin >= current_position and current_position >= ctrl_ranges[joint + 1] + decrease_margin) {
+        return 1.0;
+    }
+
+    if (current_position > center){
+        return (-1.0 / delta_x) * (current_position - ctrl_ranges[joint] + extra_margin);
+    } else {
+        return (1.0 / delta_x) * (current_position - ctrl_ranges[joint + 1] - extra_margin);
+    }
+  }
+
+  auto calculate_factor(double current_position, double ctrl_input, std::size_t joint) -> double {
+    double center = (ctrl_ranges[joint] + ctrl_ranges[joint + 1]) / 2.0;
+
+    double value_current = savety_function(current_position, joint);
+
+    if (std::abs(ctrl_input * 0.001 + current_position - center) > std::abs(current_position - center)) {
+        std::cout << "DANGER:" << value_current << std::endl; 
+        return std::abs(value_current * ctrl_input);
+    } else {
+        return std::abs(ctrl_input);
+    }
+  }
+
+  auto savety_function(double current_position, double controll, std::size_t joint) -> double {
+    if (joint == 1 || joint == 3 || joint == 5) {
+      std::size_t new_index = std::floor(joint / 2);
+      return calculate_factor(current_position, controll, new_index); 
+    } else {
+      return controll;
+    }
+  }
+  =}
+
   // controller facing
   input[7] controller_signals: double;
   output controller_world_data: WorldData;
@@ -19,19 +87,33 @@ reactor XArm7InterfaceSimulated {
   input simulator_world_data: WorldData;
   output simulator_signals: std::vector<double>;
 
+  state last_data: WorldData;
+
+  reaction (simulator_world_data) -> controller_world_data {=
+    last_data = *simulator_world_data.get();
+
+    std::cout << "X" << last_data.position().size() << std::endl << std::flush;
+    controller_world_data.set(last_data);
+  =}
+
   // reactions forwarding data
   reaction (controller_signals) -> simulator_signals {=
     std::vector<double> input{0, 0, 0, 0 ,0, 0, 0};
     input.resize(7);
-    
-    for (auto i: controller_signals.present_indices_unsorted()) {
-      input[i] = *controller_signals[i].get();
+
+    auto current_position = last_data.position();
+
+    if (current_position.empty()) {
+      return;
     }
-    
+
+    // turn multiport into vector    
+    for (auto i: controller_signals.present_indices_unsorted()) {
+      // TODO: potential problems
+      input[i] = savety_function(last_data.position()[i], *controller_signals[i].get(), i);
+    }
+   
     simulator_signals.set(input);
   =}
 
-  reaction (simulator_world_data) -> controller_world_data {=
-    controller_world_data.set(*simulator_world_data.get());
-  =}
 }

@@ -108,6 +108,7 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
     if (visualize) {
       // init GLFW, create window, make OpenGL contexttext current, request v-sync
       glfwInit();
+      //gladLoadGL();
       window = glfwCreateWindow(1200, 900, "MujocoSimulator", NULL, NULL);
       glfwMakeContextCurrent(window);
       glfwSwapInterval(1);

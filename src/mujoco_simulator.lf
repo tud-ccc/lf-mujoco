@@ -4,6 +4,7 @@ target Cpp{
 
 public preamble {=
 #include <mujoco/mujoco.h>
+//#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string>

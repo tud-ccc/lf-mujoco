@@ -35,15 +35,19 @@ reactor TestController {
             change_direction.schedule(std::chrono::milliseconds((rand() % 5) * 5000));
         }
 
-        signals[0].set(direction ? -1.0 : 1.0);
-        signals[1].set(0.0);
+        //signals[0].set(direction ? -0.5 : -0.5);
+        //signals[1].set(direction ? -0.5 : -0.5);
+        //signals[2].set(direction ? 0.5 : -0.5);
+        signals[3].set(direction ? 0.5 : -0.5);
+        //signals[4].set(direction ? -0.5 : 0.5);
+        //signals[5].set(direction ? -0.5 : 0.5);
     =}
 
 }
 
 main reactor XArm7{
     controller = new TestController();
-    sim = new MujocoSimulator(file="./examples/models/xarm7_motor/xarm7.xml");
+    sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
     interface = new XArm7InterfaceSimulated();
     
     // connecting the simulator to the interface
