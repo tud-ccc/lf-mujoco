@@ -2,7 +2,7 @@
 #include <iostream>
 #include <queue>
 
-#include "mujoco_simulator/MujocoSimulator.hh"
+#include "simulator/mujoco_simulator/MujocoSimulator.hh"
 #include "world.hpp"
 // PREAMBLE
 

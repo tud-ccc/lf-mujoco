@@ -3,9 +3,9 @@ target Cpp{
     fast: true
 };
 
-import XArm7Controll from "../src/xarm7_controller.lf";
-import MujocoSimulator from "../src/mujoco_simulator.lf";
-import XArm7InterfaceSimulated from "../interfaces/XArm7.lf";
+import XArm7Controll from "../src/hardware/xarm7_controller.lf";
+import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
+import XArm7InterfaceSimulated from "../src/interface/XArm7.lf";
 
 public preamble {=
 #include <chrono>
