@@ -11,7 +11,7 @@ public preamble {=
 #include <chrono>
 =}
 
-reactor RobotControl (stride: int  = 15, hypotenuse: int = 25)  {
+reactor RobotControl (stride: int  = 10, hypotenuse: int = 50)  {
     private preamble{= 
     #include <cmath>
 
@@ -32,7 +32,7 @@ reactor RobotControl (stride: int  = 15, hypotenuse: int = 25)  {
     output[6] signals: double;
     input world_data: WorldData;
     
-    timer t(0s, 2500 msec);
+    timer t(2s, 50 msec);
 
     state direction: bool;
     //logical action change_direction: void;
@@ -48,16 +48,18 @@ reactor RobotControl (stride: int  = 15, hypotenuse: int = 25)  {
         std::cout << "current degree value:  "<< deg << std::endl;
 
         //offset in order to change the middel point of the circle
-        double _x_val = calculate_x_value(hypotenuse, deg ) + 100.0;
-        double _y_val = calculate_y_value(hypotenuse, deg ) + 100.0;
+        double _x_val = calculate_x_value(hypotenuse, deg ) + 400.0;
+        double _y_val = calculate_y_value(hypotenuse, deg ) + 0.0;
         std::cout << "new x value:  "<< _x_val << std::endl;
         std::cout << "new y value:  "<< _y_val << std::endl;
         
-        double _z_val = 0.0;
+        double _z_val = 200.0;
                     
         signals[0].set(_x_val);
         signals[1].set(_y_val);
         signals[2].set(_z_val);
+        signals[3].set(180);
+        
 
         deg = (deg + stride) % 360;
 
