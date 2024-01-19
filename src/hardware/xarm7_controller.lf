@@ -6,7 +6,7 @@ public preamble {=
 #include <array>
 #include <thread>
 #include <fstream>
-#include <xarm/wrapper/xarm_api>
+#include <xarm/wrapper/xarm_api.h>
 
 #include "world.hpp"
 =}
@@ -25,10 +25,12 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
     =}
 
     reaction(fetch_data) -> world_data {=
-        fp32 pose[6] = {0};
-        int ret = arm->get_position(pose);
+        int error_code;
 
-        if (ret != 0) {
+        fp32 pose[6] = {0};
+        error_code = arm->get_position(pose);
+
+        if (error_code != 0) {
             std::cout << "error occured" << std::endl;
             return;
         }
@@ -37,19 +39,19 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         fp32 velocities[7] = {0};
         fp32 effort[7] = {0};
 
-        int ret = arm->get_joint_states(angles, velocities, effort);        
+        error_code = arm->get_joint_states(angles, velocities, effort);        
 
-        if (ret != 0) {
+        if (error_code != 0) {
             std::cout << "error occured" << std::endl;
             return;
         }
 
         WorldData data{
-            angles, 
-            velocities,
-            effort,
-            pose
-        }
+            std::vector<double>(std::begin(angles), std::end(angles)), 
+            std::vector<double>(std::begin(velocities), std::end(velocities)),
+            std::vector<double>(std::begin(effort), std::end(effort)),
+            std::vector<double>(std::begin(pose), std::end(pose)),
+        };
 
         world_data.set(data);
     =}
@@ -64,7 +66,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
             pos[i] = data[i];
         }
 
-        ret = arm->set_position(pos, 0, false);
+        int error_code = arm->set_position(pos, 0, false);
     =}
 
     reaction(shutdown) {=

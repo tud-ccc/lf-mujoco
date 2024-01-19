@@ -27,14 +27,14 @@ public:
         joint_acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
     };
     WorldData(
-        std::vector<float> joint_position,
-        std::vector<float> joint_velocities,
-        std::vector<float> joint_effort,
-        std::vector<float> pose
+        std::vector<double> joint_position,
+        std::vector<double> joint_velocities,
+        std::vector<double> joint_effort,
+        std::vector<double> pose
     ) {
-        joint_position_ = std::vector<double>(std::begin(joint_position), std::end(joint_position));
-        joint_velocity_ = std::vector<double>(std::begin(joint_velocities), std::end(joint_velocities));
-        pose_= std::vector<double>(std::begin(pose), std::end(pose));
+        joint_position_ = joint_position;
+        joint_velocity_ = joint_velocities;
+        pose_= pose;
     }
     ~WorldData() noexcept = default;
 
