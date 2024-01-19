@@ -1,42 +1,65 @@
 target Cpp{
     cmake-include: "mujoco.cmake",
-    fast: true
-};
+    };
 
 import XArm7Controll from "../src/hardware/xarm7_controller.lf";
-import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
+//import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
 import XArm7InterfaceSimulated from "../src/interface/XArm7.lf";
+
 
 public preamble {=
 #include <chrono>
 =}
 
-reactor RobotControl {
+reactor RobotControl (stride: int  = 15, hypotenuse: int = 25)  {
+    private preamble{= 
+    #include <cmath>
+
+    double calculate_x_value(int hypothenus, int angle_in_deg){
+        double x_val = 0.0;
+        x_val = hypothenus * cos(angle_in_deg*3.14159/180.0);
+        return x_val;
+        
+    }
+
+    double calculate_y_value(int hypothenus, int angle_in_deg){
+        double y_val = 0.0;
+        y_val = hypothenus * sin(angle_in_deg*3.14159/180.0);
+        return y_val;   }
+    
+    =}
+    state deg: int = 0;
     output[6] signals: double;
     input world_data: WorldData;
     
-    timer t(0s, 40ms);
+    timer t(0s, 2500 msec);
 
     state direction: bool;
-    logical action change_direction: void;
+    //logical action change_direction: void;
 
     reaction (startup) {=
         direction = false;
         srand(time(nullptr));
     =}
 
-    reaction (change_direction) {=
-        direction = !direction;
-    =}
+   
+    reaction (t) -> signals {=
+        std::cout << "We got a reaction" << std::endl;
+        std::cout << "current degree value:  "<< deg << std::endl;
 
-    reaction (t) -> signals, change_direction {=
-        if (rand() % 100 == 0) {
-            change_direction.schedule(std::chrono::milliseconds((rand() % 5) * 5000));
-        }
+        //offset in order to change the middel point of the circle
+        double _x_val = calculate_x_value(hypotenuse, deg ) + 100.0;
+        double _y_val = calculate_y_value(hypotenuse, deg ) + 100.0;
+        std::cout << "new x value:  "<< _x_val << std::endl;
+        std::cout << "new y value:  "<< _y_val << std::endl;
         
-        //signals[0].set(0.3);
-        //signals[1].set(0-.5);
-        //signals[2].set(-0.3);
+        double _z_val = 0.0;
+                    
+        signals[0].set(_x_val);
+        signals[1].set(_y_val);
+        signals[2].set(_z_val);
+
+        deg = (deg + stride) % 360;
 
         //signals[3].set(direction ? 0.5 : -0.5);
         //signals[0].set(direction ? 0.5 : -0.5);

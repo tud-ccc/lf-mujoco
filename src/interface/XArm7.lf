@@ -93,7 +93,7 @@ reactor XArm7InterfaceSimulated {
   reaction (simulator_world_data) -> controller_world_data {=
     last_data = *simulator_world_data.get();
 
-    std::cout << "X" << last_data.position().size() << std::endl << std::flush;
+    //std::cout << "X" << last_data.position().size() << std::endl << std::flush;
     controller_world_data.set(last_data);
   =}
 

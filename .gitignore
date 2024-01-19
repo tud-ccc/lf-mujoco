@@ -45,3 +45,4 @@ MUJOCO_LOG.txt
 data.csv
 .idea
 *.so*
+clean.sh

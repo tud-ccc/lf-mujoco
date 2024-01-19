@@ -27,7 +27,22 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
             std::cerr << "Couldn't connect to Robot! on: " << host << std::endl << std::flush;
             return;
         }
+        if (arm->error_code != 0){
+            arm->clean_error();
+        }
+        if (arm->warn_code != 0) {arm->clean_warn();}
+        arm->motion_enable(true);
+        arm->set_mode(0);
+        arm->set_state(0);
+        std::cout << "! ================== !" << std::endl;
+        std::cout << "! Waiting some seconds !" << std::endl;
+        //sleep_milliseconds(3000);
+        std::cout << "! Waited now for 3 seconds, resetting !" << std::endl;
+        arm->reset(true);
+
     =}
+
+
 
     reaction(fetch_data) -> world_data {=
         int error_code;
@@ -36,7 +51,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         error_code = arm->get_position(pose);
 
         if (error_code != 0) {
-            std::cout << "error occured" << std::endl;
+            std::cout << "Error occured, no connection established" << std::endl;
             return;
         }
         
@@ -69,6 +84,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         // the very save way
         for (auto i = 0; i < 6; i++) {
             pos[i] = data[i];
+            std::cout << "Actual value beeing in data[i]" << data[i] << std::endl ;
         }
 
         int error_code = arm->set_position(pos, 0, false);
