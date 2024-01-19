@@ -7,7 +7,7 @@ version = "0.1.0"
 [[app]]
 target = "Cpp"
 platform = "Native"
-main_reactor = "src/Main.lf"
+main_reactor = "example/XArm7.lf"
 
 [app.dependencies]
 

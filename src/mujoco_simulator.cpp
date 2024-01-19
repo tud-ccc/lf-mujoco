@@ -104,6 +104,9 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
     }
   }
 
+  
+  mj_step(global_model, global_data);
+
   thread = std::thread([&]() {
     if (visualize) {
       // init GLFW, create window, make OpenGL contexttext current, request v-sync
@@ -198,6 +201,7 @@ void MujocoSimulator::Inner::deconstruct([[maybe_unused]] const reactor::Shutdow
 
 void MujocoSimulator::Inner::handle_controll_signals(
     [[maybe_unused]] const reactor::Input<std::vector<double>>& controller_signals) {
+  std::cout << "getting signals" << std::endl;
   std::lock_guard<std::mutex> lock(this->last_controll_input_lock);
   last_controll_input = *controller_signals.get();
 }

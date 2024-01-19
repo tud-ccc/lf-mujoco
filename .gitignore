@@ -43,3 +43,5 @@ target
 .vscode
 MUJOCO_LOG.txt
 data.csv
+.idea
+*.so*

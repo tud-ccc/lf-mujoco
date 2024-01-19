@@ -1,0 +1,73 @@
+target Cpp;
+
+public preamble {=
+#include <iostream>
+#include <string>
+#include <array>
+#include <thread>
+#include <fstream>
+#include <xarm/wrapper/xarm_api>
+
+#include "world.hpp"
+=}
+
+reactor XArm7Controll(host: std::string = "192.168.1.227") {
+    timer fetch_data(100ms, 100ms);
+
+    state arm: XArmAPI*;
+
+    // communcation with the interface
+    output world_data: WorldData;
+    input controll_signals: {=std::vector<double>=}
+
+    reaction(startup) -> world_data {=
+
+    =}
+
+    reaction(fetch_data) -> world_data {=
+        fp32 pose[6] = {0};
+        int ret = arm->get_position(pose);
+
+        if (ret != 0) {
+            std::cout << "error occured" << std::endl;
+            return;
+        }
+        
+        fp32 angles[7] = {0};
+        fp32 velocities[7] = {0};
+        fp32 effort[7] = {0};
+
+        int ret = arm->get_joint_states(angles, velocities, effort);        
+
+        if (ret != 0) {
+            std::cout << "error occured" << std::endl;
+            return;
+        }
+
+        WorldData data{
+            angles, 
+            velocities,
+            effort,
+            pose
+        }
+
+        world_data.set(data);
+    =}
+
+
+    reaction(controll_signals) {=
+        auto data = *controll_signals.get();
+        fp32 pos[6];
+        
+        // the very save way
+        for (auto i = 0; i < 6; i++) {
+            pos[i] = data[i];
+        }
+
+        ret = arm->set_position(pos, 0, false);
+    =}
+
+    reaction(shutdown) {=
+
+    =}
+}

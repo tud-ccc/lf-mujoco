@@ -79,13 +79,14 @@ reactor XArm7InterfaceSimulated {
   }
   =}
 
+  // simulator facing
+  input simulator_world_data: WorldData;
+  output simulator_signals: std::vector<double>;
+  
   // controller facing
   input[7] controller_signals: double;
   output controller_world_data: WorldData;
   
-  // simulator facing
-  input simulator_world_data: WorldData;
-  output simulator_signals: std::vector<double>;
 
   state last_data: WorldData;
 
@@ -104,6 +105,7 @@ reactor XArm7InterfaceSimulated {
     auto current_position = last_data.position();
 
     if (current_position.empty()) {
+      std::cout << "Warning: No Input to Interface" << std::endl;
       return;
     }
 
@@ -112,7 +114,7 @@ reactor XArm7InterfaceSimulated {
       // TODO: potential problems
       input[i] = savety_function(last_data.position()[i], *controller_signals[i].get(), i);
     }
-   
+    
     simulator_signals.set(input);
   =}
 

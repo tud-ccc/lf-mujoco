@@ -10,9 +10,11 @@ class WorldData {
 private:
     double current_time_{0};
     std::vector<double> sensor_data_{};
-    std::vector<double> position_{};
-    std::vector<double> velocity_{};
-    std::vector<double> acceleration_{};
+    std::vector<double> joint_position_{};
+    std::vector<double> joint_velocity_{};
+    std::vector<double> joint_acceleration_{};
+    std::vector<double> pose_{};
+    std::vector<double> orientation_{};
 
 public:
     WorldData() noexcept = default;
@@ -20,10 +22,20 @@ public:
         this->current_time_ = data->time;
 
         sensor_data_ = std::vector<mjtNum>{data->sensordata, data->sensordata + model->nsensordata};
-        position_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
-        velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
-        acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
+        joint_position_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
+        joint_velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
+        joint_acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
     };
+    WorldData(
+        std::vector<float> joint_position,
+        std::vector<float> joint_velocities,
+        std::vector<float> joint_effort,
+        std::vector<float> pose
+    ) {
+        joint_position_ = joint_position;
+        joint_velocity_ = joint_velocities;
+        pose_= pose;
+    }
     ~WorldData() noexcept = default;
 
 
@@ -36,7 +48,7 @@ public:
     }
 
     auto position() const noexcept -> std::vector<double> {
-        return position_;
+        return pose_;
     }
 
     void write_csv_header(const std::string file, const mjModel* model) {
@@ -53,9 +65,9 @@ public:
         csvfile << "time, ";
 
         write_header(csvfile, "sensor", model->nsensordata);
-        write_header(csvfile, "position", model->nq);
-        write_header(csvfile, "velocity", model->nv);
-        write_header(csvfile, "acceleration", model->na);
+        write_header(csvfile, "joint_position", model->nq);
+        write_header(csvfile, "joint_velocity", model->nv);
+        write_header(csvfile, "joint_acceleration", model->na);
 
         csvfile << "\n";
     }
@@ -75,9 +87,9 @@ public:
         csvfile << std::to_string(current_time_) << ", ";
 
         write_vec_to_file(csvfile, sensor_data_);
-        write_vec_to_file(csvfile, position_);
-        write_vec_to_file(csvfile, velocity_);
-        write_vec_to_file(csvfile, acceleration_);
+        write_vec_to_file(csvfile, joint_position_);
+        write_vec_to_file(csvfile, joint_velocity_);
+        write_vec_to_file(csvfile, joint_acceleration_);
 
         csvfile << "\n";
     }

@@ -55,9 +55,19 @@
       <site size="0.001" rgba="1 0 0 1" group="4"/>
     </default>
   </default>
-
   <worldbody>
-    <body name="link_base" pos="0 0 .12" childclass="xarm7">
+    <body name="rigid_body_1" pos="0 0.4 0.12">
+      <geom type="cylinder" size="0.02 0.05" name="rb1_geom" rgba="1 0 0 1"/>
+      <freejoint/>
+    </body>
+      <body name="rigid_body_2" pos="-0.4 0 0.12">
+      <geom type="box" size="0.05 0.05 0.05" name="rb2_geom" rgba="0 1 0 1"/>
+      <freejoint/>
+    </body>
+		<geom name="ground" type="plane" pos="0 0 0.12" size="1 1 2.5" rgba=" .9 .9 .9 1"/>
+  </worldbody>
+  <worldbody>
+        <body name="link_base" pos="0 0 .12" childclass="xarm7">
       <inertial pos="-0.021131 -0.0016302 0.056488" quat="0.696843 0.20176 0.10388 0.680376" mass="0.88556"
         diaginertia="0.00382023 0.00335282 0.00167725"/>
       <geom mesh="link_base"/>
@@ -180,7 +190,7 @@
       biasprm="0 -100 -10"/>
   </actuator>
 
-  <keyframe>
+  <!--<keyframe>
     <key name="home" qpos="0 -.247 0 .909 0 1.15644 0 0 0 0 0 0 0" ctrl="0 -.247 0 .909 0 1.15644 0 0"/>
-  </keyframe>
+  </keyframe>-->
 </mujoco>
