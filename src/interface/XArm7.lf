@@ -112,7 +112,7 @@ reactor XArm7InterfaceSimulated {
     // turn multiport into vector    
     for (auto i: controller_signals.present_indices_unsorted()) {
       // TODO: potential problems
-      input[i] = savety_function(last_data.position()[i], *controller_signals[i].get(), i);
+      input[i] = *controller_signals[i].get();
     }
     
     simulator_signals.set(input);
