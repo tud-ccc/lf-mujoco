@@ -32,9 +32,9 @@ public:
         std::vector<float> joint_effort,
         std::vector<float> pose
     ) {
-        joint_position_ = joint_position;
-        joint_velocity_ = joint_velocities;
-        pose_= pose;
+        joint_position_ = std::vector<double>(std::begin(joint_position), std::end(joint_position));
+        joint_velocity_ = std::vector<double>(std::begin(joint_velocities), std::end(joint_velocities));
+        pose_= std::vector<double>(std::begin(pose), std::end(pose));
     }
     ~WorldData() noexcept = default;
 
