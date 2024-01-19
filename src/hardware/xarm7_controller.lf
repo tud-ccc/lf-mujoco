@@ -14,14 +14,19 @@ public preamble {=
 reactor XArm7Controll(host: std::string = "192.168.1.227") {
     timer fetch_data(100ms, 100ms);
 
-    state arm: XArmAPI*;
+    state arm: {=XArmAPI*=};
 
     // communcation with the interface
     output world_data: WorldData;
     input controll_signals: {=std::vector<double>=}
 
     reaction(startup) -> world_data {=
+        this->arm = new XArmAPI(host);
 
+        if (this->arm == nullptr) {
+            std::cerr << "Couldn't connect to Robot! on: " << host << std::endl << std::flush;
+            return;
+        }
     =}
 
     reaction(fetch_data) -> world_data {=

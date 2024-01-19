@@ -12,7 +12,7 @@ public preamble {=
 =}
 
 reactor RobotControl {
-    output[7] signals: double;
+    output[6] signals: double;
     input world_data: WorldData;
     
     timer t(0s, 40ms);
@@ -46,14 +46,14 @@ reactor RobotControl {
 
 main reactor XArm7{
     controller = new RobotControl();
-    hardware = new XArm7Controll();
-    sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
+    backend = new XArm7Controll();
+    //sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
     interface = new XArm7InterfaceSimulated();
     
     // connecting the simulator to the interface
     // This are all physical connections
-    interface.simulator_signals -> sim.controll_signals;
-    sim.simulator_world_data -> interface.simulator_world_data;
+    interface.simulator_signals -> backend.controll_signals;
+    backend.world_data -> interface.simulator_world_data;
    
     // connecting the controller to the interface
     controller.signals -> interface.controller_signals;

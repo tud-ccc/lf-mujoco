@@ -84,7 +84,7 @@ reactor XArm7InterfaceSimulated {
   output simulator_signals: std::vector<double>;
   
   // controller facing
-  input[7] controller_signals: double;
+  input[6] controller_signals: double;
   output controller_world_data: WorldData;
   
 
@@ -99,8 +99,8 @@ reactor XArm7InterfaceSimulated {
 
   // reactions forwarding data
   reaction (controller_signals) -> simulator_signals {=
-    std::vector<double> input{0, 0, 0, 0 ,0, 0, 0};
-    input.resize(7);
+    std::vector<double> input{0, 0, 0, 0 ,0, 0};
+    input.resize(6);
 
     auto current_position = last_data.position();
 
