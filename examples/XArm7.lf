@@ -44,14 +44,10 @@ reactor RobotControl (stride: int  = 10, hypotenuse: int = 50)  {
 
    
     reaction (t) -> signals {=
-        std::cout << "We got a reaction" << std::endl;
-        std::cout << "current degree value:  "<< deg << std::endl;
 
         //offset in order to change the middel point of the circle
         double _x_val = calculate_x_value(hypotenuse, deg ) + 400.0;
         double _y_val = calculate_y_value(hypotenuse, deg ) + 0.0;
-        std::cout << "new x value:  "<< _x_val << std::endl;
-        std::cout << "new y value:  "<< _y_val << std::endl;
         
         double _z_val = 200.0;
                     
