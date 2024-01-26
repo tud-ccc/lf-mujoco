@@ -11,7 +11,7 @@
 class WorldData {
 private:
     double current_time_{0};
-    std::chrono::nanoseconds phyical_elapsed_time_;
+    std::chrono::nanoseconds physical_elapsed_time_;
     std::vector<double> joint_effort_{};
     std::vector<double> sensor_data_{};
     std::vector<double> joint_position_{};
@@ -31,13 +31,13 @@ public:
         joint_acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
     };
     WorldData(
-        std::chrono::nanoseconds phyical_elapsed_time,
+        std::chrono::nanoseconds physical_elapsed_time,
         std::vector<double> joint_position,
         std::vector<double> joint_velocities,
         std::vector<double> joint_effort,
         std::vector<double> pose
     ) {
-        phyical_elapsed_time_ = phyical_elapsed_time;
+        physical_elapsed_time_ = physical_elapsed_time;
         joint_position_ = joint_position;
         joint_velocity_ = joint_velocities;
         joint_effort_ = joint_effort;
@@ -48,6 +48,10 @@ public:
 
     auto time() const noexcept -> double {
         return current_time_;
+    }
+    
+    auto physical_elapsed_time() const noexcept -> std::chrono::nanoseconds {
+        return physical_elapsed_time_;
     }
 
     auto sensor_data() const noexcept -> std::vector<double> {
