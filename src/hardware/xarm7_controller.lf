@@ -76,6 +76,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         // }
 
         WorldData data{
+            get_elapsed_physical_time(),
             std::vector<double>(std::begin(angles), std::end(angles)), 
             std::vector<double>(std::begin(velocities), std::end(velocities)),
             std::vector<double>(std::begin(effort), std::end(effort)),
