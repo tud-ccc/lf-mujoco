@@ -62,7 +62,7 @@ public:
         return pose_;
     }
 
-    void write_csv_header(const std::string file, const mjModel* model) {
+    void write_csv_mujoco_header(const std::string file, const mjModel* model) {
 
         auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
             for (std::size_t i = 0; i < count; i++) {
@@ -83,6 +83,8 @@ public:
         csvfile << "\n";
     }
 
+    
+
     void write_to_csv(const std::string& file)  {
 
         auto write_vec_to_file = [](std::ofstream& file_handle, const std::vector<double>& data) {
@@ -94,14 +96,17 @@ public:
         // TODO: global file pointer which can be shared by thing kind of objects
         std::ofstream csvfile;
         csvfile.open(file, std::ios_base::openmode::_S_app);
-
-        csvfile << std::to_string(current_time_) << ", ";
-
+        csvfile << "time : " ;
+        csvfile << std::to_string(physical_elapsed_time_.count());
         write_vec_to_file(csvfile, sensor_data_);
+        csvfile << "\n" <<  "joint_positions :" ;
         write_vec_to_file(csvfile, joint_position_);
+        csvfile << "\n" <<  "joint_velocity :";
         write_vec_to_file(csvfile, joint_velocity_);
-        write_vec_to_file(csvfile, joint_acceleration_);
-
+        csvfile << "\n" <<  "joint_effort :" ;
+        write_vec_to_file(csvfile, joint_effort_);
+        csvfile << "\n" <<  "pose :" ;
+        write_vec_to_file(csvfile, pose_);
         csvfile << "\n";
     }
 };

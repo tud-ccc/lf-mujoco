@@ -82,7 +82,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
             std::vector<double>(std::begin(effort), std::end(effort)),
             std::vector<double>(std::begin(pose), std::end(pose)),
         };
-        auto elapsed = get_elapsed_physical_time();
+        // auto elapsed = get_elapsed_physical_time();
         // std::cout << elapsed << std::endl;
         // std::cout << "In seconds: " <<  std::chrono::duration_cast<std::chrono::seconds>(elapsed) << std::endl;
         world_data.set(data);
