@@ -14,7 +14,8 @@ private:
     std::chrono::nanoseconds physical_elapsed_time_;
     std::vector<double> joint_effort_{};
     std::vector<double> sensor_data_{};
-    std::vector<double> joint_position_{};
+    std::vector<double> joint_positions_{};
+    std::vector<double> joint_angles_{};
     std::vector<double> joint_velocity_{};
     std::vector<double> joint_acceleration_{};
     std::vector<double> pose_{};
@@ -26,19 +27,19 @@ public:
         this->current_time_ = data->time;
 
         sensor_data_ = std::vector<mjtNum>{data->sensordata, data->sensordata + model->nsensordata};
-        joint_position_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
+        joint_positions_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
         joint_velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
         joint_acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
     };
     WorldData(
         std::chrono::nanoseconds physical_elapsed_time,
-        std::vector<double> joint_position,
+        std::vector<double> joint_angles,
         std::vector<double> joint_velocities,
         std::vector<double> joint_effort,
         std::vector<double> pose
     ) {
         physical_elapsed_time_ = physical_elapsed_time;
-        joint_position_ = joint_position;
+        joint_angles_ = joint_angles;
         joint_velocity_ = joint_velocities;
         joint_effort_ = joint_effort;
         pose_= pose;
@@ -88,7 +89,7 @@ public:
 
         auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
             for (std::size_t i = 0; i < count; i++) {
-                file_handle << column_name << "_" << std::to_string(i) << ", ";
+                file_handle << column_name << "_" << std::to_string(i) << ",";
             }
         };
 
@@ -97,7 +98,7 @@ public:
 
         csvfile << "time, ";
 
-        write_header(csvfile, "joint_position", 7);
+        write_header(csvfile, "joint_angles", 7);
         write_header(csvfile, "joint_velocity", 7);
         write_header(csvfile, "joint_effort", 7);
         write_header(csvfile, "pose",6 );
@@ -105,7 +106,7 @@ public:
         csvfile << "\n";
     }
 
-    void write_to_csv(const std::string& file, bool readable_not_csv_style)  {
+    void write_to_csv_xArm(const std::string& file, bool readable_not_csv_style)  {
 
         auto write_vec_to_file = [](std::ofstream& file_handle, const std::vector<double>& data) {
             for (double value : data) {
@@ -119,8 +120,8 @@ public:
         if (readable_not_csv_style){
             csvfile << "time : " ;
             csvfile << std::to_string(physical_elapsed_time_.count());
-            csvfile << "\n" <<  "joint_positions :" ;
-            write_vec_to_file(csvfile, joint_position_);
+            csvfile << "\n" <<  "joint_angles :" ;
+            write_vec_to_file(csvfile, joint_angles_);
             csvfile << "\n" <<  "joint_velocity :";
             write_vec_to_file(csvfile, joint_velocity_);
             csvfile << "\n" <<  "joint_effort :" ;
@@ -130,8 +131,8 @@ public:
             csvfile << "\n";
         }
         else {
-            csvfile << std::to_string(physical_elapsed_time_.count());
-            write_vec_to_file(csvfile, joint_position_);
+            csvfile << std::to_string(physical_elapsed_time_.count()) << ", ";
+            write_vec_to_file(csvfile, joint_angles_);
             write_vec_to_file(csvfile, joint_velocity_);
             write_vec_to_file(csvfile, joint_effort_);
             write_vec_to_file(csvfile, pose_);

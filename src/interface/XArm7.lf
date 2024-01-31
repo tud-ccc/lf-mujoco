@@ -92,27 +92,27 @@ reactor XArm7InterfaceSimulated {
 
   reaction (startup) {=
   //FIXME need an instance of world data in order to print the header, we should change this !
-        float joint_positions[7] = {0};
+        float joint_angles[7] = {0};
         float joint_velocities[7] = {0};
         float joint_effort[7] = {0};
         float joint_pose[6] = {0};
 
         WorldData data{
                     get_elapsed_physical_time(),
-                    std::vector<double>(std::begin(joint_positions), std::end(joint_positions)), 
+                    std::vector<double>(std::begin(joint_angles), std::end(joint_angles)), 
                     std::vector<double>(std::begin(joint_velocities), std::end(joint_velocities)),
                     std::vector<double>(std::begin(joint_effort), std::end(joint_effort)),
                     std::vector<double>(std::begin(joint_pose), std::end(joint_pose)),
                 };
-      data.write_csv_xArm_header("output_csv/data.csv");
+      data.write_csv_xArm_header("data_analysis_csv/data.csv");
   =}
 
   reaction (simulator_world_data) -> controller_world_data {=
     last_data = *simulator_world_data.get();
 
-    std::cout << last_data.physical_elapsed_time() << std::endl << std::flush;
+    // std::cout << last_data.physical_elapsed_time() << std::endl << std::flush;
     
-    last_data.write_to_csv("output_csv/data.csv", 0);
+    last_data.write_to_csv_xArm("data_analysis_csv/data.csv", 0);
     controller_world_data.set(last_data);
   =}
 
