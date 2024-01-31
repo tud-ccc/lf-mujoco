@@ -23,11 +23,11 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
     input controll_signals: {=std::vector<double>=}
 
     reaction(startup) -> world_data {=
-    /*
-        this->arm = new XArmAPI(host);
+    
+    /*this->arm = new XArmAPI(host);
 
-        if (this->arm == nullptr) {
-            std::cerr << "Couldn't connect to Robot! on: " << host << std::endl << std::flush;
+    if (this->arm == nullptr) {
+          std::cerr << "Couldn't connect to Robot! on: " << host << std::endl << std::flush;
             return;
         }
         if (arm->error_code != 0){
@@ -45,36 +45,37 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
 
         fp32 pos[6] = { 400, 0, 200, 180, 0, 0};
         int ret = arm->set_position(pos, 0, false);
-    */
-    std::cout << "! We passed teh startup-function  !" << std::endl;
 
+    std::cout << "! We passed teh startup-function  !" << std::endl;
+    */
 
     =}
 
 
 
     reaction(fetch_data) -> world_data {=
-        // int error_code;
+        int error_code;
 
         fp32 pose[6] = {0};
-        // error_code = arm->get_position(pose);
 
-        // if (error_code != 0) {
-        //     std::cout << "Error occured, no connection established" << std::endl;
-        //     return;
-        // }
-        
+        /*error_code = arm->get_position(pose);
+
+        if (error_code != 0) {
+            std::cout << "Error occured, no connection established" << std::endl;
+            return;
+        }
+        */
         fp32 angles[7] = {0};
         fp32 velocities[7] = {0};
         fp32 effort[7] = {0};
 
-        // error_code = arm->get_joint_states(angles, velocities, effort);        
+        /*error_code = arm->get_joint_states(angles, velocities, effort);        
 
-        // if (error_code != 0) {
-        //     std::cout << "error occured" << std::endl;
-        //     return;
-        // }
-
+        if (error_code != 0) {
+            std::cout << "error occured" << std::endl;
+            return;
+        }
+        */
         WorldData data{
             get_elapsed_physical_time(),
             std::vector<double>(std::begin(angles), std::end(angles)), 

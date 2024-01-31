@@ -83,9 +83,29 @@ public:
         csvfile << "\n";
     }
 
-    
+    void write_csv_xArm_header(const std::string file) {
+        //FiXME : we have got hard coded array lengths !
 
-    void write_to_csv(const std::string& file)  {
+        auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
+            for (std::size_t i = 0; i < count; i++) {
+                file_handle << column_name << "_" << std::to_string(i) << ", ";
+            }
+        };
+
+        std::ofstream csvfile;
+        csvfile.open(file, std::ios_base::openmode::_S_trunc);
+
+        csvfile << "time, ";
+
+        write_header(csvfile, "joint_position", 7);
+        write_header(csvfile, "joint_velocity", 7);
+        write_header(csvfile, "joint_effort", 7);
+        write_header(csvfile, "pose",6 );
+
+        csvfile << "\n";
+    }
+
+    void write_to_csv(const std::string& file, bool readable_not_csv_style)  {
 
         auto write_vec_to_file = [](std::ofstream& file_handle, const std::vector<double>& data) {
             for (double value : data) {
@@ -96,19 +116,30 @@ public:
         // TODO: global file pointer which can be shared by thing kind of objects
         std::ofstream csvfile;
         csvfile.open(file, std::ios_base::openmode::_S_app);
-        csvfile << "time : " ;
-        csvfile << std::to_string(physical_elapsed_time_.count());
-        write_vec_to_file(csvfile, sensor_data_);
-        csvfile << "\n" <<  "joint_positions :" ;
-        write_vec_to_file(csvfile, joint_position_);
-        csvfile << "\n" <<  "joint_velocity :";
-        write_vec_to_file(csvfile, joint_velocity_);
-        csvfile << "\n" <<  "joint_effort :" ;
-        write_vec_to_file(csvfile, joint_effort_);
-        csvfile << "\n" <<  "pose :" ;
-        write_vec_to_file(csvfile, pose_);
-        csvfile << "\n";
+        if (readable_not_csv_style){
+            csvfile << "time : " ;
+            csvfile << std::to_string(physical_elapsed_time_.count());
+            csvfile << "\n" <<  "joint_positions :" ;
+            write_vec_to_file(csvfile, joint_position_);
+            csvfile << "\n" <<  "joint_velocity :";
+            write_vec_to_file(csvfile, joint_velocity_);
+            csvfile << "\n" <<  "joint_effort :" ;
+            write_vec_to_file(csvfile, joint_effort_);
+            csvfile << "\n" <<  "pose :" ;
+            write_vec_to_file(csvfile, pose_);
+            csvfile << "\n";
+        }
+        else {
+            csvfile << std::to_string(physical_elapsed_time_.count());
+            write_vec_to_file(csvfile, joint_position_);
+            write_vec_to_file(csvfile, joint_velocity_);
+            write_vec_to_file(csvfile, joint_effort_);
+            write_vec_to_file(csvfile, pose_);
+            csvfile << "\n";
+        }
     }
+
+  
 };
 
 #endif //LF_MUJOCO_WORLD_DATA
