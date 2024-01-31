@@ -24,7 +24,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
 
     reaction(startup) -> world_data {=
     
-    /*this->arm = new XArmAPI(host);
+    this->arm = new XArmAPI(host);
 
     if (this->arm == nullptr) {
           std::cerr << "Couldn't connect to Robot! on: " << host << std::endl << std::flush;
@@ -47,7 +47,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         int ret = arm->set_position(pos, 0, false);
 
     std::cout << "! We passed teh startup-function  !" << std::endl;
-    */
+    
 
     =}
 
@@ -58,24 +58,24 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
 
         fp32 pose[6] = {0};
 
-        /*error_code = arm->get_position(pose);
+        error_code = arm->get_position(pose);
 
         if (error_code != 0) {
             std::cout << "Error occured, no connection established" << std::endl;
             return;
         }
-        */
+        
         fp32 angles[7] = {0};
         fp32 velocities[7] = {0};
         fp32 effort[7] = {0};
 
-        /*error_code = arm->get_joint_states(angles, velocities, effort);        
+        error_code = arm->get_joint_states(angles, velocities, effort);        
 
         if (error_code != 0) {
             std::cout << "error occured" << std::endl;
             return;
         }
-        */
+        
         WorldData data{
             get_elapsed_physical_time(),
             std::vector<double>(std::begin(angles), std::end(angles)), 
@@ -100,7 +100,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         //    std::cout << "Actual value beeing in data[i]" << data[i] << std::endl ;
         }
 
-        //int error_code = arm->set_position(pos, 0, false);
+        int error_code = arm->set_position(pos, 0, false);
 
 
     =}
