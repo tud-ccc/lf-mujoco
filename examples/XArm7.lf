@@ -11,7 +11,7 @@ public preamble {=
 #include <chrono>
 =}
 
-reactor RobotControl (stride: int  = 10, hypotenuse: int = 50)  {
+reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
     private preamble{= 
     #include <cmath>
 
@@ -32,7 +32,7 @@ reactor RobotControl (stride: int  = 10, hypotenuse: int = 50)  {
     output[6] signals: double;
     input world_data: WorldData;
     
-    timer t(2s, 50 msec);
+    timer t(2s,120 msec);
 
     state direction: bool;
     //logical action change_direction: void;

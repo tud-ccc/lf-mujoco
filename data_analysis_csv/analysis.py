@@ -10,7 +10,7 @@ def split_list(a_list, divisor):
 
   
 def joint_velocity():
-    df = pandas.read_csv("run1.csv", sep = ',',)
+    df = pandas.read_csv("data.csv", sep = ',',)
     #print(df)
     #df.head()
 
@@ -67,7 +67,7 @@ def joint_velocity():
 
 
 def joint_angles():
-    df = pandas.read_csv("run1.csv", sep = ',',)
+    df = pandas.read_csv("data.csv", sep = ',',)
     #print(df)
     #df.head()
 
@@ -128,7 +128,7 @@ def joint_angles():
     plt.show() 
     
 def joint_efforts():
-    df = pandas.read_csv("run1.csv", sep = ',',)
+    df = pandas.read_csv("data.csv", sep = ',',)
 
     time = df['time'].to_list()
     jeffort0 = (df['joint_effort_0']).to_list()
@@ -183,7 +183,7 @@ def joint_efforts():
     
     
 def joint_position():
-    df = pandas.read_csv("run1.csv", sep = ',',)
+    df = pandas.read_csv("data.csv", sep = ',',)
 
     time = df['time'].to_list()
     pose0 = (df['pose_0']).to_list()

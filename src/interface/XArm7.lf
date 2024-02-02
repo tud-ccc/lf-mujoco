@@ -104,7 +104,7 @@ reactor XArm7InterfaceSimulated {
                     std::vector<double>(std::begin(joint_effort), std::end(joint_effort)),
                     std::vector<double>(std::begin(joint_pose), std::end(joint_pose)),
                 };
-      data.write_csv_xArm_header("data_analysis_csv/data.csv");
+      data.write_csv_xArm_header("../data_analysis_csv/data.csv");
   =}
 
   reaction (simulator_world_data) -> controller_world_data {=
@@ -112,7 +112,7 @@ reactor XArm7InterfaceSimulated {
 
     // std::cout << last_data.physical_elapsed_time() << std::endl << std::flush;
     
-    last_data.write_to_csv_xArm("data_analysis_csv/data.csv", 0);
+    last_data.write_to_csv_xArm("../data_analysis_csv/data.csv", 0);
     controller_world_data.set(last_data);
   =}
 
