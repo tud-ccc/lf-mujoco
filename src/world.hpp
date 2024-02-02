@@ -74,7 +74,7 @@ public:
         std::ofstream csvfile;
         csvfile.open(file, std::ios_base::openmode::_S_trunc);
 
-        csvfile << "time, ";
+        csvfile << "time,";
 
         write_header(csvfile, "sensor", model->nsensordata);
         write_header(csvfile, "joint_position", model->nq);
@@ -96,12 +96,14 @@ public:
         std::ofstream csvfile;
         csvfile.open(file, std::ios_base::openmode::_S_trunc);
 
-        csvfile << "time, ";
+        csvfile << "time,";
 
         write_header(csvfile, "joint_angles", 7);
         write_header(csvfile, "joint_velocity", 7);
         write_header(csvfile, "joint_effort", 7);
         write_header(csvfile, "pose",6 );
+        
+        csvfile << "";
 
         csvfile << "\n";
     }
@@ -141,6 +143,69 @@ public:
     }
 
   
+};
+
+class RoboFedData{
+    private:
+    std::chrono::nanoseconds physical_elapsed_time_;
+    std::vector<double> instructions_{};
+
+    public:
+
+    RoboFedData(
+        std::chrono::nanoseconds physical_elapsed_time,
+        std::vector<double> instructions
+        
+    )
+    {
+        physical_elapsed_time_ = physical_elapsed_time;
+        instructions_ = instructions;
+    }
+
+
+    RoboFedData() noexcept = default;
+    ~RoboFedData() noexcept = default;
+
+
+    void write_instructions_csv_xArm_header(const std::string file) {
+        //FiXME : we have got hard coded array lengths !
+
+        auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
+            for (std::size_t i = 0; i < count; i++) {
+                file_handle << column_name << "_" << std::to_string(i) << ",";
+            }
+        };
+
+        std::ofstream csvfile;
+        csvfile.open(file, std::ios_base::openmode::_S_trunc);
+
+        csvfile << "time,";
+        write_header(csvfile, "instruction", 6);            
+        csvfile << "";
+        csvfile << "\n";
+    }
+
+    void write_instructions_csv_xArm(const std::string& file)  {
+
+        auto write_vec_to_file = [](std::ofstream& file_handle, const std::vector<double>& data) {
+            for (double value : data) {
+                file_handle << std::to_string(value) << ", ";
+            }
+        };
+
+        // TODO: global file pointer which can be shared by thing kind of objects
+        std::ofstream csvfile;
+        csvfile.open(file, std::ios_base::openmode::_S_app);
+
+        csvfile << std::to_string(physical_elapsed_time_.count()) << ", ";
+        write_vec_to_file(csvfile, instructions_);
+        csvfile << "\n";
+      
+    }
+
+
+
+
 };
 
 #endif //LF_MUJOCO_WORLD_DATA

@@ -3,16 +3,11 @@ from matplotlib import pyplot as plt
 import numpy as np 
 import math 
   
-def split_list(a_list, divisor):
-    half = len(a_list)//divisor
-    return a_list[:half], a_list[half:]
-
 
   
 def joint_velocity():
     df = pandas.read_csv("data.csv", sep = ',',)
-    #print(df)
-    #df.head()
+
 
     time = df['time'].to_list()
     jvel0 = (df['joint_velocity_0']).to_list()
@@ -151,7 +146,6 @@ def joint_efforts():
     Y5 = jeffort4
     Y6 = jeffort5
     
-    print(Y1)
     #Initialise the subplot function using number of rows and columns 
     figure, axis = plt.subplots(3, 2) 
     
@@ -184,9 +178,20 @@ def joint_efforts():
     
 def joint_position():
     df = pandas.read_csv("data.csv", sep = ',',)
-
+    ins = pandas.read_csv("instructions.csv", sep = ',',)
+    
+    
+    inst_time = ins['time'].to_list()
+    inst_pos_0 = ins['instruction_0'].to_list()
+    inst_pos_1 = ins['instruction_1'].to_list()
+    inst_pos_2 = ins['instruction_2'].to_list()
+    inst_pos_3 = ins['instruction_3'].to_list()
+    inst_pos_4 = ins['instruction_4'].to_list()
+    inst_pos_5 = ins['instruction_5'].to_list()
+  
+  
     time = df['time'].to_list()
-    pose0 = (df['pose_0']).to_list()
+    pose0 = df['pose_0'].to_list()
     pose1 = df['pose_1'].to_list()
     pose2 = df['pose_2'].to_list()
     pose3 = df['pose_3'].to_list()
@@ -194,11 +199,9 @@ def joint_position():
     pose5 = df['pose_5'].to_list()
     
 
-    #Get the angles from 0 to 2 pie (360 degree) in narray object 
     X = time 
+    inst_X= inst_time
     
-    #Using built-in trigonometric function we can directly plot 
-    #the given cosine wave for the given angles 
     Y1 = pose0
     Y2 = pose1 
     Y3 = pose2
@@ -206,30 +209,38 @@ def joint_position():
     Y5 = pose4
     Y6 = pose5
     
-    print(Y1)
+    inst_Y0= inst_pos_0
+    inst_Y1= inst_pos_1 
+    inst_Y2= inst_pos_2
+    inst_Y3= inst_pos_3
+    inst_Y4= inst_pos_4 
+    inst_Y5= inst_pos_5
+    
     #Initialise the subplot function using number of rows and columns 
     figure, axis = plt.subplots(3, 2) 
     
-    # For Sine Function 
-    axis[0, 0].plot(X, Y1) 
+    axis[0, 0].plot(X, Y1)
+    axis[0, 0].plot(inst_X, inst_Y0, 'r')
     axis[0, 0].set_title("X") 
     
-    # For Cosine Function 
     axis[0, 1].plot(X, Y2) 
+    axis[0, 1].plot(inst_X, inst_Y1, 'r')
     axis[0, 1].set_title("Y") 
     
-    # For Tangent Function 
     axis[1, 0].plot(X, Y3) 
+    axis[1, 0].plot(inst_X, inst_Y2, 'r')
     axis[1, 0].set_title("Z") 
     
-    # For Tanh Function 
     axis[1, 1].plot(X, Y4) 
+    axis[1, 1].plot(inst_X, inst_Y3, 'r')
     axis[1, 1].set_title("roll") 
     
     axis[2, 0].plot(X, Y5) 
+    axis[2, 0].plot(inst_X, inst_Y4, 'r')
     axis[2, 0].set_title("pitch") 
     
-    axis[2, 1].plot(X, Y6) 
+    axis[2, 1].plot(X, Y6)
+    axis[2, 1].plot(inst_X, inst_Y5, 'r')
     axis[2, 1].set_title("yaw") 
     
     
@@ -237,9 +248,9 @@ def joint_position():
     plt.show() 
 
 def main():
-    joint_angles()
-    joint_velocity()
-    joint_efforts()
+    #joint_angles()
+    #joint_velocity()
+    #joint_efforts()
     joint_position()
 
 if __name__ == "__main__":
