@@ -3,7 +3,7 @@ target Cpp{
     fast: true
 };
 
-import XArm7Controll from "../src/hardware/xarm7_controller.lf";
+// import XArm7Controll from "../src/hardware/xarm7_controller.lf";
 import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
 import XArm7InterfaceSimulated from "../src/interface/XArm7.lf";
 
@@ -37,7 +37,7 @@ reactor RobotControl {
         signals[0].set(0.3);
         signals[1].set(0-.5);
         signals[2].set(-0.3);
-        signals[3].s
+        signals[3].set(-0.3);
 
         //signals[3].set(direction ? 0.5 : -0.5);
         //signals[0].set(direction ? 0.5 : -0.5);
