@@ -50,13 +50,6 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
     std::cout << "! We passed the startup-function  !" << std::endl;
     }
 
-    //write fetch data header
-    WorldData data{};
-    data.write_csv_xArm_header("data_analysis_csv/data.csv");
-
-    //write fetch data header
-    RoboFedData fed_instructions{};
-    fed_instructions.write_instructions_csv_xArm_header("data_analysis_csv/instructions.csv"); 
     =}
 
 
@@ -88,7 +81,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         };
 
 
-        data.write_to_csv_xArm("data_analysis_csv/data.csv", 0);
+        
         world_data.set(data);
     =}
 
@@ -109,13 +102,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         }
         
         
-        RoboFedData fed_instructions{
-            get_elapsed_physical_time(),
-            std::vector<double>(std::begin(pos), std::end(pos)), 
-        };
-
-
-        fed_instructions.write_instructions_csv_xArm("data_analysis_csv/instructions.csv");
+        
 
     =}
 

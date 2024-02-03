@@ -43,6 +43,7 @@ target
 .vscode
 MUJOCO_LOG.txt
 data.csv
+instructions.csv
 .idea
 *.so*
 clean.sh

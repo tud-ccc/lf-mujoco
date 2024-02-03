@@ -18,3 +18,6 @@ LF-Mujoco can only be built with a version greater then 4.1 of LF-Lang.
 - [ ] Feed reactor-cpp the time from the simulator
 
 
+## Change between robo and simulator
+
+In order to change from the robo to the simulator change the exmaple/XArm7.lf and its mujoco cmake ('target sources')

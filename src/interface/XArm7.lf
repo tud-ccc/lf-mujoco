@@ -91,21 +91,25 @@ reactor XArm7InterfaceSimulated {
   state last_data: WorldData;
 
   reaction (startup) {=
-  //FIXME need an instance of world data in order to print the header, we should change this !
-      // WorldData data{};
-      // data.write_csv_xArm_header("../data_analysis_csv/data.csv");
+      //write fetch data header
+      WorldData data{};
+      data.write_csv_xArm_header("data_analysis_csv/data.csv");
+
+      //write fetch data header
+      RoboFedData fed_instructions{};
+      fed_instructions.write_instructions_csv_xArm_header("data_analysis_csv/instructions.csv"); 
   =}
 
+  //piping world data back to the controller
   reaction (simulator_world_data) -> controller_world_data {=
     last_data = *simulator_world_data.get();
 
-    // std::cout << last_data.physical_elapsed_time() << std::endl << std::flush;
-    
-    // last_data.write_to_csv_xArm("../data_analysis_csv/data.csv", 0);
+   
+    last_data.write_to_csv_xArm("data_analysis_csv/data.csv", 0);
     controller_world_data.set(last_data);
   =}
 
-  // reactions forwarding data
+  // piping instructions forward to either the interface or the blackBox 
   reaction (controller_signals) -> simulator_signals {=
     std::vector<double> input{0, 0, 0, 0 ,0, 0};
     input.resize(6);
@@ -122,7 +126,18 @@ reactor XArm7InterfaceSimulated {
       // TODO: potential problems
       input[i] = *controller_signals[i].get();
     }
-    
+
+    //FIXME : we could introduce also a data structure for the instructions with not only 6 values but also a physical time etc.
+    RoboFedData fed_instructions{
+            get_elapsed_physical_time(),
+            input, 
+    };
+
+
+    fed_instructions.write_instructions_csv_xArm("data_analysis_csv/instructions.csv");
+
+
+
     simulator_signals.set(input);
   =}
 

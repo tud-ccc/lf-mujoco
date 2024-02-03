@@ -3,7 +3,7 @@ target Cpp{
     };
 
 import XArm7Controll from "../src/hardware/xarm7_controller.lf";
-//import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
+// import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
 import XArm7InterfaceSimulated from "../src/interface/XArm7.lf";
 
 
@@ -49,16 +49,22 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
         double _x_val = calculate_x_value(hypotenuse, deg ) + 400.0;
         double _y_val = calculate_y_value(hypotenuse, deg ) + 0.0;
         
-        double _z_val = 200.0;
-                    
-        signals[0].set(_x_val);
-        signals[1].set(_y_val);
-        signals[2].set(_z_val);
-        signals[3].set(180);
-        
+        bool are_simulating = 0;
 
-        deg = (deg + stride) % 360;
-
+        if (are_simulating){
+            signals[0].set(0.3);
+            signals[1].set(0-.5);
+            signals[2].set(-0.3);
+            signals[3].set(-0.3);
+        }
+        else {
+            double _z_val = 200.0;                    
+            signals[0].set(_x_val);
+            signals[1].set(_y_val);
+            signals[2].set(_z_val);
+            signals[3].set(180);
+            deg = (deg + stride) % 360;
+        }
         //signals[3].set(direction ? 0.5 : -0.5);
         //signals[0].set(direction ? 0.5 : -0.5);
     =}
@@ -68,15 +74,17 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
 main reactor XArm7{
     controller = new RobotControl();
     backend = new XArm7Controll();
-    //sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
+    // sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
     interface = new XArm7InterfaceSimulated();
     
-    // connecting the simulator to the interface
-    // This are all physical connections
+    
     interface.simulator_signals -> backend.controll_signals;
     backend.world_data -> interface.simulator_world_data;
    
-    // connecting the controller to the interface
+    // interface.simulator_signals -> sim.controll_signals;
+    // sim.simulator_world_data -> interface.simulator_world_data;
+
+
     controller.signals -> interface.controller_signals;
     interface.controller_world_data -> controller.world_data;
 }
