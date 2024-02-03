@@ -93,11 +93,11 @@ reactor XArm7InterfaceSimulated {
   reaction (startup) {=
       //write fetch data header
       WorldData data{};
-      data.write_csv_xArm_header("data_analysis_csv/data.csv");
+      data.write_csv_header("data_analysis_csv/data.csv");
 
       //write fetch data header
       RoboFedData fed_instructions{};
-      fed_instructions.write_instructions_csv_xArm_header("data_analysis_csv/instructions.csv"); 
+      fed_instructions.write_instructions_csv_header("data_analysis_csv/instructions.csv"); 
   =}
 
   //piping world data back to the controller
@@ -105,7 +105,7 @@ reactor XArm7InterfaceSimulated {
     last_data = *simulator_world_data.get();
 
    
-    last_data.write_to_csv_xArm("data_analysis_csv/data.csv", 0);
+    last_data.write_to_csv("data_analysis_csv/data.csv", 1);
     controller_world_data.set(last_data);
   =}
 
@@ -118,7 +118,7 @@ reactor XArm7InterfaceSimulated {
 
     if (current_position.empty()) {
       std::cout << "Warning: No Input to Interface" << std::endl;
-      return;
+      
     }
 
     // turn multiport into vector    
@@ -132,12 +132,17 @@ reactor XArm7InterfaceSimulated {
             get_elapsed_physical_time(),
             input, 
     };
+    
+    std::cout << "[";
+
+    for (auto i : input){
+      std::cout << i << ", " ;
+
+    }
+    std::cout << "]" << std::endl;
 
 
-    fed_instructions.write_instructions_csv_xArm("data_analysis_csv/instructions.csv");
-
-
-
+    fed_instructions.write_instructions_to_csv("data_analysis_csv/instructions.csv");
     simulator_signals.set(input);
   =}
 

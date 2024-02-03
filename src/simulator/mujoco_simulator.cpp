@@ -98,10 +98,10 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
     global_data = mj_makeData(global_model);
 
 
-    if (collect_data) {
-      auto data = WorldData{global_data, global_model}; 
-      data.write_csv_header("data.csv", global_model);
-    }
+    // if (collect_data) {
+    //   auto data = WorldData{global_data, global_model}; 
+    //   data.write_csv_header("data.csv", global_model);
+    // }
   }
 
   
@@ -140,7 +140,7 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
     while (!this->terminate) {
       mj_step(global_model, global_data);
 
-      std::cout << "ADVANCING TIME: " << global_data->time << std::endl;
+      // std::cout << "ADVANCING TIME: " << global_data->time << std::endl;
 
       {
         std::lock_guard<std::mutex> lock(this->last_controll_input_lock);
@@ -174,9 +174,9 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
 
       auto data = WorldData{global_data, global_model}; 
 
-      if (collect_data) {
-        data.write_to_csv("data.csv");
-      }
+      // if (collect_data) {
+      //   data.write_to_csv("data.csv");
+      // }
 
       world_data.schedule(data);
     }

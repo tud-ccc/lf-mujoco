@@ -2,8 +2,8 @@ target Cpp{
     cmake-include: "mujoco.cmake",
     };
 
-import XArm7Controll from "../src/hardware/xarm7_controller.lf";
-// import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
+// import XArm7Controll from "../src/hardware/xarm7_controller.lf";
+import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
 import XArm7InterfaceSimulated from "../src/interface/XArm7.lf";
 
 
@@ -49,13 +49,16 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
         double _x_val = calculate_x_value(hypotenuse, deg ) + 400.0;
         double _y_val = calculate_y_value(hypotenuse, deg ) + 0.0;
         
-        bool are_simulating = 0;
+        bool are_simulating = 1;
 
         if (are_simulating){
             signals[0].set(0.3);
-            signals[1].set(0-.5);
+            signals[1].set(-0.5);
             signals[2].set(-0.3);
             signals[3].set(-0.3);
+            // signals[4].set(0.0);
+            // signals[5].set(0.0);
+            
         }
         else {
             double _z_val = 200.0;                    
@@ -73,16 +76,16 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
 
 main reactor XArm7{
     controller = new RobotControl();
-    backend = new XArm7Controll();
-    // sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
+    // backend = new XArm7Controll();
+    sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
     interface = new XArm7InterfaceSimulated();
     
     
-    interface.simulator_signals -> backend.controll_signals;
-    backend.world_data -> interface.simulator_world_data;
+    // interface.simulator_signals -> backend.controll_signals;
+    // backend.world_data -> interface.simulator_world_data;
    
-    // interface.simulator_signals -> sim.controll_signals;
-    // sim.simulator_world_data -> interface.simulator_world_data;
+    interface.simulator_signals -> sim.controll_signals;
+    sim.simulator_world_data -> interface.simulator_world_data;
 
 
     controller.signals -> interface.controller_signals;

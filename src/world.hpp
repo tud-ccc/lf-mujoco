@@ -10,60 +10,61 @@
 
 class WorldData {
 private:
-    double current_time_{0};
+    //robo attributes
     std::chrono::nanoseconds physical_elapsed_time_;
-    std::vector<double> joint_effort_{};
-    std::vector<double> sensor_data_{};
-    std::vector<double> joint_positions_{};
-    std::vector<double> joint_angles_{};
-    std::vector<double> joint_velocity_{};
-    std::vector<double> joint_acceleration_{};
-    std::vector<double> pose_{};
-    std::vector<double> orientation_{};
+    std::vector<double> robo_joint_angles_{};
+    std::vector<double> robo_joint_velocity_{};
+    std::vector<double> robo_joint_effort_{};
+    std::vector<double> robo_pose_{};
+
+    // simulator attributes 
+    std::vector<double> sim_sensor_data_{};
+    std::vector<double> sim_joint_positions_{};
+    std::vector<double> sim_joint_velocity_{};
+    std::vector<double> sim_joint_acceleration_{};
+     
 
 public:
     WorldData() noexcept = default;
     WorldData(mjData* data, mjModel* model) noexcept {
-        this->current_time_ = data->time;
-
-        sensor_data_ = std::vector<mjtNum>{data->sensordata, data->sensordata + model->nsensordata};
-        joint_positions_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
-        joint_velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
-        joint_acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
+        sim_sensor_data_ = std::vector<mjtNum>{data->sensordata, data->sensordata + model->nsensordata};
+        sim_joint_positions_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
+        sim_joint_velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
+        sim_joint_acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
     };
     WorldData(
         std::chrono::nanoseconds physical_elapsed_time,
-        std::vector<double> joint_angles,
-        std::vector<double> joint_velocities,
-        std::vector<double> joint_effort,
-        std::vector<double> pose
+        std::vector<double> robo_joint_angles,
+        std::vector<double> robo_joint_velocities,
+        std::vector<double> robo_joint_effort,
+        std::vector<double> robo_pose
     ) {
         physical_elapsed_time_ = physical_elapsed_time;
-        joint_angles_ = joint_angles;
-        joint_velocity_ = joint_velocities;
-        joint_effort_ = joint_effort;
-        pose_= pose;
+        robo_joint_angles_ = robo_joint_angles;
+        robo_joint_velocity_ = robo_joint_velocities;
+        robo_joint_effort_ = robo_joint_effort;
+        robo_pose_= robo_pose;
     }
     ~WorldData() noexcept = default;
 
 
-    auto time() const noexcept -> double {
-        return current_time_;
-    }
+    // auto time() const noexcept -> double {
+    //     return current_time_;
+    // }
     
-    auto physical_elapsed_time() const noexcept -> std::chrono::nanoseconds {
-        return physical_elapsed_time_;
-    }
+    // auto physical_elapsed_time() const noexcept -> std::chrono::nanoseconds {
+    //     return physical_elapsed_time_;
+    // }
 
-    auto sensor_data() const noexcept -> std::vector<double> {
-        return sensor_data_;
-    }
+    // auto sensor_data() const noexcept -> std::vector<double> {
+    //     return sensor_data_;
+    // }
 
     auto position() const noexcept -> std::vector<double> {
-        return pose_;
+        return robo_pose_;
     }
 
-    void write_csv_mujoco_header(const std::string file, const mjModel* model) {
+    void write_csv_header(const std::string file) {
 
         auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
             for (std::size_t i = 0; i < count; i++) {
@@ -76,39 +77,23 @@ public:
 
         csvfile << "time,";
 
-        write_header(csvfile, "sensor", model->nsensordata);
-        write_header(csvfile, "joint_position", model->nq);
-        write_header(csvfile, "joint_velocity", model->nv);
-        write_header(csvfile, "joint_acceleration", model->na);
-
-        csvfile << "\n";
-    }
-
-    void write_csv_xArm_header(const std::string file) {
-        //FiXME : we have got hard coded array lengths !
-
-        auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
-            for (std::size_t i = 0; i < count; i++) {
-                file_handle << column_name << "_" << std::to_string(i) << ",";
-            }
-        };
-
-        std::ofstream csvfile;
-        csvfile.open(file, std::ios_base::openmode::_S_trunc);
-
-        csvfile << "time,";
-
+        //robo data
         write_header(csvfile, "joint_angles", 7);
         write_header(csvfile, "joint_velocity", 7);
         write_header(csvfile, "joint_effort", 7);
         write_header(csvfile, "pose",6 );
         
-        csvfile << "";
+        //simulation data FIXME : hard coded length
+        write_header(csvfile, "sensor", 6);
+        write_header(csvfile, "joint_position", 6);
+        write_header(csvfile, "joint_velocity", 6);
+        write_header(csvfile, "joint_acceleration", 6);
 
         csvfile << "\n";
     }
 
-    void write_to_csv_xArm(const std::string& file, bool readable_not_csv_style)  {
+   
+    void write_to_csv(const std::string& file, bool readable_not_csv_style)  {
 
         auto write_vec_to_file = [](std::ofstream& file_handle, const std::vector<double>& data) {
             for (double value : data) {
@@ -122,22 +107,37 @@ public:
         if (readable_not_csv_style){
             csvfile << "time : " ;
             csvfile << std::to_string(physical_elapsed_time_.count());
-            csvfile << "\n" <<  "joint_angles :" ;
-            write_vec_to_file(csvfile, joint_angles_);
-            csvfile << "\n" <<  "joint_velocity :";
-            write_vec_to_file(csvfile, joint_velocity_);
-            csvfile << "\n" <<  "joint_effort :" ;
-            write_vec_to_file(csvfile, joint_effort_);
-            csvfile << "\n" <<  "pose :" ;
-            write_vec_to_file(csvfile, pose_);
+            csvfile << "\n" <<  "robo_joint_angles :" ;
+            write_vec_to_file(csvfile, robo_joint_angles_);
+            csvfile << "\n" <<  "robo_joint_velocity :";
+            write_vec_to_file(csvfile, robo_joint_velocity_);
+            csvfile << "\n" <<  "robo_joint_effort :" ;
+            write_vec_to_file(csvfile, robo_joint_effort_);
+            csvfile << "\n" <<  "robo_pose :" ;
+            write_vec_to_file(csvfile, robo_pose_);
+            csvfile << "\n" <<  "sim_sensor_data :" ;
+            write_vec_to_file(csvfile, sim_sensor_data_);
+            csvfile << "\n" <<  "sim_joint_positions :";
+            write_vec_to_file(csvfile, sim_joint_positions_);
+            csvfile << "\n" <<  "sim_joint_velocity :" ;
+            write_vec_to_file(csvfile, sim_joint_velocity_);
+            csvfile << "\n" <<  "sim_joint_acceleration :" ;
+            write_vec_to_file(csvfile, sim_joint_acceleration_);
             csvfile << "\n";
         }
         else {
+            //xArm
             csvfile << std::to_string(physical_elapsed_time_.count()) << ", ";
-            write_vec_to_file(csvfile, joint_angles_);
-            write_vec_to_file(csvfile, joint_velocity_);
-            write_vec_to_file(csvfile, joint_effort_);
-            write_vec_to_file(csvfile, pose_);
+            write_vec_to_file(csvfile, robo_joint_angles_);
+            write_vec_to_file(csvfile, robo_joint_velocity_);
+            write_vec_to_file(csvfile, robo_joint_effort_);
+            write_vec_to_file(csvfile, robo_pose_);
+            //simulator
+            write_vec_to_file(csvfile,sim_sensor_data_);
+            write_vec_to_file(csvfile,sim_joint_positions_);
+            write_vec_to_file(csvfile,sim_joint_velocity_);
+            write_vec_to_file(csvfile,sim_joint_acceleration_);
+
             csvfile << "\n";
         }
     }
@@ -167,7 +167,7 @@ class RoboFedData{
     ~RoboFedData() noexcept = default;
 
 
-    void write_instructions_csv_xArm_header(const std::string file) {
+    void write_instructions_csv_header(const std::string file) {
         //FiXME : we have got hard coded array lengths !
 
         auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
@@ -185,7 +185,7 @@ class RoboFedData{
         csvfile << "\n";
     }
 
-    void write_instructions_csv_xArm(const std::string& file)  {
+    void write_instructions_to_csv(const std::string& file)  {
 
         auto write_vec_to_file = [](std::ofstream& file_handle, const std::vector<double>& data) {
             for (double value : data) {
