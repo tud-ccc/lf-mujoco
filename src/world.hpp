@@ -26,12 +26,7 @@ private:
 
 public:
     WorldData() noexcept = default;
-    WorldData(mjData* data, mjModel* model) noexcept {
-        sim_sensor_data_ = std::vector<mjtNum>{data->sensordata, data->sensordata + model->nsensordata};
-        sim_joint_positions_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
-        sim_joint_velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
-        sim_joint_acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
-    };
+   
     WorldData(
         std::chrono::nanoseconds physical_elapsed_time,
         std::vector<double> robo_joint_angles,
@@ -45,6 +40,13 @@ public:
         robo_joint_effort_ = robo_joint_effort;
         robo_pose_= robo_pose;
     }
+     WorldData(mjData* data, mjModel* model) noexcept {
+        sim_sensor_data_ = std::vector<mjtNum>{data->sensordata, data->sensordata + model->nsensordata};
+        sim_joint_positions_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
+        sim_joint_velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
+        sim_joint_acceleration_ = std::vector<mjtNum>{data->act, data->act + model->na};
+    };
+
     ~WorldData() noexcept = default;
 
 
@@ -78,16 +80,16 @@ public:
         csvfile << "time,";
 
         //robo data
-        write_header(csvfile, "joint_angles", 7);
-        write_header(csvfile, "joint_velocity", 7);
-        write_header(csvfile, "joint_effort", 7);
-        write_header(csvfile, "pose",6 );
+        write_header(csvfile, "robo_joint_angles", 7);
+        write_header(csvfile, "robo_joint_velocity", 7);
+        write_header(csvfile, "robo_joint_effort", 7);
+        write_header(csvfile, "robo_pose",6 );
         
         //simulation data FIXME : hard coded length
-        write_header(csvfile, "sensor", 6);
-        write_header(csvfile, "joint_position", 6);
-        write_header(csvfile, "joint_velocity", 6);
-        write_header(csvfile, "joint_acceleration", 6);
+        write_header(csvfile, "sim_sensor_data", 6);
+        write_header(csvfile, "sim_joint_position", 6);
+        write_header(csvfile, "sim_joint_velocity", 6);
+        write_header(csvfile, "sim_joint_acceleration", 6);
 
         csvfile << "\n";
     }
@@ -133,10 +135,10 @@ public:
             write_vec_to_file(csvfile, robo_joint_effort_);
             write_vec_to_file(csvfile, robo_pose_);
             //simulator
-            write_vec_to_file(csvfile,sim_sensor_data_);
-            write_vec_to_file(csvfile,sim_joint_positions_);
-            write_vec_to_file(csvfile,sim_joint_velocity_);
-            write_vec_to_file(csvfile,sim_joint_acceleration_);
+            write_vec_to_file(csvfile, sim_sensor_data_);
+            write_vec_to_file(csvfile, sim_joint_positions_);
+            write_vec_to_file(csvfile, sim_joint_velocity_);
+            write_vec_to_file(csvfile, sim_joint_acceleration_);
 
             csvfile << "\n";
         }
