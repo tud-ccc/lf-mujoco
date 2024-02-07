@@ -40,7 +40,8 @@ public:
         robo_joint_effort_ = robo_joint_effort;
         robo_pose_= robo_pose;
     }
-     WorldData(mjData* data, mjModel* model) noexcept {
+     WorldData(mjData* data, mjModel* model, std::chrono::nanoseconds physical_elapsed_time) noexcept {
+        physical_elapsed_time_ = physical_elapsed_time;
         sim_sensor_data_ = std::vector<mjtNum>{data->sensordata, data->sensordata + model->nsensordata};
         sim_joint_positions_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
         sim_joint_velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
@@ -70,7 +71,7 @@ public:
 
         auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
             for (std::size_t i = 0; i < count; i++) {
-                file_handle << column_name << "_" << std::to_string(i) << ", ";
+                file_handle << column_name << "_" << std::to_string(i) << ",";
             }
         };
 
@@ -86,10 +87,11 @@ public:
         write_header(csvfile, "robo_pose",6 );
         
         //simulation data FIXME : hard coded length
-        write_header(csvfile, "sim_sensor_data", 6);
-        write_header(csvfile, "sim_joint_position", 6);
-        write_header(csvfile, "sim_joint_velocity", 6);
-        write_header(csvfile, "sim_joint_acceleration", 6);
+        //FIXME : where is the sensor data, where is the joint acceleration ?
+        write_header(csvfile, "sim_sensor_data", 0);
+        write_header(csvfile, "sim_joint_position", 27);
+        write_header(csvfile, "sim_joint_velocity", 25);
+        write_header(csvfile, "sim_joint_acceleration", 0);
 
         csvfile << "\n";
     }
@@ -102,13 +104,18 @@ public:
                 file_handle << std::to_string(value) << ", ";
             }
         };
+        
+        //for better readability cast to seconds!
+
+        std::chrono::milliseconds phys_elaps_t_in_secs;
+        phys_elaps_t_in_secs = std::chrono::duration_cast<std::chrono::milliseconds> (physical_elapsed_time_);
 
         // TODO: global file pointer which can be shared by thing kind of objects
         std::ofstream csvfile;
         csvfile.open(file, std::ios_base::openmode::_S_app);
         if (readable_not_csv_style){
             csvfile << "time : " ;
-            csvfile << std::to_string(physical_elapsed_time_.count());
+            csvfile << std::to_string(phys_elaps_t_in_secs.count());
             csvfile << "\n" <<  "robo_joint_angles :" ;
             write_vec_to_file(csvfile, robo_joint_angles_);
             csvfile << "\n" <<  "robo_joint_velocity :";
@@ -129,7 +136,7 @@ public:
         }
         else {
             //xArm
-            csvfile << std::to_string(physical_elapsed_time_.count()) << ", ";
+            csvfile << std::to_string(phys_elaps_t_in_secs.count()) << ", ";
             write_vec_to_file(csvfile, robo_joint_angles_);
             write_vec_to_file(csvfile, robo_joint_velocity_);
             write_vec_to_file(csvfile, robo_joint_effort_);

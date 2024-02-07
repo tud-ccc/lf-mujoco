@@ -172,7 +172,12 @@ void MujocoSimulator::Inner::initialize([[maybe_unused]] const reactor::StartupT
 
       mj_step1(global_model, global_data);
 
-      auto data = WorldData{global_data, global_model}; 
+      auto data = WorldData{
+        
+        global_data, 
+        global_model,
+        get_elapsed_physical_time()
+        }; 
 
       // if (collect_data) {
       //   data.write_to_csv("data.csv");

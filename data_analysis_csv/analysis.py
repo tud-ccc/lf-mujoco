@@ -5,17 +5,17 @@ import math
   
 
   
-def joint_velocity():
+def print_data(coulumn_specifiers):
     df = pandas.read_csv("data.csv", sep = ',',)
 
 
     time = df['time'].to_list()
-    jvel0 = (df['joint_velocity_0']).to_list()
-    jvel1 = df['joint_velocity_1'].to_list()
-    jvel2 = df['joint_velocity_2'].to_list()
-    jvel3 = df['joint_velocity_3'].to_list()
-    jvel4 = df['joint_velocity_4'].to_list()
-    jvel5 = df['joint_velocity_5'].to_list()
+    jvel0 = df[coulumn_specifiers[0]].to_list()
+    jvel1 = df[coulumn_specifiers[1]].to_list()
+    jvel2 = df[coulumn_specifiers[2]].to_list()
+    jvel3 = df[coulumn_specifiers[3]].to_list()
+    jvel4 = df[coulumn_specifiers[4]].to_list()
+    jvel5 = df[coulumn_specifiers[5]].to_list()
     
     # Get the angles from 0 to 2 pie (360 degree) in narray object 
     X = time 
@@ -36,43 +36,43 @@ def joint_velocity():
     
     # For Sine Function 
     axis[0, 0].plot(X, Y1) 
-    axis[0, 0].set_title("Joint velocity 0") 
+    axis[0, 0].set_title(coulumn_specifiers[0]) 
     
     # For Cosine Function 
     axis[0, 1].plot(X, Y2) 
-    axis[0, 1].set_title("Joint velocity 1") 
+    axis[0, 1].set_title(coulumn_specifiers[1]) 
     
     # For Tangent Function 
     axis[1, 0].plot(X, Y3) 
-    axis[1, 0].set_title("Joint velocity 2") 
+    axis[1, 0].set_title(coulumn_specifiers[2]) 
     
     # For Tanh Function 
     axis[1, 1].plot(X, Y4) 
-    axis[1, 1].set_title("Joint velocity 3") 
+    axis[1, 1].set_title(coulumn_specifiers[3]) 
     
     axis[2, 0].plot(X, Y5) 
-    axis[2, 0].set_title("Joint velocity 4") 
+    axis[2, 0].set_title(coulumn_specifiers[4]) 
     
     axis[2, 1].plot(X, Y6) 
-    axis[2, 1].set_title("Joint velocity 5") 
+    axis[2, 1].set_title(coulumn_specifiers[5]) 
     
     
     # Combine all the operations and display 
     plt.show() 
 
 
-def joint_angles():
+def robo_joint_angles():
     df = pandas.read_csv("data.csv", sep = ',',)
     #print(df)
     #df.head()
 
     time = df['time'].to_list()
-    jangle0 = (df[' joint_angles_0']).to_list()
-    jangle1 = df['joint_angles_1'].to_list()
-    jangle2 = df['joint_angles_2'].to_list()
-    jangle3 = df['joint_angles_3'].to_list()
-    jangle4 = df['joint_angles_4'].to_list()
-    jangle5 = df['joint_angles_5'].to_list()
+    jangle0 = (df['robo_joint_angles_0']).to_list()
+    jangle1 = df['robo_joint_angles_1'].to_list()
+    jangle2 = df['robo_joint_angles_2'].to_list()
+    jangle3 = df['robo_joint_angles_3'].to_list()
+    jangle4 = df['robo_joint_angles_4'].to_list()
+    jangle5 = df['robo_joint_angles_5'].to_list()
     
 
     #plt.xlabel('Time', fontsize = 18)
@@ -122,16 +122,16 @@ def joint_angles():
     # Combine all the operations and display 
     plt.show() 
     
-def joint_efforts():
+def robo_joint_efforts():
     df = pandas.read_csv("data.csv", sep = ',',)
 
     time = df['time'].to_list()
-    jeffort0 = (df['joint_effort_0']).to_list()
-    jeffort1 = df['joint_effort_1'].to_list()
-    jeffort2 = df['joint_effort_2'].to_list()
-    jeffort3 = df['joint_effort_3'].to_list()
-    jeffort4 = df['joint_effort_4'].to_list()
-    jeffort5 = df['joint_effort_5'].to_list()
+    jeffort0 = (df['robo_joint_effort_0']).to_list()
+    jeffort1 = df['robo_joint_effort_1'].to_list()
+    jeffort2 = df['robo_joint_effort_2'].to_list()
+    jeffort3 = df['robo_joint_effort_3'].to_list()
+    jeffort4 = df['robo_joint_effort_4'].to_list()
+    jeffort5 = df['robo_joint_effort_5'].to_list()
     
 
     #Get the angles from 0 to 2 pie (360 degree) in narray object 
@@ -176,7 +176,7 @@ def joint_efforts():
     plt.show() 
     
     
-def joint_position():
+def robo_joint_position():
     df = pandas.read_csv("data.csv", sep = ',',)
     ins = pandas.read_csv("instructions.csv", sep = ',',)
     
@@ -191,12 +191,12 @@ def joint_position():
   
   
     time = df['time'].to_list()
-    pose0 = df['pose_0'].to_list()
-    pose1 = df['pose_1'].to_list()
-    pose2 = df['pose_2'].to_list()
-    pose3 = df['pose_3'].to_list()
-    pose4 = df['pose_4'].to_list()
-    pose5 = df['pose_5'].to_list()
+    pose0 = df['robo_pose_0'].to_list()
+    pose1 = df['robo_pose_1'].to_list()
+    pose2 = df['robo_pose_2'].to_list()
+    pose3 = df['robo_pose_3'].to_list()
+    pose4 = df['robo_pose_4'].to_list()
+    pose5 = df['robo_pose_5'].to_list()
     
 
     X = time 
@@ -246,12 +246,31 @@ def joint_position():
     
     # Combine all the operations and display 
     plt.show() 
+    
+def sim_sensor_data():
+    print("This is yet to be implemented !")
+
+
+import sys
 
 def main():
-    #joint_angles()
-    #joint_velocity()
-    #joint_efforts()
-    joint_position()
+    
+    args = (sys.argv)
+    if args[1] == 'robo':
+        print_data(['robo_joint_angles_0','robo_joint_angles_1','robo_joint_angles_2','robo_joint_angles_3','robo_joint_angles_4','robo_joint_angles_5'])
+        print_data(['robo_joint_velocity_0','robo_joint_velocity_1','robo_joint_velocity_2','robo_joint_velocity_3','robo_joint_velocity_4','robo_joint_velocity_5'])
+        print_data(['robo_joint_effort_0','robo_joint_effort_1','robo_joint_effort_2','robo_joint_effort_3','robo_joint_effort_4','robo_joint_effort_5'])
+        #robo_joint_efforts()
+        #robo_joint_position()
+        
+    elif args[1] == 'simulator':
+        print("This is yet to be implemented !")
+    else:
+        print("This is yet to be implemented !")
 
+        
+    
+    
+    
 if __name__ == "__main__":
     main()

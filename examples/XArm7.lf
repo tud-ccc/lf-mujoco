@@ -30,7 +30,7 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
     =}
     state deg: int = 0;
     output[6] signals: double;
-    input world_data: WorldData;
+    input world_data: WorldData;        
     
     timer t(2s,120 msec);
 
