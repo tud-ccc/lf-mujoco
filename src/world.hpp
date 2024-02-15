@@ -243,7 +243,10 @@ class RoboFedData{
         std::ofstream csvfile;
         csvfile.open(file, std::ios_base::openmode::_S_app);
 
-        csvfile << std::to_string(physical_elapsed_time_.count()) << ", ";
+        std::chrono::milliseconds phys_elaps_t_in_secs;
+        phys_elaps_t_in_secs = std::chrono::duration_cast<std::chrono::milliseconds> (physical_elapsed_time_);
+
+        csvfile << std::to_string(phys_elaps_t_in_secs.count()) << ", ";
         write_vec_to_file(csvfile, instructions_);
         csvfile << "\n";
       
