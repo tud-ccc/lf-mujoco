@@ -42,12 +42,13 @@ public:
 
         // Nulled arrays
 
-        float sim_sensor_data[27] = {std::nan("1")};
-        std::fill_n(sim_sensor_data, 27, std::nan("1"));
-        float sim_joint_pos[25] = {std::nan("1")};
-        std::fill_n(sim_joint_pos, 25, std::nan("1"));
-        float sim_joint_velocities[1] = {std::nan("1")};
-        std::fill_n(sim_joint_velocities, 1, std::nan("1"));
+   
+        float sim_joint_pos[27] = {std::nan("1")};
+        std::fill_n(sim_joint_pos, 27, std::nan("1"));
+        float sim_joint_velocities[25] = {std::nan("1")};
+        std::fill_n(sim_joint_velocities, 25, std::nan("1"));
+        float sim_sensor_data[1] = {std::nan("1")};
+        std::fill_n(sim_sensor_data, 1, std::nan("1"));
         float sim_joint_acc[1] = {std::nan("1")};
         std::fill_n(sim_joint_acc, 1, std::nan("1"));
 

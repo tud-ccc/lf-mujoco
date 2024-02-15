@@ -105,7 +105,7 @@ reactor XArm7InterfaceSimulated {
     last_data = *simulator_world_data.get();
 
    
-    last_data.write_to_csv("data_analysis_csv/data.csv", 0);
+    last_data.write_to_csv("data_analysis_csv/data.csv", 1);
     controller_world_data.set(last_data);
   =}
 
