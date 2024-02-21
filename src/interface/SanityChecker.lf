@@ -7,19 +7,19 @@ public preamble {=
 
     #ifndef SANITY_CHECKER_LF
     #define SANITY_CHECKER_LF
-    #include "../src/sanity_checker.hpp"    
+    #include "../src/common_sanity_check.hpp"    
     #endif //XARM7_INTERFACE
     //Wir merken uns: pass auf was für include guards du setzt !!!
   =}
 
-  input instructions: Vector;
+  input instructions: PositionEvaluator;
   output checked_instructions: Vector;
   
   reaction (startup) {=
   =}
 
   reaction (instructions) -> checked_instructions {=
-      Vector instruction  = *instructions.get();
+      Vector instruction  = (*instructions.get()).new_position_;
 
       Vector new_instruction = instruction;
 

@@ -10,7 +10,7 @@ import SanityChecker from "../src/interface/SanityChecker.lf"
 
 public preamble {=
 #include <chrono>
-#include "sanity_checker.hpp"
+#include "common_sanity_check.hpp"
 =}
 
 reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
@@ -31,13 +31,12 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
     
     =}
     state deg: int = 0;
-    output controller_signals: Vector;
+    output controller_signals: PositionEvaluator;
     input controller_world_data: WorldData;        
     
     // timer t(2s,120 msec);
 
     state direction: bool;
-    state last_position: Vector;
     //logical action change_direction: void;
 
     reaction (startup) {=
@@ -56,16 +55,18 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
         bool are_simulating = 0;
 
         if (are_simulating){
+            auto current_world_data = *controller_world_data.get();
+            Vector last_position = Vector(current_world_data.position().at(0),current_world_data.position().at(1), current_world_data.position().at(2)); 
             Vector new_position = Vector(0.3, -0.5, -0.3);
-            controller_signals.set(new_position);
-           
-            // signals[4].set(0.0);
-            // signals[5].set(0.0);
-            
+            PositionEvaluator pe = PositionEvaluator(last_position, new_position);
+            controller_signals.set(pe);
         }
         else {
+            auto current_world_data = *controller_world_data.get();
+            Vector last_position = Vector(current_world_data.position().at(0),current_world_data.position().at(1), current_world_data.position().at(2)); 
             Vector new_position = Vector(_x_val, _y_val, 200);
-            controller_signals.set(new_position);
+            PositionEvaluator pe = PositionEvaluator(last_position, new_position);
+            controller_signals.set(pe);
             deg = (deg + stride) % 360;
         }  
         

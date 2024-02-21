@@ -6,7 +6,7 @@ public preamble {=
 #define XARM7_INTERFACE
   #include <mujoco/mujoco.h>
   #include "../src/world.hpp"
-  #include "../src/sanity_checker.hpp"
+  #include "../src/common_sanity_check.hpp"
 
 
   template <typename T> int sgn(T val) {
