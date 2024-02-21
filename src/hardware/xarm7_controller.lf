@@ -14,7 +14,7 @@ public preamble {=
 =}
 
 reactor XArm7Controll(host: std::string = "192.168.1.227") {
-    timer fetch_data(100ms, 100ms);
+    timer t(2s, 300ms);
 
     state arm: {=XArmAPI*=};
 
@@ -41,20 +41,18 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         std::cout << "! ================== !" << std::endl;
         std::cout << "! Waiting some seconds !" << std::endl;
         //sleep_milliseconds(3000);
-        std::cout << "! Waited now for 3 seconds, resetting !" << std::endl;
         arm->reset(true);
-
+        std::cout << "! Finished resetting !" << std::endl;
         fp32 pos[6] = { 400, 0, 200, 180, 0, 0};
-        int ret = arm->set_position(pos, 0, false);
-
-    std::cout << "! We passed the startup-function  !" << std::endl;
+        int ret = arm->set_position(pos, 0, true);
+        std::cout << "! Finished first set position !" << std::endl;
     }
 
     =}
 
 
 
-    reaction(fetch_data) -> world_data {=
+    reaction(t) -> world_data {=
         int error_code;
 
         fp32 pose[6] = {0};

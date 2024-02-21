@@ -9,7 +9,7 @@ find_library(X_ARM_LIB xarm)
 target_link_libraries(${LF_MAIN_TARGET} "${X_ARM_LIB}")
 
 target_link_libraries(${LF_MAIN_TARGET} ${CMAKE_THREAD_LIBS_INIT} mujoco::mujoco glfw)
-# Diese Zeile muss man auskommentieren wenn man den Simulator nicht nutzen möchte !!!
+# Diese Zeile muss man auskommentieren wenn man den Simulator nicht nutzen möchte, also auskommentiert falls man den Robo ansteuert !!!
 #target_sources(${LF_MAIN_TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../src/simulator/mujoco_simulator.cpp)
 
 

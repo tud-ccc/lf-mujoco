@@ -6,6 +6,8 @@ public preamble {=
 #define XARM7_INTERFACE
   #include <mujoco/mujoco.h>
   #include "../src/world.hpp"
+  #include "../src/sanity_checker.hpp"
+
 
   template <typename T> int sgn(T val) {
     return (T(0) < val) - (val < T(0));
@@ -17,6 +19,7 @@ public preamble {=
 
 reactor XArm7InterfaceSimulated {
  private preamble {=
+
   
   // validate ctrl data and make it save
   const double ctrlrange_1_max = 2.0944;
@@ -84,7 +87,7 @@ reactor XArm7InterfaceSimulated {
   output simulator_signals: std::vector<double>;
   
   // controller facing
-  input[6] controller_signals: double;
+  input controller_signals: Vector;
   output controller_world_data: WorldData;
   
 
@@ -105,29 +108,25 @@ reactor XArm7InterfaceSimulated {
     last_data = *simulator_world_data.get();
 
    
-    last_data.write_to_csv("data_analysis_csv/data.csv", 1);
+    last_data.write_to_csv("data_analysis_csv/data.csv", 0);
     controller_world_data.set(last_data);
   =}
 
   // piping instructions forward to either the interface or the blackBox 
   reaction (controller_signals) -> simulator_signals {=
+
+    Vector new_instruction = *controller_signals.get();
+
     std::vector<double> input{0, 0, 0, 0 ,0, 0};
     input.resize(6);
 
-    auto current_position = last_data.position();
+    input[0] = new_instruction.X_;
+    input[1] = new_instruction.Y_;
+    input[2] = new_instruction.Z_;
+    input[3] = 180;
 
-    if (current_position.empty()) {
-      std::cout << "Warning: No Input to Interface" << std::endl;
-      
-    }
+ 
 
-    // turn multiport into vector    
-    for (auto i: controller_signals.present_indices_unsorted()) {
-      // TODO: potential problems
-      input[i] = *controller_signals[i].get();
-    }
-
-    //FIXME : we could introduce also a data structure for the instructions with not only 6 values but also a physical time etc.
     RoboFedData fed_instructions{
             get_elapsed_physical_time(),
             input, 
@@ -140,7 +139,7 @@ reactor XArm7InterfaceSimulated {
 
     }
     std::cout << "]" << std::endl;
-
+    
 
     fed_instructions.write_instructions_to_csv("data_analysis_csv/instructions.csv");
     simulator_signals.set(input);
