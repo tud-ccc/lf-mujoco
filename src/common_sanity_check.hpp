@@ -25,8 +25,12 @@ class Vector {
         return (this->X_ == vec.X_ && this->Y_ == vec.Y_&& this->Z_ == vec.Z_);
     }
 
-    void to_string(){
+    void to_string_id(){
         std::cout << "X : "<< typeid(this->X_).name() <<"(" <<this->X_ << "), Y : " << typeid(this->Y_).name() <<"(" <<this->Y_ << "), Z: " << typeid(this->Z_).name() <<"(" <<this->Z_ << ")" << std::endl;
+    }
+
+    void to_string(){
+        std::cout << "X : " << this->X_ << ", Y : " <<this->Y_ << ", Z: " <<this->Z_ << std::endl;
     }
 
 };
@@ -84,7 +88,7 @@ class PositionEvaluator {
     Vector get_normalized_delta_vector()
         {
         Vector delta_vec = this->get_delta_vector();
-        return scalar_product(1 / get_vector_length(delta_vec), delta_vec );
+        return scalar_product(1.0 / get_vector_length(delta_vec), delta_vec );
         }
 
     Vector add_vectors(
@@ -95,13 +99,13 @@ class PositionEvaluator {
         }
 
     Vector calculate_new_position(){
-        if(this->calculate_distance_two_points() < 1 ){
+        if(this->calculate_distance_two_points() < 10 ){
             return this->new_position_;
         }
         else {
             return this->add_vectors(
             this->last_position_,
-            this->scalar_product(1 ,this->get_normalized_delta_vector()));
+            this->scalar_product(9.5 ,this->get_normalized_delta_vector()));
         }
     }
 

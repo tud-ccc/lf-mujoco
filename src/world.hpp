@@ -195,18 +195,24 @@ public:
 class RoboFedData{
     private:
     std::chrono::nanoseconds physical_elapsed_time_;
-    std::vector<double> instructions_{};
+    std::vector<double> pe_last_position_{};
+    std::vector<double> pe_raw_position_{};
+    std::vector<double> pe_adjusted_position_{};
+
 
     public:
 
     RoboFedData(
         std::chrono::nanoseconds physical_elapsed_time,
-        std::vector<double> instructions
-        
+        std::vector<double> pe_last_position,
+        std::vector<double> pe_raw_position,
+        std::vector<double> pe_adjusted_position
     )
     {
         physical_elapsed_time_ = physical_elapsed_time;
-        instructions_ = instructions;
+        pe_last_position_ = pe_last_position;
+        pe_raw_position_ = pe_raw_position;
+        pe_adjusted_position_ = pe_adjusted_position;
     }
 
 
@@ -227,7 +233,10 @@ class RoboFedData{
         csvfile.open(file, std::ios_base::openmode::_S_trunc);
 
         csvfile << "time,";
-        write_header(csvfile, "instruction", 6);            
+        write_header(csvfile, "pe_last_position", 6);   
+        write_header(csvfile, "pe_raw_position",6);   
+        write_header(csvfile, "pe_adjusted_position", 6);            
+         
         csvfile << "";
         csvfile << "\n";
     }
@@ -248,13 +257,12 @@ class RoboFedData{
         phys_elaps_t_in_secs = std::chrono::duration_cast<std::chrono::milliseconds> (physical_elapsed_time_);
 
         csvfile << std::to_string(phys_elaps_t_in_secs.count()) << ", ";
-        write_vec_to_file(csvfile, instructions_);
+        write_vec_to_file(csvfile, pe_last_position_);
+        write_vec_to_file(csvfile, pe_raw_position_);
+        write_vec_to_file(csvfile, pe_adjusted_position_);
         csvfile << "\n";
       
     }
-
-
-
 
 };
 

@@ -4,7 +4,7 @@ target Cpp{
 
 import XArm7Controll from "../src/hardware/xarm7_controller.lf";
 // import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
-import XArm7InterfaceSimulated from "../src/interface/XArm7.lf";
+import XArm7InterfaceSimulated from "../src/interface/XArmInterface.lf";
 import SanityChecker from "../src/interface/SanityChecker.lf"
 
 
@@ -31,7 +31,8 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
     
     =}
     state deg: int = 0;
-    output controller_signals: PositionEvaluator;
+    state last_position: Vector; 
+    output instructions: PositionEvaluator;
     input controller_world_data: WorldData;        
     
     // timer t(2s,120 msec);
@@ -45,7 +46,7 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
     =}
 
    
-    reaction (controller_world_data) -> controller_signals{=
+    reaction (controller_world_data) -> instructions{=
 
         // last_data = *controller_world_data.get(); 
 
@@ -55,19 +56,23 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
         bool are_simulating = 0;
 
         if (are_simulating){
+            //FIXME : this is not perfectly suiting the simulator
             auto current_world_data = *controller_world_data.get();
-            Vector last_position = Vector(current_world_data.position().at(0),current_world_data.position().at(1), current_world_data.position().at(2)); 
+            Vector current_position = Vector(current_world_data.position().at(0),current_world_data.position().at(1), current_world_data.position().at(2)); 
             Vector new_position = Vector(0.3, -0.5, -0.3);
-            PositionEvaluator pe = PositionEvaluator(last_position, new_position);
-            controller_signals.set(pe);
+            PositionEvaluator pe = PositionEvaluator(current_position, new_position);
+            instructions.set(pe);
+            last_position = current_position; 
+
         }
         else {
             auto current_world_data = *controller_world_data.get();
-            Vector last_position = Vector(current_world_data.position().at(0),current_world_data.position().at(1), current_world_data.position().at(2)); 
+            Vector current_position = Vector(current_world_data.position().at(0),current_world_data.position().at(1), current_world_data.position().at(2)); 
             Vector new_position = Vector(_x_val, _y_val, 200);
-            PositionEvaluator pe = PositionEvaluator(last_position, new_position);
-            controller_signals.set(pe);
+            PositionEvaluator pe = PositionEvaluator(current_position, new_position);
+            instructions.set(pe);
             deg = (deg + stride) % 360;
+            last_position = current_position; 
         }  
         
     
@@ -91,7 +96,7 @@ main reactor XArm7{
     // sim.simulator_world_data -> interface.simulator_world_data;
 
 
-    controller.controller_signals -> sanity_checker.instructions;
-    sanity_checker.checked_instructions -> interface.controller_signals;
+    controller.instructions -> sanity_checker.instructions;
+    sanity_checker.checked_instructions -> interface.checked_instructions;
     interface.controller_world_data -> controller.controller_world_data;
 }

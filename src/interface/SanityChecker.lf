@@ -7,10 +7,63 @@ public preamble {=
 
     #ifndef SANITY_CHECKER_LF
     #define SANITY_CHECKER_LF
-    #include "../src/common_sanity_check.hpp"    
-    #endif //XARM7_INTERFACE
+    #include "../src/common_sanity_check.hpp" 
+    #include "../src/world.hpp"
+   
+    #include <cmath>
+    #include <iostream>
+    #endif //SANITY_CHECKER_LF
     //Wir merken uns: pass auf was für include guards du setzt !!!
+
   =}
+
+private preamble {=
+
+bool double_check( Vector last_position, Vector new_position ){
+      double diff_sq_X = pow(last_position.X_ - new_position.X_, 2) ;
+      double diff_sq_Y = pow(last_position.Y_ - new_position.Y_, 2);
+      double diff_sq_Z = pow(last_position.Z_ - new_position.Z_, 2);
+      return sqrt(diff_sq_X + diff_sq_Y + diff_sq_Z) <= 10 ;
+      }
+
+double calc_double_check( Vector last_position, Vector new_position ){
+      double diff_sq_X = pow(last_position.X_ - new_position.X_, 2) ;
+      double diff_sq_Y = pow(last_position.Y_ - new_position.Y_, 2);
+      double diff_sq_Z = pow(last_position.Z_ - new_position.Z_, 2);
+      return sqrt(diff_sq_X + diff_sq_Y + diff_sq_Z) ;
+}
+
+void collect_data(Vector pe_last_position, Vector pe_raw_position,Vector pe_adjusted_position, std::chrono::nanoseconds physical_elapsed_time ){
+
+
+      std::vector<double> pe_last_pos{0, 0, 0, 0 ,0, 0};
+      pe_last_pos.resize(6);
+
+      pe_last_pos[0] = pe_last_position.X_;
+      pe_last_pos[1] = pe_last_position.Y_;
+      pe_last_pos[2] = pe_last_position.Z_;
+
+      std::vector<double> pe_raw_pos{0, 0, 0, 0 ,0, 0};
+      pe_raw_pos.resize(6);
+
+      pe_raw_pos[0] = pe_raw_position.X_;
+      pe_raw_pos[1] = pe_raw_position.Y_;
+      pe_raw_pos[2] = pe_raw_position.Z_;
+
+      std::vector<double> pe_adjusted_pos{0, 0, 0, 0 ,0, 0};
+      pe_adjusted_pos.resize(6);
+
+      pe_adjusted_pos[0] = pe_adjusted_position.X_;
+      pe_adjusted_pos[1] = pe_adjusted_position.Y_;
+      pe_adjusted_pos[2] = pe_adjusted_position.Z_;
+  
+      RoboFedData fed_instructions{physical_elapsed_time, pe_last_pos, pe_raw_pos, pe_adjusted_pos};    
+
+      fed_instructions.write_instructions_to_csv("data_analysis_csv/instructions.csv");  
+
+      return;
+}
+=}
 
   input instructions: PositionEvaluator;
   output checked_instructions: Vector;
@@ -19,13 +72,28 @@ public preamble {=
   =}
 
   reaction (instructions) -> checked_instructions {=
-      Vector instruction  = (*instructions.get()).new_position_;
 
-      Vector new_instruction = instruction;
+      PositionEvaluator pe = (*instructions.get()); 
 
-      // new_instruction.to_string();
-    
-      checked_instructions.set(new_instruction);
+      Vector pe_last_position = pe.last_position_;
+
+      Vector pe_raw_position = pe.new_position_;
+
+      Vector pe_adjusted_position = pe.calculate_new_position();
+
+      pe_adjusted_position.to_string();
+
+      collect_data(pe_last_position, pe_raw_position, pe_adjusted_position, get_elapsed_physical_time());
+
+      if (double_check(pe_last_position, pe_adjusted_position) == false) {std::cout << "FAILED TO CALCULATE_NEW_INSTRUCTION !" << std::endl;}
+
+
+      checked_instructions.set(pe_adjusted_position);
+      
+      return ;
+
+      std::cout << "FAILED TO CALCULATE_NEW_INSTRUCTION ! The difference is : "<< calc_double_check(pe_last_position, pe_adjusted_position) << std::endl;
+      
     =}
 
 }

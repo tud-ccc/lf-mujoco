@@ -87,7 +87,7 @@ reactor XArm7InterfaceSimulated {
   output simulator_signals: std::vector<double>;
   
   // controller facing
-  input controller_signals: Vector;
+  input checked_instructions: Vector;
   output controller_world_data: WorldData;
   
 
@@ -113,9 +113,9 @@ reactor XArm7InterfaceSimulated {
   =}
 
   // piping instructions forward to either the interface or the blackBox 
-  reaction (controller_signals) -> simulator_signals {=
+  reaction (checked_instructions) -> simulator_signals {=
 
-    Vector new_instruction = *controller_signals.get();
+    Vector new_instruction = *checked_instructions.get();
 
     std::vector<double> input{0, 0, 0, 0 ,0, 0};
     input.resize(6);
@@ -123,25 +123,8 @@ reactor XArm7InterfaceSimulated {
     input[0] = new_instruction.X_;
     input[1] = new_instruction.Y_;
     input[2] = new_instruction.Z_;
-    input[3] = 180;
+    input[3] = 180; 
 
- 
-
-    RoboFedData fed_instructions{
-            get_elapsed_physical_time(),
-            input, 
-    };
-    
-    std::cout << "[";
-
-    for (auto i : input){
-      std::cout << i << ", " ;
-
-    }
-    std::cout << "]" << std::endl;
-    
-
-    fed_instructions.write_instructions_to_csv("data_analysis_csv/instructions.csv");
     simulator_signals.set(input);
   =}
 
