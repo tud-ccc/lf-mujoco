@@ -83,14 +83,14 @@ reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
 
 main reactor XArm7{
     controller = new RobotControl();
-    backend = new XArm7Controll();
+    robo = new XArm7Controll();
     sanity_checker = new SanityChecker();
     // sim = new MujocoSimulator(file="./examples/models/xarm7/xarm7.xml");
     interface = new XArm7InterfaceSimulated();
     
     
-    interface.simulator_signals -> backend.controll_signals;
-    backend.world_data -> interface.simulator_world_data;
+    interface.robo_checked_instructions -> robo.robo_checked_instructions;
+    robo.interface_world_data -> interface.interface_world_data;
    
     // interface.simulator_signals -> sim.controll_signals;
     // sim.simulator_world_data -> interface.simulator_world_data;

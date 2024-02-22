@@ -19,10 +19,10 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
     state arm: {=XArmAPI*=};
 
     // communcation with the interface
-    output world_data: WorldData;
-    input controll_signals: {=std::vector<double>=}
+    output interface_world_data: WorldData;
+    input robo_checked_instructions: {=std::vector<double>=}
 
-    reaction(startup) -> world_data {=
+    reaction(startup) {=
     
     this->arm = new XArmAPI(host);
 
@@ -51,7 +51,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
 
 
 
-    reaction(t) -> world_data {=
+    reaction(t) -> interface_world_data {=
         int error_code;
 
         fp32 pose[6] = {0};
@@ -79,12 +79,12 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
 
 
         
-        world_data.set(data);
+        interface_world_data.set(data);
     =}
 
 
-    reaction(controll_signals) {=
-        auto data = *controll_signals.get();
+    reaction(robo_checked_instructions) {=
+        auto data = *robo_checked_instructions.get();
         fp32 pos[6];
         
         // the very save way

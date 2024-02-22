@@ -82,11 +82,11 @@ reactor XArm7InterfaceSimulated {
   }
   =}
 
-  // simulator facing
-  input simulator_world_data: WorldData;
-  output simulator_signals: std::vector<double>;
+  //robo facing
+  input interface_world_data: WorldData;
+  output robo_checked_instructions: std::vector<double>;
   
-  // controller facing
+  //controller facing 
   input checked_instructions: Vector;
   output controller_world_data: WorldData;
   
@@ -104,8 +104,8 @@ reactor XArm7InterfaceSimulated {
   =}
 
   //piping world data back to the controller
-  reaction (simulator_world_data) -> controller_world_data {=
-    last_data = *simulator_world_data.get();
+  reaction (interface_world_data) -> controller_world_data {=
+    last_data = *interface_world_data.get();
 
    
     last_data.write_to_csv("data_analysis_csv/data.csv", 0);
@@ -113,7 +113,7 @@ reactor XArm7InterfaceSimulated {
   =}
 
   // piping instructions forward to either the interface or the blackBox 
-  reaction (checked_instructions) -> simulator_signals {=
+  reaction (checked_instructions) -> robo_checked_instructions {=
 
     Vector new_instruction = *checked_instructions.get();
 
@@ -125,7 +125,7 @@ reactor XArm7InterfaceSimulated {
     input[2] = new_instruction.Z_;
     input[3] = 180; 
 
-    simulator_signals.set(input);
+    robo_checked_instructions.set(input);
   =}
 
 }
