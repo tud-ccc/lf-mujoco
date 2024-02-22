@@ -2,7 +2,7 @@ target Cpp{
     cmake-include: "mujoco.cmake",
     };
 
-import XArm7Controll from "../src/hardware/xarm7_controller.lf";
+import XArm7Controll from "../src/hardware/RoboXArm7.lf";
 // import MujocoSimulator from "../src/simulator/mujoco_simulator.lf";
 import XArm7InterfaceSimulated from "../src/interface/XArmInterface.lf";
 import SanityChecker from "../src/interface/SanityChecker.lf"
