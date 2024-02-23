@@ -14,7 +14,7 @@ public preamble {=
 =}
 
 reactor XArm7Controll(host: std::string = "192.168.1.227") {
-    timer t(2s, 300ms);
+    timer t(2s, 1000ms);
 
     state arm: {=XArmAPI*=};
 
@@ -36,14 +36,16 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         }
         if (arm->warn_code != 0) {arm->clean_warn();}
         arm->motion_enable(true);
+        // arm->set_mode(1);
         arm->set_mode(0);
         arm->set_state(0);
         std::cout << "! ================== !" << std::endl;
         std::cout << "! Waiting some seconds !" << std::endl;
-        sleep_milliseconds(3000);
+        sleep_milliseconds(2000);
         std::cout << "! Finished resetting !" << std::endl;
         fp32 pos[6] = { 400, 0, 200, 180, 0, 0};
-        int ret = arm->set_position(pos, 0, true);
+        // arm->reset(false);
+        // int ret = arm->set_position(pos, 0, true);
         std::cout << "! Finished first set position !" << std::endl;
     }
 
@@ -93,7 +95,9 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         //    std::cout << "Actual value beeing in data[i]" << data[i] << std::endl ;
         }
 
+        // int error_code = arm->set_servo_cartesian(pos);
         int error_code = arm->set_position(pos, 0, false);
+
         if (error_code != 0) {
             std::cout << "Error occured while calling set_position, no connection established" << std::endl;
         }

@@ -99,13 +99,13 @@ class PositionEvaluator {
         }
 
     Vector calculate_new_position(){
-        if(this->calculate_distance_two_points() < 10 ){
+        if(this->calculate_distance_two_points() < 3 ){
             return this->new_position_;
         }
         else {
             return this->add_vectors(
             this->last_position_,
-            this->scalar_product(9.5 ,this->get_normalized_delta_vector()));
+            this->scalar_product(2.5 ,this->get_normalized_delta_vector()));
         }
     }
 

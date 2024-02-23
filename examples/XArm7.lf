@@ -13,7 +13,7 @@ public preamble {=
 #include "common_sanity_check.hpp"
 =}
 
-reactor RobotControl (stride: int  = 5, hypotenuse: int = 50)  {
+reactor RobotControl (stride: int  = 5, hypotenuse: int = 75)  {
     private preamble{= 
     #include <cmath>
 

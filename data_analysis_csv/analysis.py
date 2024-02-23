@@ -34,12 +34,12 @@ def print_data(what_to_print):
     
     
     inst_time = ins['time'].to_list()
-    inst_pos_0 = ins['instruction_0'].to_list()
-    inst_pos_1 = ins['instruction_1'].to_list()
-    inst_pos_2 = ins['instruction_2'].to_list()
-    inst_pos_3 = ins['instruction_3'].to_list()
-    inst_pos_4 = ins['instruction_4'].to_list()
-    inst_pos_5 = ins['instruction_5'].to_list()
+    inst_pos_0 = ins['pe_adjusted_position_0'].to_list()
+    inst_pos_1 = ins['pe_adjusted_position_1'].to_list()
+    inst_pos_2 = ins['pe_adjusted_position_2'].to_list()
+    inst_pos_3 = ins['pe_adjusted_position_3'].to_list()
+    inst_pos_4 = ins['pe_adjusted_position_4'].to_list()
+    inst_pos_5 = ins['pe_adjusted_position_5'].to_list()
     
     
     
@@ -95,6 +95,47 @@ def print_data(what_to_print):
     plt.show() 
 
 
+def show_position_evaluator_data():
+      
+    ins = pandas.read_csv("instructions.csv", sep = ',',)    
+    
+    inst_time = ins['time'].to_list()
+
+
+    pe_last_position_0 = ins['pe_last_position_0'].to_list()
+    pe_last_position_1 = ins['pe_last_position_1'].to_list()
+    pe_last_position_2 = ins['pe_last_position_2'].to_list()   
+    
+    pe_raw_position_0 = ins['pe_raw_position_0'].to_list()
+    pe_raw_position_1 = ins['pe_raw_position_1'].to_list()
+    pe_raw_position_2 = ins['pe_raw_position_2'].to_list()   
+    
+
+    pe_adjusted_position_0 = ins['pe_adjusted_position_0'].to_list()
+    pe_adjusted_position_1 = ins['pe_adjusted_position_1'].to_list()
+    pe_adjusted_position_2 = ins['pe_adjusted_position_2'].to_list()   
+
+    figure, axis = plt.subplots(2, 2) 
+    
+    axis[0, 0].plot(inst_time, pe_last_position_0) 
+    axis[0, 0].plot(inst_time, pe_raw_position_0, 'r')
+    axis[0, 0].plot(inst_time, pe_adjusted_position_0, 'g')
+    axis[0, 0].set_title("X__ Blue : last_pos, Red : raw_pos, Green : adjusted_pos") 
+    
+    axis[0, 1].plot(inst_time, pe_last_position_1) 
+    axis[0, 1].plot(inst_time, pe_raw_position_1, 'r')
+    axis[0, 1].plot(inst_time, pe_adjusted_position_1, 'g')
+    axis[0, 1].set_title("Y__ Blue : last_pos, Red : raw_pos, Green : adjusted_pos") 
+
+    axis[1, 0].plot(inst_time, pe_last_position_2) 
+    axis[1, 0].plot(inst_time, pe_raw_position_2, 'r')
+    axis[1, 0].plot(inst_time, pe_adjusted_position_2, 'g')
+    axis[1, 0].set_title("Z__ Blue : last_pos, Red : raw_pos, Green : adjusted_pos") 
+    
+    plt.show() 
+
+
+
 
 def sim_sensor_data():
     print("This is yet to be implemented !")
@@ -103,6 +144,8 @@ def sim_sensor_data():
 import sys
 
 def main():
+
+    show_position_evaluator_data()
     
     args = (sys.argv)
     if args[1] == 'robo':
