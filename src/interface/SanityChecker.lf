@@ -1,0 +1,19 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef SANITY_CHECKER
+#define SANITY_CHECKER
+
+#endif //XARM7_INTERFACE
+=}
+
+
+reactor SanityChecker {
+
+  input raw_instruction: void;
+  output checked_instruction: void;
+
+  reaction(raw_instruction) -> checked_instruction{= =}
+  
+}

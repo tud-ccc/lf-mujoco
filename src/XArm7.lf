@@ -1,0 +1,55 @@
+target Cpp{
+    cmake-include: "xarm.cmake",
+};
+
+
+import SanityChecker from "../src/interface/SanityChecker.lf";
+import WorldDataDecoder from "../src/interface/WorldDataDecoder.lf";
+import XArmInterface from "../src/interface/XArmInterface.lf";
+import RoboXArm7 from "../src/hardware/RoboXArm7.lf";
+import CSVData from "../src/collect_data/CSVData.lf";
+
+
+
+public preamble {=
+ 
+        =}
+
+
+reactor RobotControl{
+
+input current_position: void;        
+output raw_instruction: void;
+
+reaction (startup) {=
+
+=}
+
+
+
+
+
+}
+
+
+
+main reactor XArm7{
+
+    controller = new RobotControl();
+    decoder = new WorldDataDecoder();
+    sanity_checker = new SanityChecker();
+    interface = new XArmInterface();
+    hardware = new RoboXArm7();
+    data_collector = new CSVData();
+
+    controller.raw_instruction -> sanity_checker.raw_instruction;
+    sanity_checker.checked_instruction -> interface.checked_instruction;
+
+    interface.robo_checked_instruction -> hardware.robo_checked_instruction;
+    hardware.interface_world_data -> interface.interface_world_data;
+
+    interface.decoder_world_data -> decoder.decoder_world_data;    
+    decoder.current_position -> controller.current_position;
+
+
+}

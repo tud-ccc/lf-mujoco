@@ -1,0 +1,25 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef DATA_COLLECTOR
+#define DATA_COLLECTOR
+
+#endif //XARM7_INTERFACE
+=}
+
+
+reactor CSVData {
+
+  //robo facing
+  input current_position: void;
+  input raw_instruciton: void;
+  input checked_instruction: void; 
+
+  reaction(current_position) {==}
+  reaction(raw_instruciton) {==}
+  reaction(checked_instruction) {==}
+
+  
+
+}

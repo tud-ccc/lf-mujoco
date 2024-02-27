@@ -1,0 +1,33 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef XARM7_INTERFACE
+#define XARM7_INTERFACE
+
+#endif //XARM7_INTERFACE
+=}
+
+
+reactor XArmInterface {
+
+  input checked_instruction: void;
+  output robo_checked_instruction: void;
+  
+  input interface_world_data: void;
+  output decoder_world_data: void;
+
+  reaction(checked_instruction) -> robo_checked_instruction{=
+  
+  
+    
+  =}
+
+  reaction(interface_world_data) -> decoder_world_data{==}
+    
+  
+
+  
+
+
+}

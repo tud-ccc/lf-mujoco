@@ -1,0 +1,26 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef ROBOXARM
+#define ROBOXARM
+
+#endif //ROBOXARM
+=}
+
+
+reactor RoboXArm7 {
+
+  //robo facing
+  input robo_checked_instruction: void;
+  output interface_world_data: void;
+  
+
+  reaction(robo_checked_instruction) -> interface_world_data{=
+  =}
+  
+  //controller facing 
+
+
+
+}
