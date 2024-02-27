@@ -87,7 +87,6 @@ void collect_data(Vector pe_last_position, Vector pe_raw_position,Vector pe_adju
 
       if (double_check(pe_last_position, pe_adjusted_position) == false) {std::cout << "FAILED TO CALCULATE_NEW_INSTRUCTION !" << std::endl;}
 
-
       checked_instructions.set(pe_adjusted_position);
       
       return ;

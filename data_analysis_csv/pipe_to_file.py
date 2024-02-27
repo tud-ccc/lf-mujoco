@@ -35,12 +35,12 @@ def print_data(what_to_print, try_directory_name):
     
     
     inst_time = ins['time'].to_list()
-    inst_pos_0 = ins['instruction_0'].to_list()
-    inst_pos_1 = ins['instruction_1'].to_list()
-    inst_pos_2 = ins['instruction_2'].to_list()
-    inst_pos_3 = ins['instruction_3'].to_list()
-    inst_pos_4 = ins['instruction_4'].to_list()
-    inst_pos_5 = ins['instruction_5'].to_list()
+    inst_pos_0 = ins['pe_last_position_0'].to_list()
+    inst_pos_1 = ins['pe_last_position_1'].to_list()
+    inst_pos_2 = ins['pe_last_position_2'].to_list()
+    inst_pos_3 = ins['pe_last_position_3'].to_list()
+    inst_pos_4 = ins['pe_last_position_4'].to_list()
+    inst_pos_5 = ins['pe_last_position_5'].to_list()
     
     
     
@@ -94,7 +94,7 @@ def print_data(what_to_print, try_directory_name):
     
     # Combine all the operations and display 
     figure.suptitle(enum_to_col_specs[what_to_print][0])
-    #plt.show() 
+    plt.show() 
     
     
     script_dir = os.path.dirname(__file__)
@@ -105,7 +105,7 @@ def print_data(what_to_print, try_directory_name):
         os.makedirs(results_dir)
     
     print(results_dir + sample_file_name)
-    plt.savefig(results_dir + sample_file_name)
+  # plt.savefig(results_dir + sample_file_name)
 
 
 

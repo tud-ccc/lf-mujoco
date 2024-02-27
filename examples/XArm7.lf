@@ -13,24 +13,24 @@ public preamble {=
 #include "common_sanity_check.hpp"
 =}
 
-reactor RobotControl (stride: int  = 5, hypotenuse: int = 75)  {
+reactor RobotControl (stride: double  = 5, hypotenuse: double = 75)  {
     private preamble{= 
     #include <cmath>
 
-    double calculate_x_value(int hypothenus, int angle_in_deg){
+    double calculate_x_value(double hypothenus, double angle_in_deg){
         double x_val = 0.0;
         x_val = hypothenus * cos(angle_in_deg*3.14159/180.0);
         return x_val;
         
     }
 
-    double calculate_y_value(int hypothenus, int angle_in_deg){
+    double calculate_y_value(double hypothenus, double angle_in_deg){
         double y_val = 0.0;
         y_val = hypothenus * sin(angle_in_deg*3.14159/180.0);
         return y_val;   }
     
     =}
-    state deg: int = 0;
+    state deg: double = 0;
     state last_position: Vector; 
     output instructions: PositionEvaluator;
     input controller_world_data: WorldData;        
