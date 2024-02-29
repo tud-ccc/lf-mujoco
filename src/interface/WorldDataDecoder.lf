@@ -4,7 +4,7 @@ public preamble {=
 
 #ifndef DECODER
 #define DECODER
-#include "common_sanity_checker.hpp"
+#include "common_vector.hpp"
 #include "world.hpp"
 
 #endif //DECODER

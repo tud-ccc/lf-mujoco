@@ -4,24 +4,78 @@ public preamble {=
 
 #ifndef ROBOXARM
 #define ROBOXARM
-#include "common_sanity_checker.hpp"
+#include "common_vector.hpp"
 #include "world.hpp"
+#include <xarm/wrapper/xarm_api.h>
+
 
 #endif //ROBOXARM
 =}
 
 
-reactor RoboXArm7 {
+reactor RoboXArm7 (host: std::string = "192.168.1.227"){
 
 
   //robo facing
   input robo_checked_instruction: Vector;
   output interface_world_data: WorldData;
   timer t(2s, 50ms);
+  state arm: {=XArmAPI*=};
+
+  reaction(startup) {=
+    
+    this->arm = new XArmAPI(host);
+
+    if (this->arm == nullptr) {
+          std::cerr << "Couldn't connect to Robot! on: " << host << std::endl << std::flush;
+            
+        }
+    else{
+        if (arm->error_code != 0){
+            arm->clean_error();
+        }
+        if (arm->warn_code != 0) {arm->clean_warn();}
+        arm->motion_enable(true);
+
+        // arm->set_mode(1);
+        arm->set_mode(0);
+
+        arm->set_state(0);
+        sleep_milliseconds(2000);
+        fp32 pos[6] = { 400, 0, 200, 180, 0, 0};
+        arm->reset(false);
+        int ret = arm->set_position(pos, 0, true);
+    }
+
+    =}
   
 
   reaction(t) -> interface_world_data{=
-        WorldData data{};
+
+        int error_code;
+
+        fp32 pose[6] = {0};
+        fp32 angles[7] = {0};
+        fp32 velocities[7] = {0};
+        fp32 effort[7] = {0};
+
+        error_code = arm->get_position(pose);
+        if (error_code != 0) {
+            std::cout << "Error occured while calling get_position, no connection established" << std::endl;            
+        }
+
+        error_code = arm->get_joint_states(angles, velocities, effort);  
+        if (error_code != 0) {
+            std::cout << "Error occured while calling get_joint_states, no connection established" << std::endl;
+        }
+        
+        WorldData data{
+            get_elapsed_physical_time(),
+            std::vector<double>(std::begin(angles), std::end(angles)), 
+            std::vector<double>(std::begin(velocities), std::end(velocities)),
+            std::vector<double>(std::begin(effort), std::end(effort)),
+            std::vector<double>(std::begin(pose), std::end(pose)),
+        };        
         interface_world_data.set(data);
 =}
   
@@ -29,7 +83,17 @@ reactor RoboXArm7 {
 
 
   reaction(robo_checked_instruction) {=
-          Vector vec = *robo_checked_instruction.get();
+        Vector vec_checked_instruction = *robo_checked_instruction.get();
+          
+        fp32 pos[6] = {vec_checked_instruction.X_, vec_checked_instruction.Y_, vec_checked_instruction.Z_, 180, 0 , 0};
+        
+        // int error_code = arm->set_servo_cartesian(pos);
+        int error_code = arm->set_position(pos, 0, false);
+
+        if (error_code != 0) {
+            std::cout << "Error occured while calling set_position, no connection established" << std::endl;
+        }
+
   =}  
 
   

@@ -5,6 +5,8 @@ public preamble {=
 #ifndef CSVDATA
 #define CSVDATA
 #include "instruction_collector.hpp"
+#include "common_vector.hpp"
+
 
 #endif //CSVDATA
 =}

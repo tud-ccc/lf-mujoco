@@ -4,7 +4,7 @@ public preamble {=
 
 #ifndef XARM7_INTERFACE
 #define XARM7_INTERFACE
-#include "common_sanity_checker.hpp"
+#include "common_vector.hpp"
 #include "world.hpp"
 
 #endif //XARM7_INTERFACE

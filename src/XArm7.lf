@@ -15,7 +15,7 @@ public preamble {=
 
 #ifndef XARM7
 #define XARM7
-#include "common_sanity_checker.hpp"
+#include "common_vector.hpp"
 
 #endif //XARM7
 =}

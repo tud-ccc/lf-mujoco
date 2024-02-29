@@ -5,6 +5,7 @@ public preamble {=
 #ifndef SANITY_CHECKER
 #define SANITY_CHECKER
 #include "common_sanity_checker.hpp"
+#include "common_vector.hpp"
 
 #endif //SANITY_CHECKER
 =}
