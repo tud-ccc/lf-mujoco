@@ -5,6 +5,7 @@ public preamble {=
 #ifndef XARM7_INTERFACE
 #define XARM7_INTERFACE
 #include "common_sanity_checker.hpp"
+#include "world.hpp"
 
 #endif //XARM7_INTERFACE
 =}
@@ -12,19 +13,24 @@ public preamble {=
 
 reactor XArmInterface {
 
-  input checked_instruction: void;
-  output robo_checked_instruction: void;
+  input checked_instruction: Vector;
+  output robo_checked_instruction: Vector;
   
-  input interface_world_data: void;
-  output decoder_world_data: void;
+  input interface_world_data: WorldData;
+  output decoder_world_data: WorldData;
+
+
+  reaction(interface_world_data) -> decoder_world_data{=
+      WorldData data = *interface_world_data.get();
+      decoder_world_data.set(data);  
+=}
+
 
   reaction(checked_instruction) -> robo_checked_instruction{=
-  
-  
-    
+        Vector vec = *checked_instruction.get();
+        robo_checked_instruction.set(vec);   
   =}
 
-  reaction(interface_world_data) -> decoder_world_data{==}
     
   
 

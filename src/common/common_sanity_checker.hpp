@@ -1,5 +1,5 @@
-#ifndef SANITY_CHECKER
-#define SANITY_CHECKER
+#ifndef COMMON_SANITY_CHECKER
+#define COMMON_SANITY_CHECKER
 
 
 #include <iostream>

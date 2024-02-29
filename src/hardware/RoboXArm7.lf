@@ -5,6 +5,7 @@ public preamble {=
 #ifndef ROBOXARM
 #define ROBOXARM
 #include "common_sanity_checker.hpp"
+#include "world.hpp"
 
 #endif //ROBOXARM
 =}
@@ -14,15 +15,24 @@ reactor RoboXArm7 {
 
 
   //robo facing
-  input robo_checked_instruction: void;
-  output interface_world_data: void;
+  input robo_checked_instruction: Vector;
+  output interface_world_data: WorldData;
+  timer t(2s, 50ms);
   
 
-  reaction(robo_checked_instruction) -> interface_world_data{=
-  =}
+  reaction(t) -> interface_world_data{=
+        WorldData data{};
+        interface_world_data.set(data);
+=}
   
-  //controller facing 
 
+
+
+  reaction(robo_checked_instruction) {=
+          Vector vec = *robo_checked_instruction.get();
+  =}  
+
+  
 
 
 }

@@ -5,6 +5,7 @@ public preamble {=
 #ifndef DECODER
 #define DECODER
 #include "common_sanity_checker.hpp"
+#include "world.hpp"
 
 #endif //DECODER
 =}
@@ -13,11 +14,14 @@ public preamble {=
 reactor WorldDataDecoder {
 
   //robo facing
-  input decoder_world_data: void;
-  output current_position: void;
+  input decoder_world_data: WorldData;
+  output current_position: Vector;
 
   reaction(decoder_world_data) -> current_position{=
-    
+     WorldData data = *decoder_world_data.get();
+
+     Vector vec{};
+     current_position.set(vec); 
   =}
   
 

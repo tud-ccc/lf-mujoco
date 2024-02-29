@@ -13,15 +13,18 @@ public preamble {=
 reactor CSVData {
 
   //robo facing
-  input current_position: void;
-  input raw_instruction: void;
-  input checked_instruction: void; 
+  input current_position: Vector;
+  input raw_instruction: Vector;
+  input checked_instruction: Vector; 
 
-  reaction(current_position) {==}
-  reaction(raw_instruction) {==}
-  reaction(checked_instruction
-  ) {==}
-
+  reaction(current_position) {=
+        Vector vec = *current_position.get();
+        =}
+  reaction(raw_instruction) {=
+        Vector vec = *raw_instruction.get();
+        =}
+  reaction(checked_instruction) {=
+        Vector vec = *checked_instruction.get();
+        =}
   
-
 }

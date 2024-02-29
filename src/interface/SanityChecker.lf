@@ -12,10 +12,18 @@ public preamble {=
 
 reactor SanityChecker {
 
-  input raw_instruction: void;
-  input current_position: void;
-  output checked_instruction: void;
+  input raw_instruction: Vector;
+  input current_position: Vector;
+  output checked_instruction: Vector;
 
-  reaction(raw_instruction) -> checked_instruction{= =}
+  reaction(raw_instruction, current_position) -> checked_instruction{= 
+    Vector vector_raw_instruction = *raw_instruction.get();
+    Vector  vector_current_position = *current_position.get();
+    Vector new_vec = Vector{};
+    checked_instruction.set(new_vec); 
+  =}
+
+
+
   
 }

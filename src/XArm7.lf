@@ -18,21 +18,23 @@ public preamble {=
 #include "common_sanity_checker.hpp"
 
 #endif //XARM7
-
-        =}
+=}
 
 
 reactor RobotControl (stride: double  = 5, hypotenuse: double = 75){
 
    
 
-input current_position: void;        
-output raw_instruction: void;
+input current_position: Vector;        
+output raw_instruction: Vector;
 
-// reaction(current_position) -> raw_instruction{=
+reaction(current_position) -> raw_instruction{=
+  
+  Vector vec = *current_position.get();
+  raw_instruction.set(vec); 
+  =}
+  
 
-
-// =}
 
 
 
