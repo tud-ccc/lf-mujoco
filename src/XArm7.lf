@@ -54,9 +54,14 @@ reaction(current_position) -> raw_instruction{=
   // This vector is not used here !
   Vector vec_current_position = *current_position.get();
   
+  double _x_val = calculate_x_value(hypotenuse, deg ) + 400.0;
+  double _y_val = calculate_y_value(hypotenuse, deg ) + 0.0;
+        
+  Vector vec_raw_instruction = Vector{_x_val, _y_val, 200}; 
   
-  
-  raw_instruction.set(vec); 
+  raw_instruction.set(vec_current_position); 
+
+  deg = int(deg + stride) % 360;
   =}
   
 
