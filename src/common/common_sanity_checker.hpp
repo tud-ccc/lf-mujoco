@@ -37,33 +37,33 @@ class Vector {
 
 class PositionEvaluator {
   public : 
-    Vector last_position_;
-    Vector new_position_;
+    Vector current_position_;
+    Vector raw_instruction_;
 
     PositionEvaluator(){};
 
     PositionEvaluator(
-        Vector last_position,
-        Vector new_position)
+        Vector current_position,
+        Vector raw_instruction)
         {
-        this->last_position_ = last_position;
-        this->new_position_ = new_position;
+        this->current_position_ = current_position;
+        this->raw_instruction_ = raw_instruction;
         }
 
     double calculate_distance_two_points()
         {
-        double diff_sq_X = pow(this->last_position_.X_ - this->new_position_.X_, 2) ;
-        double diff_sq_Y = pow(this->last_position_.Y_ - this->new_position_.Y_, 2);
-        double diff_sq_Z = pow(this->last_position_.Z_ - this->new_position_.Z_, 2);
+        double diff_sq_X = pow(this->current_position_.X_ - this->raw_instruction_.X_, 2) ;
+        double diff_sq_Y = pow(this->current_position_.Y_ - this->raw_instruction_.Y_, 2);
+        double diff_sq_Z = pow(this->current_position_.Z_ - this->raw_instruction_.Z_, 2);
         return sqrt(diff_sq_X + diff_sq_Y + diff_sq_Z);
         }
 
     Vector get_delta_vector()
         {
         return Vector(
-            this->new_position_.X_- this->last_position_.X_,
-            this->new_position_.Y_- this->last_position_.Y_,
-            this->new_position_.Z_- this->last_position_.Z_
+            this->raw_instruction_.X_- this->current_position_.X_,
+            this->raw_instruction_.Y_- this->current_position_.Y_,
+            this->raw_instruction_.Z_- this->current_position_.Z_
         );
         }
 
@@ -98,13 +98,13 @@ class PositionEvaluator {
         return Vector( vec_1.X_ + vec_2.X_, vec_1.Y_ + vec_2.Y_, vec_1.Z_ + vec_2.Z_ );
         }
 
-    Vector calculate_new_position(){
+    Vector calculate_checked_instruction(){
         if(this->calculate_distance_two_points() < 2 ){
-            return this->new_position_;
+            return this->raw_instruction_;
         }
         else {
             return this->add_vectors(
-            this->last_position_,
+            this->current_position_,
             this->scalar_product(2 ,this->get_normalized_delta_vector()));
         }
     }

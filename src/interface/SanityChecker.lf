@@ -19,8 +19,11 @@ reactor SanityChecker {
   reaction(raw_instruction, current_position) -> checked_instruction{= 
     Vector vector_raw_instruction = *raw_instruction.get();
     Vector  vector_current_position = *current_position.get();
-    Vector new_vec = Vector{};
-    checked_instruction.set(new_vec); 
+
+    PositionEvaluator pe = PositionEvaluator{vector_current_position, vector_raw_instruction};
+
+    Vector vector_checked_instruction = pe.calculate_checked_instruction();
+    checked_instruction.set(vector_checked_instruction); 
   =}
 
 
