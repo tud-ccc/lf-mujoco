@@ -2,12 +2,12 @@ target Cpp{
     cmake-include: "xarm.cmake",
 };
 
-
 import SanityChecker from "interface/SanityChecker.lf";
 import WorldDataDecoder from "interface/WorldDataDecoder.lf";
 import XArmInterface from "interface/XArmInterface.lf";
 import RoboXArm7 from "hardware/RoboXArm7.lf";
 import CSVData from "collect_data/CSVData.lf";
+
 
 
 
@@ -23,14 +23,39 @@ public preamble {=
 
 reactor RobotControl (stride: double  = 5, hypotenuse: double = 75){
 
-   
+  private preamble{= 
+    #include <cmath>
 
+    double calculate_x_value(double hypothenus, double angle_in_deg){
+        double x_val = 0.0;
+        x_val = hypothenus * cos(angle_in_deg*3.14159/180.0);
+        return x_val;
+        
+    }
+
+    double calculate_y_value(double hypothenus, double angle_in_deg){
+        double y_val = 0.0;
+        y_val = hypothenus * sin(angle_in_deg*3.14159/180.0);
+        return y_val;   }
+    
+    =}
+
+   
+state deg: double = 0;
 input current_position: Vector;        
 output raw_instruction: Vector;
 
-reaction(current_position) -> raw_instruction{=
+
+reaction(startup) {=
+
+=}
+
+reaction(current_position) -> raw_instruction{=  
+  // This vector is not used here !
+  Vector vec_current_position = *current_position.get();
   
-  Vector vec = *current_position.get();
+  
+  
   raw_instruction.set(vec); 
   =}
   
