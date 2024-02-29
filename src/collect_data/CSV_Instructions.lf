@@ -2,8 +2,8 @@ target Cpp;
 
 public preamble {=
 
-#ifndef CSVDATA
-#define CSVDATA
+#ifndef CSVDATA_INSTRUCTIONS
+#define CSVDATA_INSTRUCTIONS
 #include "instruction_collector.hpp"
 #include "common_vector.hpp"
 
@@ -12,12 +12,17 @@ public preamble {=
 =}
 
 
-reactor CSVData {
+reactor CSV_Instructions {
 
   //robo facing
   input current_position: Vector;
   input raw_instruction: Vector;
   input checked_instruction: Vector; 
+
+  reaction(startup){=
+    Instruction_Collector ic = Instruction_Collector{}; 
+    ic.write_instructions_csv_header("instructions.csv");
+  =}
 
   reaction(current_position, raw_instruction, checked_instruction) {=
         Vector vec_current_position = *current_position.get();
@@ -30,7 +35,7 @@ reactor CSVData {
             vec_raw_instruction,
             vec_checked_instruction,
         };
-        ins_coll.write_instructions_to_csv();
+        ins_coll.write_instructions_to_csv("instructions.csv");
 
 
         =}  

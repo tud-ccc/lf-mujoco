@@ -12,7 +12,7 @@ class Instruction_Collector{
     Vector  current_position_;
     Vector  raw_instruction_;
     Vector  checked_instruction_;
-    std::string file_;
+    
 
     public:
 
@@ -27,7 +27,7 @@ class Instruction_Collector{
         current_position_ = current_position;
         raw_instruction_ = raw_instruction;
         checked_instruction_ = checked_instruction;
-        file_ = "instructions.csv";
+        
     }
 
 
@@ -35,7 +35,7 @@ class Instruction_Collector{
     ~Instruction_Collector() noexcept = default;
 
 
-    void write_instructions_csv_header() {
+    void write_instructions_csv_header(const std::string file) {
         //FiXME : we have got hard coded array lengths !
 
         auto write_header = [](std::ofstream& file_handle, const std::string& column_name, std::size_t count) {
@@ -45,7 +45,7 @@ class Instruction_Collector{
         };
 
         std::ofstream csvfile;
-        csvfile.open(this->file_, std::ios_base::openmode::_S_trunc);
+        csvfile.open(file, std::ios_base::openmode::_S_trunc);
 
         csvfile << "time,";
         write_header(csvfile, "current_position", 3);   
@@ -56,7 +56,7 @@ class Instruction_Collector{
         csvfile << "\n";
     }
 
-    void write_instructions_to_csv()  {
+    void write_instructions_to_csv(const std::string file)  {
 
         auto write_Vector_to_file = [](std::ofstream& file_handle,Vector vec) {
            
@@ -67,7 +67,7 @@ class Instruction_Collector{
 
         // TODO: global file pointer which can be shared by thing kind of objects
         std::ofstream csvfile;
-        csvfile.open(this->file_, std::ios_base::openmode::_S_app);
+        csvfile.open(file, std::ios_base::openmode::_S_app);
 
         std::chrono::milliseconds phys_elaps_t_in_secs;
         phys_elaps_t_in_secs = std::chrono::duration_cast<std::chrono::milliseconds> (physical_elapsed_time_);

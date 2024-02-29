@@ -6,7 +6,8 @@ import SanityChecker from "interface/SanityChecker.lf";
 import WorldDataDecoder from "interface/WorldDataDecoder.lf";
 import XArmInterface from "interface/XArmInterface.lf";
 import RoboXArm7 from "hardware/RoboXArm7.lf";
-import CSVData from "collect_data/CSVData.lf";
+import CSV_Instructions from "collect_data/CSV_Instructions.lf";
+import CSV_WorldData from "collect_data/CSV_WorldData.lf";
 
 
 
@@ -79,7 +80,10 @@ main reactor XArm7{
     sanity_checker = new SanityChecker();
     interface = new XArmInterface();
     hardware = new RoboXArm7();
-    data_collector = new CSVData();
+    data_collector_instructions = new CSV_Instructions();
+    data_collector_world_data = new CSV_WorldData();
+
+
 
     controller.raw_instruction -> sanity_checker.raw_instruction;
     sanity_checker.checked_instruction -> interface.checked_instruction;
@@ -92,8 +96,10 @@ main reactor XArm7{
     decoder.current_position -> sanity_checker.current_position;
 
     //CSV DATA
-    controller.raw_instruction ->data_collector.raw_instruction;
-    sanity_checker.checked_instruction -> data_collector.checked_instruction; 
-    decoder.current_position ->  data_collector.current_position;
+    controller.raw_instruction ->data_collector_instructions.raw_instruction;
+    sanity_checker.checked_instruction -> data_collector_instructions.checked_instruction; 
+    decoder.current_position ->  data_collector_instructions.current_position;
+
+    interface.decoder_world_data -> data_collector_world_data.current_world_data;
 
 }

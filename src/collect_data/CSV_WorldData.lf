@@ -1,0 +1,30 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef CSVDATA_WORLD_DATA
+#define CSVDATA_WORLD_DATA
+#include "world.hpp"
+#endif //CSVDATA_WORLD_DATA
+=}
+
+
+reactor CSV_WorldData {
+
+  //robo facing
+  input current_world_data: WorldData;
+
+  reaction(startup){=
+    WorldData wd = WorldData{}; 
+    wd.write_csv_header("data.csv");
+  =}
+
+  reaction(current_world_data) {=
+        WorldData world_data_current_world_data = *current_world_data.get();
+       
+        
+        world_data_current_world_data.write_to_csv("data.csv", 0);
+
+
+        =}  
+}
