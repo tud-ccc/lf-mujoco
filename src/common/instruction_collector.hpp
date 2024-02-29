@@ -50,7 +50,7 @@ class Instruction_Collector{
         csvfile << "time,";
         write_header(csvfile, "current_position", 3);   
         write_header(csvfile, "raw_instruction",3);   
-        write_header(csvfile, "adjusted_position", 3);            
+        write_header(csvfile, "checked_instruction", 3);            
          
         csvfile << "";
         csvfile << "\n";
