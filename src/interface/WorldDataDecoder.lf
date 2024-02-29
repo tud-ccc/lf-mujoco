@@ -4,8 +4,9 @@ public preamble {=
 
 #ifndef DECODER
 #define DECODER
+#include "common_sanity_checker.hpp"
 
-#endif //XARM7_INTERFACE
+#endif //DECODER
 =}
 
 

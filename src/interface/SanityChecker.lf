@@ -4,14 +4,16 @@ public preamble {=
 
 #ifndef SANITY_CHECKER
 #define SANITY_CHECKER
+#include "common_sanity_checker.hpp"
 
-#endif //XARM7_INTERFACE
+#endif //SANITY_CHECKER
 =}
 
 
 reactor SanityChecker {
 
   input raw_instruction: void;
+  input current_position: void;
   output checked_instruction: void;
 
   reaction(raw_instruction) -> checked_instruction{= =}

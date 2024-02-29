@@ -2,10 +2,11 @@ target Cpp;
 
 public preamble {=
 
-#ifndef DATA_COLLECTOR
-#define DATA_COLLECTOR
+#ifndef CSVDATA
+#define CSVDATA
+#include "common_sanity_checker.hpp"
 
-#endif //XARM7_INTERFACE
+#endif //CSVDATA
 =}
 
 
@@ -13,12 +14,13 @@ reactor CSVData {
 
   //robo facing
   input current_position: void;
-  input raw_instruciton: void;
+  input raw_instruction: void;
   input checked_instruction: void; 
 
   reaction(current_position) {==}
-  reaction(raw_instruciton) {==}
-  reaction(checked_instruction) {==}
+  reaction(raw_instruction) {==}
+  reaction(checked_instruction
+  ) {==}
 
   
 

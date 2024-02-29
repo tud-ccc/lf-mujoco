@@ -3,29 +3,36 @@ target Cpp{
 };
 
 
-import SanityChecker from "../src/interface/SanityChecker.lf";
-import WorldDataDecoder from "../src/interface/WorldDataDecoder.lf";
-import XArmInterface from "../src/interface/XArmInterface.lf";
-import RoboXArm7 from "../src/hardware/RoboXArm7.lf";
-import CSVData from "../src/collect_data/CSVData.lf";
+import SanityChecker from "interface/SanityChecker.lf";
+import WorldDataDecoder from "interface/WorldDataDecoder.lf";
+import XArmInterface from "interface/XArmInterface.lf";
+import RoboXArm7 from "hardware/RoboXArm7.lf";
+import CSVData from "collect_data/CSVData.lf";
 
 
 
 public preamble {=
- 
+
+#ifndef XARM7
+#define XARM7
+#include "common_sanity_checker.hpp"
+
+#endif //XARM7
+
         =}
 
 
-reactor RobotControl{
+reactor RobotControl (stride: double  = 5, hypotenuse: double = 75){
+
+   
 
 input current_position: void;        
 output raw_instruction: void;
 
-reaction (startup) {=
-
-=}
+// reaction(current_position) -> raw_instruction{=
 
 
+// =}
 
 
 
@@ -50,6 +57,11 @@ main reactor XArm7{
 
     interface.decoder_world_data -> decoder.decoder_world_data;    
     decoder.current_position -> controller.current_position;
+    decoder.current_position -> sanity_checker.current_position;
 
+    //CSV DATA
+    controller.raw_instruction ->data_collector.raw_instruction;
+    sanity_checker.checked_instruction -> data_collector.checked_instruction; 
+    decoder.current_position ->  data_collector.current_position;
 
 }
