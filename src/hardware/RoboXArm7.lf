@@ -19,7 +19,7 @@ reactor RoboXArm7 (host: std::string = "192.168.1.227"){
   //robo facing
   input robo_checked_instruction: Vector;
   output interface_world_data: WorldData;
-  timer t(2s, 50ms);
+  timer t(2s, 300ms);
   state arm: {=XArmAPI*=};
 
   reaction(startup) {=
@@ -40,10 +40,11 @@ reactor RoboXArm7 (host: std::string = "192.168.1.227"){
         // arm->set_mode(1);
         arm->set_mode(0);
 
+        std::cout << "Setting state" << std::endl; 
+
         arm->set_state(0);
-        sleep_milliseconds(2000);
+        arm->reset(true);
         fp32 pos[6] = { 400, 0, 200, 180, 0, 0};
-        arm->reset(false);
         int ret = arm->set_position(pos, 0, true);
     }
 

@@ -16,14 +16,14 @@ reactor CSV_WorldData {
 
   reaction(startup){=
     WorldData wd = WorldData{}; 
-    wd.write_csv_header("data.csv");
+    wd.write_csv_header("data_analysis_csv/data.csv");
   =}
 
   reaction(current_world_data) {=
         WorldData world_data_current_world_data = *current_world_data.get();
        
         
-        world_data_current_world_data.write_to_csv("data.csv", 0);
+        world_data_current_world_data.write_to_csv("data_analysis_csv/data.csv", 0);
 
 
         =}  

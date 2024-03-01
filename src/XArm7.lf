@@ -60,7 +60,7 @@ reaction(current_position) -> raw_instruction{=
         
   Vector vec_raw_instruction = Vector{_x_val, _y_val, 200}; 
   
-  raw_instruction.set(vec_current_position); 
+  raw_instruction.set(vec_raw_instruction); 
 
   deg = int(deg + stride) % 360;
   =}

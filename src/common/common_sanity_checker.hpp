@@ -11,6 +11,9 @@
 
 
 class PositionEvaluator {
+  private : 
+    double factor_;  
+
   public : 
     Vector current_position_;
     Vector raw_instruction_;
@@ -23,6 +26,7 @@ class PositionEvaluator {
         {
         this->current_position_ = current_position;
         this->raw_instruction_ = raw_instruction;
+        this->factor_ = 80;
         }
 
     double calculate_distance_two_points()
@@ -74,13 +78,13 @@ class PositionEvaluator {
         }
 
     Vector calculate_checked_instruction(){
-        if(this->calculate_distance_two_points() < 2 ){
+        if(this->calculate_distance_two_points() < this->factor_ ){
             return this->raw_instruction_;
         }
         else {
             return this->add_vectors(
             this->current_position_,
-            this->scalar_product(2 ,this->get_normalized_delta_vector()));
+            this->scalar_product(this->factor_ ,this->get_normalized_delta_vector()));
         }
     }
 
