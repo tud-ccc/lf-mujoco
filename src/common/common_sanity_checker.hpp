@@ -26,7 +26,7 @@ class PositionEvaluator {
         {
         this->current_position_ = current_position;
         this->raw_instruction_ = raw_instruction;
-        this->factor_ = 80;
+        this->factor_ = 0.5; // in millimeter
         }
 
     double calculate_distance_two_points()

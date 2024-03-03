@@ -22,7 +22,7 @@ public preamble {=
 =}
 
 
-reactor RobotControl (stride: double  = 5, hypotenuse: double = 75){
+reactor RobotControl (stride: double  = 0.5, hypotenuse: double = 75){
 
   private preamble{= 
     #include <cmath>
@@ -62,7 +62,8 @@ reaction(current_position) -> raw_instruction{=
   
   raw_instruction.set(vec_raw_instruction); 
 
-  deg = int(deg + stride) % 360;
+  deg = deg + stride;
+  if (deg >= 360.0 ) { deg = deg - 360.0;}
   =}
   
 
