@@ -61,9 +61,9 @@ def show_points_graphically():
     current_position_1 = ins['current_position_1'].to_list()
     current_position_2 = ins['current_position_2'].to_list()   
 
-    z = current_position_2
     x = current_position_0
     y = current_position_1
+    z = current_position_2
 
     ax.scatter3D(x, y, z,color = "r") 
     ax.set_zlim(0,300)

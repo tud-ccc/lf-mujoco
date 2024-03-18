@@ -14,11 +14,13 @@ public preamble {=
 reactor RoboXArm7Fake {
   input robo_checked_instruction: Vector;  // robo facing
   output interface_world_data: WorldData;
-  timer t(2 s, 8 ms);
+  timer t(200 ms, 8 ms);
   state current_position: Vector;
 
   reaction(startup) {=
     std::cout << "Robo X Arm Fake start up" << std::endl;
+    //initalize start position
+    current_position = Vector{375, 0 , 200} ;
   =}
 
   reaction(t) -> interface_world_data {=
@@ -40,7 +42,7 @@ reactor RoboXArm7Fake {
             std::vector<double>(std::begin(pose), std::end(pose)),
         };
         interface_world_data.set(data);
-        std::cout << "Send instrucitons out " << std::endl;
+        std::cout << "Send instructions out " << std::endl;
   =}
 
   reaction(robo_checked_instruction) {=

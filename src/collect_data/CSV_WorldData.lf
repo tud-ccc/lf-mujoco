@@ -5,6 +5,8 @@ public preamble {=
 #ifndef CSVDATA_WORLD_DATA
 #define CSVDATA_WORLD_DATA
 #include "world_data_collector.hpp"
+#include "common_world_data.hpp"
+
 #endif //CSVDATA_WORLD_DATA
 =}
 
@@ -15,16 +17,15 @@ reactor CSV_WorldData {
   input current_world_data: WorldData;
 
   reaction(startup){=
-    WorldData wd = WorldData{}; 
-    wd.write_csv_header("data_analysis_csv/data.csv");
+    WorldDataCollector wdc = WorldDataCollector();
+    wdc.write_csv_header("data_analysis_csv/data.csv");
   =}
 
   reaction(current_world_data) {=
         WorldData world_data_current_world_data = *current_world_data.get();
        
-        
-        world_data_current_world_data.write_to_csv("data_analysis_csv/data.csv", 0);
-
+        WorldDataCollector wdc = WorldDataCollector(world_data_current_world_data);
+        wdc.write_to_csv("data_analysis_csv/data.csv", 0);
 
         =}  
 }
