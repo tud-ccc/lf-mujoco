@@ -5,7 +5,7 @@ public preamble {=
 #ifndef DECODER
 #define DECODER
 #include "common_vector.hpp"
-#include "world.hpp"
+#include "world_data_collector.hpp"
 
 #endif //DECODER
 =}

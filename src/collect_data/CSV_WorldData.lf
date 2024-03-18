@@ -4,7 +4,7 @@ public preamble {=
 
 #ifndef CSVDATA_WORLD_DATA
 #define CSVDATA_WORLD_DATA
-#include "world.hpp"
+#include "world_data_collector.hpp"
 #endif //CSVDATA_WORLD_DATA
 =}
 
