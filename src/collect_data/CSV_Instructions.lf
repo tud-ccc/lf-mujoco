@@ -21,7 +21,7 @@ reactor CSV_Instructions {
 
   reaction(startup){=
     Instruction_Collector ic = Instruction_Collector{}; 
-    ic.write_instructions_csv_header("data_analysis_csv/instructions.csv");
+    ic.write_instructions_csv_header("data_analysis_csv/data/instructions.csv");
   =}
 
   reaction(current_position, raw_instruction, checked_instruction) {=
@@ -35,7 +35,7 @@ reactor CSV_Instructions {
             vec_raw_instruction,
             vec_checked_instruction,
         };
-        ins_coll.write_instructions_to_csv("data_analysis_csv/instructions.csv");
+        ins_coll.write_instructions_to_csv("data_analysis_csv/data/instructions.csv");
 
 
         =}  

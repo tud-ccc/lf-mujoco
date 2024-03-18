@@ -7,10 +7,9 @@ from enum import Enum
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 def show_position_evaluator_data():
       
-    ins = pandas.read_csv("data_analysis_csv/instructions.csv", sep = ',')    
+    ins = pandas.read_csv("data_analysis_csv/data/instructions.csv", sep = ',')    
     
     inst_time = ins['time'].to_list()
 
@@ -55,7 +54,7 @@ def show_points_graphically():
 
     ax = plt.axes(projection='3d')
 
-    ins = pandas.read_csv("data_analysis_csv/instructions.csv", sep = ',')    
+    ins = pandas.read_csv("data_analysis_csv/data/instructions.csv", sep = ',')    
 
     current_position_0 = ins['current_position_0'].to_list()
     current_position_1 = ins['current_position_1'].to_list()
