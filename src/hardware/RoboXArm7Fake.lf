@@ -1,49 +1,50 @@
-target Cpp;
+target Cpp
 
 public preamble {=
+  #ifndef ROBOXARMFAKE
+  #define ROBOXARMFAKE
+  #include "common_vector.hpp"
+  #include "world.hpp"
+  #include <iostream>
 
-#ifndef ROBOXARM
-#define ROBOXARM
-#include "common_vector.hpp"
-#include "world.hpp"
-#include <xarm/wrapper/xarm_api.h>
 
-
-#endif //ROBOXARM
+  #endif //ROBOXARMFAKE
 =}
-
 
 reactor RoboXArm7Fake {
-
-
-  //robo facing
-  input robo_checked_instruction: Vector;
+  input robo_checked_instruction: Vector;  // robo facing
   output interface_world_data: WorldData;
-  timer t(2s, 8ms);
+  timer t(2 s, 8 ms);
+  state current_position: Vector;
 
   reaction(startup) {=
-    
-   
+    std::cout << "Robo X Arm Fake start up" << std::endl;
+  =}
 
-    =}
-  
+  reaction(t) -> interface_world_data {=
 
-  reaction(t) -> interface_world_data{=
+        float pose[6] = {0};
+        float angles[7] = {0};
+        float velocities[7] = {0};
+        float effort[7] = {0};
 
-      
-=}
-  
+        pose[0] = current_position.X_;
+        pose[1] = current_position.Y_;
+        pose[2] = current_position.Z_;
 
-
+        WorldData data{
+            get_elapsed_physical_time(),
+            std::vector<double>(std::begin(angles), std::end(angles)),
+            std::vector<double>(std::begin(velocities), std::end(velocities)),
+            std::vector<double>(std::begin(effort), std::end(effort)),
+            std::vector<double>(std::begin(pose), std::end(pose)),
+        };
+        interface_world_data.set(data);
+        std::cout << "Send instrucitons out " << std::endl;
+  =}
 
   reaction(robo_checked_instruction) {=
-        Vector vec_checked_instruction = *robo_checked_instruction.get();
-          
-
-
-  =}  
-
-  
-
-
+    Vector vec_checked_instruction = *robo_checked_instruction.get();
+    current_position = vec_checked_instruction;
+  =}
 }
