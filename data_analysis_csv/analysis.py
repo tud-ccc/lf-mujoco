@@ -57,9 +57,9 @@ def show_points_graphically():
 
     ins = pandas.read_csv("data_analysis_csv/instructions.csv", sep = ',')    
 
-    current_position_0 = ins['raw_instruction_0'].to_list()
-    current_position_1 = ins['raw_instruction_1'].to_list()
-    current_position_2 = ins['raw_instruction_2'].to_list()   
+    current_position_0 = ins['current_position_0'].to_list()
+    current_position_1 = ins['current_position_1'].to_list()
+    current_position_2 = ins['current_position_2'].to_list()   
 
     z = current_position_2
     x = current_position_0

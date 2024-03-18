@@ -1,0 +1,49 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef ROBOXARM
+#define ROBOXARM
+#include "common_vector.hpp"
+#include "world.hpp"
+#include <xarm/wrapper/xarm_api.h>
+
+
+#endif //ROBOXARM
+=}
+
+
+reactor RoboXArm7Fake {
+
+
+  //robo facing
+  input robo_checked_instruction: Vector;
+  output interface_world_data: WorldData;
+  timer t(2s, 8ms);
+
+  reaction(startup) {=
+    
+   
+
+    =}
+  
+
+  reaction(t) -> interface_world_data{=
+
+      
+=}
+  
+
+
+
+  reaction(robo_checked_instruction) {=
+        Vector vec_checked_instruction = *robo_checked_instruction.get();
+          
+
+
+  =}  
+
+  
+
+
+}
