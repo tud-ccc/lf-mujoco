@@ -1,94 +1,60 @@
 #ifndef COMMON_SANITY_CHECKER
 #define COMMON_SANITY_CHECKER
 
-
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 #include "common_vector.hpp"
 
-
-
-
 class PositionEvaluator {
-  private : 
-    double factor_;  
+private:
+  double acceleration_cap_;
+  VectorArithmetics va_;
 
-  public : 
-    Vector current_position_;
-    Vector raw_instruction_;
+public:
+  PositionEvaluator(){};
 
-    PositionEvaluator(){};
+  PositionEvaluator(double acceleration_cap) {
 
-    PositionEvaluator(
-        Vector current_position,
-        Vector raw_instruction)
-        {
-        this->current_position_ = current_position;
-        this->raw_instruction_ = raw_instruction;
-        this->factor_ = 0.5; // in millimeter
-        }
+    this->acceleration_cap_ = acceleration_cap; // in millimeter
 
-    double calculate_distance_two_points()
-        {
-        double diff_sq_X = pow(this->current_position_.X_ - this->raw_instruction_.X_, 2) ;
-        double diff_sq_Y = pow(this->current_position_.Y_ - this->raw_instruction_.Y_, 2);
-        double diff_sq_Z = pow(this->current_position_.Z_ - this->raw_instruction_.Z_, 2);
-        return sqrt(diff_sq_X + diff_sq_Y + diff_sq_Z);
-        }
+    this->va_ = VectorArithmetics{};
+  }
+  Vector calculate_offset_vector_given_max_acceleration(Vector last_position, Vector current_position,
+                                                        Vector raw_instruction, double acceleration_length) {
 
-    Vector get_delta_vector()
-        {
-        return Vector(
-            this->raw_instruction_.X_- this->current_position_.X_,
-            this->raw_instruction_.Y_- this->current_position_.Y_,
-            this->raw_instruction_.Z_- this->current_position_.Z_
-        );
-        }
+    Vector next_logical_step_offset_vector = this->va_.get_delta_vector(last_position, current_position);
+    // std::cout << "Now the next_logical_step_offset_vector:"
+    //           << std::endl;
+    // next_logical_step_offset_vector.to_string();
 
-    double get_vector_length(
-        Vector vec)
-        {
-            double sq_X = pow(vec.X_, 2);
-            double sq_Y = pow(vec.Y_, 2);
-            double sq_Z = pow(vec.Z_, 2);
-            return sqrt(sq_X + sq_Y + sq_Z);
-        }
+    Vector next_logical_step = this->va_.add_vectors(current_position, next_logical_step_offset_vector);
+    // std::cout << "Now the next_logical_step:"
+    //           << std::endl;
+    // next_logical_step.to_string();
 
-    Vector scalar_product( double scalar, Vector vec)
-        {
-            return Vector(
-            vec.X_ * scalar,
-            vec.Y_ * scalar,
-            vec.Z_ * scalar);
+    Vector acceleration_vector = this->va_.get_delta_vector(next_logical_step, raw_instruction);
+    acceleration_vector = acceleration_vector.normalize().scale(acceleration_length);
+    // std::cout << "Now the acceleration_vector:"
+    //           << std::endl;
+    // acceleration_vector.to_string();
 
-        }
+    Vector offset_vector = this->va_.add_vectors(next_logical_step_offset_vector, acceleration_vector);
+    offset_vector = offset_vector.normalize().scale(1);
+    // std::cout << "Now the offset_vector:"
+    //           << std::endl;
+    // offset_vector.to_string();
 
-    Vector get_normalized_delta_vector()
-        {
-        Vector delta_vec = this->get_delta_vector();
-        return scalar_product(1.0 / get_vector_length(delta_vec), delta_vec );
-        }
+    return offset_vector;
+  }
 
-    Vector add_vectors(
-        Vector vec_1,
-        Vector vec_2)
-        {
-        return Vector( vec_1.X_ + vec_2.X_, vec_1.Y_ + vec_2.Y_, vec_1.Z_ + vec_2.Z_ );
-        }
+  Vector calculate_next_position(Vector last_position, Vector current_position, Vector raw_instruction) {
 
-    Vector calculate_checked_instruction(){
-        if(this->calculate_distance_two_points() < this->factor_ ){
-            return this->raw_instruction_;
-        }
-        else {
-            return this->add_vectors(
-            this->current_position_,
-            this->scalar_product(this->factor_ ,this->get_normalized_delta_vector()));
-        }
-    }
-
+    Vector offset_vector = this->calculate_offset_vector_given_max_acceleration(
+        last_position, current_position, raw_instruction, this->acceleration_cap_);
+    Vector next_position = this->va_.add_vectors(current_position, offset_vector);
+    return next_position;
+  }
 };
 
-
-#endif //SANITY_CHECKER
+#endif // SANITY_CHECKER

@@ -1,33 +1,28 @@
-target Cpp;
+target Cpp
 
 public preamble {=
+  #ifndef SANITY_CHECKER
+  #define SANITY_CHECKER
+  #include "common_sanity_checker.hpp"
+  #include "common_vector.hpp"
 
-#ifndef SANITY_CHECKER
-#define SANITY_CHECKER
-#include "common_sanity_checker.hpp"
-#include "common_vector.hpp"
-
-#endif //SANITY_CHECKER
+  #endif //SANITY_CHECKER
 =}
 
-
 reactor SanityChecker {
+  input raw_instruction: Vector
+  input current_position: Vector
+  output checked_instruction: Vector
+  state last_position: Vector
 
-  input raw_instruction: Vector;
-  input current_position: Vector;
-  output checked_instruction: Vector;
-
-  reaction(raw_instruction, current_position) -> checked_instruction{= 
+  reaction(raw_instruction, current_position) -> checked_instruction {=
     Vector vector_raw_instruction = *raw_instruction.get();
-    Vector  vector_current_position = *current_position.get();
+        Vector  vector_current_position = *current_position.get();
 
-    PositionEvaluator pe = PositionEvaluator{vector_current_position, vector_raw_instruction};
+        PositionEvaluator pe = PositionEvaluator{0.1};
 
-    Vector vector_checked_instruction = pe.calculate_checked_instruction();
-    checked_instruction.set(vector_checked_instruction); 
+        Vector vector_checked_instruction = pe.calculate_next_position(last_position, vector_current_position, vector_raw_instruction);
+        checked_instruction.set(vector_checked_instruction);
+        last_position = vector_current_position;
   =}
-
-
-
-  
 }
