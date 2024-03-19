@@ -23,54 +23,23 @@ public preamble {=
 =}
 
 
-reactor RobotControl (stride: double  = 0.5, hypotenuse: double = 75){
-
-  private preamble{= 
-    #include <cmath>
-
-    double calculate_x_value(double hypothenus, double angle_in_deg){
-        double x_val = 0.0;
-        x_val = hypothenus * cos(angle_in_deg*3.14159/180.0);
-        return x_val;
-        
-    }
-
-    double calculate_y_value(double hypothenus, double angle_in_deg){
-        double y_val = 0.0;
-        y_val = hypothenus * sin(angle_in_deg*3.14159/180.0);
-        return y_val;   }
-    
-    =}
-
-   
-state deg: double = 0;
-input current_position: Vector;        
-output raw_instruction: Vector;
+reactor RobotControl {
+    timer t(200 ms, 750 ms);
+    output raw_instruction: Vector;
 
 
 reaction(startup) {=
 
 =}
 
-reaction(current_position) -> raw_instruction{=  
-  // This vector is not used here !
-  Vector vec_current_position = *current_position.get();
-  
-  double _x_val = calculate_x_value(hypotenuse, deg ) + 400.0;
-  double _y_val = calculate_y_value(hypotenuse, deg ) + 0.0;
-        
-  Vector vec_raw_instruction = Vector{_x_val, _y_val, 200}; 
+reaction(t) -> raw_instruction{=  
+
+  Vector vec_raw_instruction = Vector{200,200, 200}; 
   
   raw_instruction.set(vec_raw_instruction); 
 
-  deg = deg + stride;
-  if (deg >= 360.0 ) { deg = deg - 360.0;}
   =}
   
-
-
-
-
 }
 
 
@@ -102,8 +71,7 @@ main reactor XArm7{
     fake_hardware.interface_world_data -> interface.interface_world_data;
 
 
-    interface.decoder_world_data -> decoder.decoder_world_data;    
-    decoder.current_position -> controller.current_position;
+    interface.decoder_world_data -> decoder.decoder_world_data;        
     decoder.current_position -> sanity_checker.current_position;
 
     //CSV DATA
