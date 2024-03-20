@@ -1,0 +1,56 @@
+target Cpp {
+    cmake-include: "xarm.cmake"
+  }
+  import RobotControl from "XArm7Controller.lf"
+  import SanityChecker from "interface/SanityChecker.lf"
+  import WorldDataDecoder from "interface/WorldDataDecoder.lf"
+  import XArmInterface from "interface/XArmInterface.lf"
+  import CSV_Instructions from "collect_data/CSV_Instructions.lf"
+  import CSV_WorldData from "collect_data/CSV_WorldData.lf"
+  import RoboXArm7Fake from "hardware/RoboXArm7Fake.lf"
+  import RoboXArm7 from "hardware/RoboXArm7.lf"
+  
+  public preamble {=
+    #ifndef XARM7
+    #define XARM7
+    #include "common_vector.hpp"
+  
+    #endif //XARM7
+  =}
+  
+  private preamble {=
+   
+  =}
+  
+ 
+  main reactor StartUp {
+    controller = new RobotControl()
+    decoder = new WorldDataDecoder()
+    sanity_checker = new SanityChecker()
+    interface = new XArmInterface()
+  
+    data_collector_instructions = new CSV_Instructions()
+    data_collector_world_data = new CSV_WorldData()
+  
+    controller.raw_instruction -> sanity_checker.raw_instruction
+    sanity_checker.checked_instruction -> interface.checked_instruction
+  
+    // HARDWARE : REAL ROBO
+    // hardware = new RoboXArm7();
+    // interface.robo_checked_instruction -> hardware.robo_checked_instruction;
+    // hardware.interface_world_data -> interface.interface_world_data;
+    // HARDWARE : FAKE ROBO
+    fake_hardware = new RoboXArm7Fake()
+    interface.robo_checked_instruction -> fake_hardware.robo_checked_instruction
+    fake_hardware.interface_world_data -> interface.interface_world_data
+  
+    interface.decoder_world_data -> decoder.decoder_world_data
+    decoder.current_position -> sanity_checker.current_position
+  
+    controller.raw_instruction -> data_collector_instructions.raw_instruction  // CSV DATA
+    sanity_checker.checked_instruction -> data_collector_instructions.checked_instruction
+    decoder.current_position -> data_collector_instructions.current_position
+  
+    interface.decoder_world_data -> data_collector_world_data.current_world_data
+  }
+  
