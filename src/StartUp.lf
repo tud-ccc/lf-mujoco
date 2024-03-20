@@ -1,8 +1,8 @@
 target Cpp {
     cmake-include: "xarm.cmake"
   }
-  import RobotControl from "XArm7Controller.lf"
-  import SanityChecker from "interface/SanityChecker.lf"
+  import RobotControl from "control/XArm7Controller.lf"
+  import SanityChecker from "control/SanityChecker.lf"
   import WorldDataDecoder from "interface/WorldDataDecoder.lf"
   import XArmInterface from "interface/XArmInterface.lf"
   import CSV_Instructions from "collect_data/CSV_Instructions.lf"
