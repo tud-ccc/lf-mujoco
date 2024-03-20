@@ -20,7 +20,7 @@ reactor RoboXArm7Fake {
   reaction(startup) {=
     std::cout << "Robo X Arm Fake start up" << std::endl;
     //initalize start position
-    current_position = Vector{375, 0 , 200} ;
+    current_position = Vector{400, -75,0 };
   =}
 
   reaction(t) -> interface_world_data {=
