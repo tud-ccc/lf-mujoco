@@ -42,7 +42,7 @@ reactor RoboXArm7Fake {
             std::vector<double>(std::begin(pose), std::end(pose)),
         };
         interface_world_data.set(data);
-        std::cout << "Send instructions out " << std::endl;
+    
   =}
 
   reaction(robo_checked_instruction) {=

@@ -1,0 +1,32 @@
+target Cpp
+
+public preamble {=
+  #ifndef LAST_POSITION_HOLDER
+  #define LAST_POSITION_HOLDER
+  #include "common_vector.hpp"
+
+  #endif //XARM7
+=}
+
+private preamble {=
+ 
+=}
+
+reactor LastPositionHolder {
+ input current_position : Vector
+ output current_position_sanity_checker: Vector
+ output last_position_sanity_checker: Vector
+ state last_position: Vector
+  
+
+  reaction(startup) {=   
+
+  =}
+
+  reaction(current_position) -> current_position_sanity_checker,last_position_sanity_checker  {=
+      Vector cur_pos = *current_position.get();
+      current_position_sanity_checker.set(cur_pos);
+      last_position_sanity_checker.set(this->last_position);
+      this->last_position = cur_pos;
+  =}
+}

@@ -31,6 +31,12 @@ class VectorArithmentics():
         l2 = vec2.get_arithmetic_length()
         if(l1*l2 == 0):
             return 0
+        if scalar_prod / (l1*l2) > 1:
+            print("Value bigger than 1, error out !")
+            print("" + str(scalar_prod / (l1*l2)))
+            print(vec1)
+            print(vec2)
+            return 0
         angle_in_rad = math.acos(scalar_prod / (l1*l2))
         return math.degrees(angle_in_rad)
     

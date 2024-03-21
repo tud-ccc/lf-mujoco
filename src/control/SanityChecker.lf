@@ -11,18 +11,23 @@ public preamble {=
 
 reactor SanityChecker {
   input raw_instruction: Vector
-  input current_position: Vector
-  output checked_instruction: Vector
-  state last_position: Vector
+  input current_position_sanity_checker: Vector
+  input last_position_sanity_checker: Vector
 
-  reaction(raw_instruction, current_position) -> checked_instruction {=
-    Vector vector_raw_instruction = *raw_instruction.get();
-        Vector  vector_current_position = *current_position.get();
+  output checked_instruction: Vector
+
+
+  reaction(current_position_sanity_checker,last_position_sanity_checker, raw_instruction) -> checked_instruction {=
+
+        Vector  vector_current_position = *current_position_sanity_checker.get();
+        Vector  vector_last_position = *last_position_sanity_checker.get();
+        Vector  vector_raw_instruction = *raw_instruction.get();
+
 
         PositionEvaluator pe = PositionEvaluator{0.1};
 
-        Vector vector_checked_instruction = pe.calculate_next_position(last_position, vector_current_position, vector_raw_instruction);
+        Vector vector_checked_instruction = pe.calculate_next_position(vector_last_position, vector_current_position,vector_raw_instruction);
         checked_instruction.set(vector_checked_instruction);
-        last_position = vector_current_position;
   =}
+
 }
