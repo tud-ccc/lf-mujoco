@@ -2,7 +2,7 @@ target Cpp {
     cmake-include: "xarm.cmake"
   }
   import RobotControl from "control/XArm7Controller.lf"
-  import SanityChecker from "control/SanityChecker.lf"
+  import Planner from "control/Planner.lf"
   import WorldDataDecoder from "interface/WorldDataDecoder.lf"
   import XArmInterface from "interface/XArmInterface.lf"
   import CSV_Instructions from "collect_data/CSV_Instructions.lf"
@@ -27,15 +27,15 @@ target Cpp {
   main reactor StartUp {
     controller = new RobotControl()
     decoder = new WorldDataDecoder()
-    sanity_checker = new SanityChecker()
+    planner = new Planner()
     interface = new XArmInterface()
     last_position_holder = new LastPositionHolder()
   
     data_collector_instructions = new CSV_Instructions()
     data_collector_world_data = new CSV_WorldData()
   
-    controller.raw_instruction -> sanity_checker.raw_instruction
-    sanity_checker.checked_instruction -> interface.checked_instruction
+    controller.raw_instruction -> planner.raw_instruction
+    planner.checked_instruction -> interface.checked_instruction
   
     // HARDWARE : REAL ROBO
     // hardware = new RoboXArm7();
@@ -49,11 +49,11 @@ target Cpp {
     interface.decoder_world_data -> decoder.decoder_world_data
     decoder.current_position -> last_position_holder.current_position
     decoder.current_position->controller.current_position
-    last_position_holder.current_position_sanity_checker-> sanity_checker.current_position_sanity_checker
-    last_position_holder.last_position_sanity_checker -> sanity_checker.last_position_sanity_checker
+    last_position_holder.current_position_planner-> planner.current_position_planner
+    last_position_holder.last_position_planner -> planner.last_position_planner
   
     controller.raw_instruction -> data_collector_instructions.raw_instruction  // CSV DATA
-    sanity_checker.checked_instruction -> data_collector_instructions.checked_instruction
+    planner.checked_instruction -> data_collector_instructions.checked_instruction
     decoder.current_position -> data_collector_instructions.current_position
   
     interface.decoder_world_data -> data_collector_world_data.current_world_data

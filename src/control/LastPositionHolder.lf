@@ -14,8 +14,8 @@ private preamble {=
 
 reactor LastPositionHolder {
  input current_position : Vector
- output current_position_sanity_checker: Vector
- output last_position_sanity_checker: Vector
+ output current_position_planner: Vector
+ output last_position_planner: Vector
  state last_position: Vector
   
 
@@ -23,10 +23,10 @@ reactor LastPositionHolder {
 
   =}
 
-  reaction(current_position) -> current_position_sanity_checker,last_position_sanity_checker  {=
+  reaction(current_position) -> current_position_planner,last_position_planner  {=
       Vector cur_pos = *current_position.get();
-      current_position_sanity_checker.set(cur_pos);
-      last_position_sanity_checker.set(this->last_position);
+      current_position_planner.set(cur_pos);
+      last_position_planner.set(this->last_position);
       this->last_position = cur_pos;
   =}
 }
