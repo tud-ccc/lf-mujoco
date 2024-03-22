@@ -1,5 +1,5 @@
-#ifndef COMMON_SANITY_CHECKER
-#define COMMON_SANITY_CHECKER
+#ifndef COMMON_POSITION_EVALUATOR
+#define COMMON_POSITION_EVALUATOR
 
 #include <cmath>
 #include <iostream>
@@ -57,4 +57,4 @@ public:
   }
 };
 
-#endif // SANITY_CHECKER
+#endif // COMMON_POSITION_EVALUATOR

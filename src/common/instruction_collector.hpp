@@ -1,7 +1,6 @@
 #ifndef INSTRUCTION_COLLECTOR
 #define INSTRUCTION_COLLECTOR
 
-#include "common_sanity_checker.hpp"
 #include <vector>
 #include <fstream>
 #include <iostream>
