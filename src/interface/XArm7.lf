@@ -104,16 +104,16 @@ reactor XArm7InterfaceSimulated {
 
     auto current_position = last_data.position();
 
-    if (current_position.empty()) {
-      std::cout << "Warning: No Input to Interface" << std::endl;
-      return;
-    }
+    // if (current_position.empty()) {
+    //   std::cout << "Warning: No Input to Interface" << std::endl;
+    //   return;
+    // }
 
     // turn multiport into vector    
-    for (auto i: controller_signals.present_indices_unsorted()) {
-      // TODO: potential problems
-      input[i] = savety_function(last_data.position()[i], *controller_signals[i].get(), i);
-    }
+    // for (auto i: controller_signals.present_indices_unsorted()) {
+    //   // TODO: potential problems
+    //   input[i] = savety_function(last_data.position()[i], *controller_signals[i].get(), i);
+    // }
     
     simulator_signals.set(input);
   =}
