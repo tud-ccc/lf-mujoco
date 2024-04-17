@@ -41,6 +41,7 @@ target Cpp {
     // hardware = new RoboXArm7();
     // interface.robo_checked_instruction -> hardware.robo_checked_instruction;
     // hardware.interface_world_data -> interface.interface_world_data;
+    
     // HARDWARE : FAKE ROBO
     fake_hardware = new RoboXArm7Fake()
     interface.robo_checked_instruction -> fake_hardware.robo_checked_instruction
