@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include "common_vector.hpp"
 
 class Instruction_Collector{
     private:
