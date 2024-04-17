@@ -46,7 +46,7 @@ reactor XArm7Controll(host: std::string = "192.168.1.227") {
         fp32 pos[6] = { 400, 0, 200, 180, 0, 0};
         int ret = arm->set_position(pos, 0, false);
     */
-    std::cout << "! We passed teh startup-function  !" << std::endl;
+    std::cout << "! We passed the startup-function  !" << std::endl;
 
 
     =}
