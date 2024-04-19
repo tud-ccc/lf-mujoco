@@ -1,9 +1,9 @@
 target Cpp {
-    cmake-include: "xarm.cmake"
+    cmake-include: "../../src/xarm.cmake"
   }
 
-  import Planner from "control/Planner.lf"
-  import PlannerTester from "tests/PlannerTester.lf"
+  import Planner from "../../src/control/Planner.lf"
+  import PlannerTester from "tester/PlannerTester.lf"
 
   public preamble {=
     #ifndef TEST_START_UP
