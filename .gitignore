@@ -31,6 +31,9 @@
 *.out
 *.app
 
+
+
+
 .direnv
 src-gen
 lib64
@@ -40,6 +43,7 @@ share
 include
 build
 target
+
 .vscode
 MUJOCO_LOG.txt
 data.csv
@@ -47,5 +51,4 @@ instructions.csv
 .idea
 *.so*
 
-
-data_analysis/Results
+data_analysis_csv
