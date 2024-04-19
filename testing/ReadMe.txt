@@ -1,0 +1,1 @@
+The cmake under the src folder in this testing projekt only provides the possibility to import from common in the main projekt
