@@ -51,4 +51,4 @@ instructions.csv
 .idea
 *.so*
 
-data_analysis_csv
+data_analysis_csv/one_trajectory_analysis/__pycache__
