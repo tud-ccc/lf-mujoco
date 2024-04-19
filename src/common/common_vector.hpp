@@ -109,6 +109,27 @@ public:
                       vec1.Z_ + vec2.Z_);
     }
 
+ 
+
 
 };
+
+class PositionTriplet {
+        private:
+        Vector last_position_;
+        Vector current_position_;
+        Vector raw_instruction_;
+
+        public:
+        PositionTriplet(Vector last_position, Vector current_position, Vector raw_instruction) {
+            this->last_position_ = last_position;
+            this->current_position_ = current_position;
+            this->raw_instruction_ = raw_instruction;
+        }
+
+        Vector get_last_position_() { return this->last_position_; }
+        Vector get_current_position() { return this->current_position_; }
+        Vector get_raw_instruction() { return this->raw_instruction_; }
+};
+
 #endif // COMMON_VECTOR
