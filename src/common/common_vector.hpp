@@ -127,7 +127,7 @@ class PositionTriplet {
             this->raw_instruction_ = raw_instruction;
         }
 
-        Vector get_last_position_() { return this->last_position_; }
+        Vector get_last_position() { return this->last_position_; }
         Vector get_current_position() { return this->current_position_; }
         Vector get_raw_instruction() { return this->raw_instruction_; }
 };

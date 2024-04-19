@@ -1,0 +1,36 @@
+target Cpp
+
+public preamble {=
+  #ifndef ROBOXARM
+  #define ROBOXARM
+  #include "common_vector.hpp"
+
+
+  #endif //ROBOXARM
+=}
+
+reactor PlannerInterface {
+ //planner facing 
+  input next_position_checked: Vector
+
+  output planner_raw_instruction: Vector
+  output planner_current_position: Vector
+  output planner_last_position: Vector
+
+ //tester_facing
+  input next_position_triplet_to_decode: PositionTriplet 
+  output planner_tester_next_position_checked: Vector 
+
+  timer t(2 s, 8 ms)
+
+  reaction(next_position_triplet_to_decode) ->
+  planner_raw_instruction, planner_current_position, planner_last_position {=
+    PositionTriplet pt = *interface_next_position_triplet.get();
+    Vector last_pos = pt.get_last_position();
+    Vector cur_pos = pt.get_current_position();
+    Vector raw_inst = pt.get_raw_instruction();
+    planner_last_position.set(last_pos);
+    planner_current_position.set(cur_pos);
+    planner_raw_instruction.set(raw_inst);
+  =}
+}

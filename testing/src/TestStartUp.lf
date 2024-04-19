@@ -4,6 +4,8 @@ target Cpp {
 
   import Planner from "../../src/control/Planner.lf"
   import PlannerTester from "planner_testing/PlannerTester.lf"
+  import PlannerInterface from "planner_testing/PlannerInterface.lf"
+  import RandomStartPointGenerator from "planner_testing/RandomStartPointGenerator.lf"
 
   public preamble {=
     #ifndef TEST_START_UP
@@ -16,14 +18,23 @@ target Cpp {
   main reactor TestStartUp {
     planner = new Planner()
     planner_tester = new PlannerTester()
-
-    planner.next_position_checked -> planner_tester.planner_tester_next_position
-
-    planner_tester.planner_raw_instruction ->planner.raw_instruction
-    planner_tester.planner_current_position_planner ->planner.current_position_planner
-    planner_tester.planner_last_position_planner ->planner.last_position_planner
+    planner_interface = new PlannerInterface()
+    random_start_point_generator = new  RandomStartPointGenerator()
 
 
+    //planner <--> interface
+    planner.next_position_checked -> planner_interface.next_position_checked
+    planner_interface.planner_raw_instruction ->planner.raw_instruction
+    planner_interface.planner_current_position ->planner.current_position_planner
+    planner_interface.planner_last_position ->planner.last_position_planner
 
+
+    //interface <--> tester
+    planner_tester.next_position_triplet_to_decode-> planner_interface.next_position_triplet_to_decode 
+    planner_interface.planner_tester_next_position_checked -> planner_tester.planner_tester_next_position_checked
+
+    //tester <--> Random next pos gen
+    random_start_point_generator.random_next_position_triplet -> planner_tester.random_next_position_triplet
+    planner_tester.calculation_finished -> random_start_point_generator.calculation_finished
   }
   

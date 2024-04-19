@@ -13,17 +13,18 @@ public preamble {=
 
 reactor PlannerTester {
 
+  //interface facing
+  input planner_tester_next_position_checked : Vector;
+  output next_position_triplet_to_decode : PositionTriplet;
 
-  //robo facing
-  input planner_tester_next_position: Vector;
-  output planner_raw_instruction: Vector;
-  output planner_current_position_planner: Vector;
-  output planner_last_position_planner: Vector;
+  //Random next position generator facing
+  input random_next_position_triplet: PositionTriplet;
+  output calculation_finished : void ;
 
   timer t(2s, 8ms);
 
 
-  reaction(t) -> planner_raw_instruction, planner_current_position_planner, planner_last_position_planner{=
+  reaction(t) -> planner_interface_position_triplet {=
       std::cout << "Timer works at the moment" << std::endl; 
   =}
   
