@@ -3,7 +3,7 @@ target Cpp {
   }
 
   import Planner from "../../src/control/Planner.lf"
-  import PlannerTester from "tester/PlannerTester.lf"
+  import PlannerTester from "planner_testing/PlannerTester.lf"
 
   public preamble {=
     #ifndef TEST_START_UP
