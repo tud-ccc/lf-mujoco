@@ -24,8 +24,5 @@ reactor PlannerTester {
   timer t(2s, 8ms);
 
 
-  reaction(t) -> planner_interface_position_triplet {=
-      std::cout << "Timer works at the moment" << std::endl; 
-  =}
-  
+
 }

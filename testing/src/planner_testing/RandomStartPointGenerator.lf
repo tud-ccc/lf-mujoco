@@ -21,7 +21,7 @@ reactor RandomStartPointGenerator {
 
   reaction(calculation_finished) ->random_next_position_triplet{=
       std::cout << "Generated new Start point" << std::endl; 
-      PositionTriplet pt = new PositionTriplet{Vector{1,1,0},Vector{0,0,0},Vector{-1,-1,0}};
+      PositionTriplet pt = PositionTriplet{Vector{1,1,0},Vector{0,0,0},Vector{-1,-1,0}};
       random_next_position_triplet.set(pt);
   =}
 }
