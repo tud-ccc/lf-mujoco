@@ -1,0 +1,20 @@
+target Cpp {
+    cmake-include: "xarm.cmake"
+  }
+
+  import Planner from "../control/Planner.lf"
+
+  public preamble {=
+    #ifndef XARM7
+    #define XARM7
+    #include "common_vector.hpp"
+  
+    #endif //XARM7
+  =}
+  
+  
+  main reactor StartUp {
+    planner = new Planner()
+
+  }
+  
