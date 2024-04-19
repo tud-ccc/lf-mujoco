@@ -94,6 +94,6 @@ class Parser:
         assert(len(x) == len(y) == len(z))
 
         for i in range(0,len(x)):
-            vector_list.append(Vector(x[i], y[i], z[i]))
+            vector_list.append(Vector(float(x[i]), float(y[i]), float(z[i])))
         # print(vector_list)
         return vector_list
