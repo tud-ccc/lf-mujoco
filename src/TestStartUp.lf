@@ -2,19 +2,28 @@ target Cpp {
     cmake-include: "xarm.cmake"
   }
 
-  import Planner from "../control/Planner.lf"
+  import Planner from "control/Planner.lf"
+  import PlannerTester from "tests/PlannerTester.lf"
 
   public preamble {=
-    #ifndef XARM7
-    #define XARM7
-    #include "common_vector.hpp"
+    #ifndef TEST_START_UP
+    #define TEST_START_UP
   
     #endif //XARM7
   =}
   
   
-  main reactor StartUp {
+  main reactor TestStartUp {
     planner = new Planner()
+    planner_tester = new PlannerTester()
+
+    planner.next_position_checked -> planner_tester.planner_tester_next_position
+
+    planner_tester.planner_raw_instruction ->planner.raw_instruction
+    planner_tester.planner_current_position_planner ->planner.current_position_planner
+    planner_tester.planner_last_position_planner ->planner.last_position_planner
+
+
 
   }
   
