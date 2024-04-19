@@ -17,7 +17,7 @@ reactor RoboXArm7 (host: std::string = "192.168.1.227"){
 
 
   //robo facing
-  input robo_checked_instruction: Vector;
+  input robo_next_position_checked: Vector;
   output interface_world_data: WorldData;
   timer t(2s, 8ms);
   state arm: {=XArmAPI*=};
@@ -83,10 +83,10 @@ reactor RoboXArm7 (host: std::string = "192.168.1.227"){
 
 
 
-  reaction(robo_checked_instruction) {=
-        Vector vec_checked_instruction = *robo_checked_instruction.get();
+  reaction(robo_next_position_checked) {=
+        Vector vec_next_position_checked = *robo_next_position_checked.get();
           
-        fp32 pos[6] = {vec_checked_instruction.X_, vec_checked_instruction.Y_, vec_checked_instruction.Z_, 180, 0 , 0};
+        fp32 pos[6] = {vec_next_position_checked.X_, vec_next_position_checked.Y_, vec_next_position_checked.Z_, 180, 0 , 0};
         
         int error_code = arm->set_servo_cartesian(pos);
         // int error_code = arm->set_position(pos, 0, false);

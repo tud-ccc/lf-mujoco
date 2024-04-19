@@ -12,7 +12,7 @@ public preamble {=
 =}
 
 reactor RoboXArm7Fake(initialPos: {=Vector=} = {=Vector{400, -75,0}=}) {
-  input robo_checked_instruction: Vector;  // robo facing
+  input robo_next_position_checked: Vector;  // robo facing
   output interface_world_data: WorldData;
   timer t(200 ms, 8 ms);
   state current_position: Vector = initialPos;
@@ -43,8 +43,8 @@ reactor RoboXArm7Fake(initialPos: {=Vector=} = {=Vector{400, -75,0}=}) {
     
   =}
 
-  reaction(robo_checked_instruction) {=
-    Vector vec_checked_instruction = *robo_checked_instruction.get();
-    current_position = vec_checked_instruction;
+  reaction(robo_next_position_checked) {=
+    Vector vec_next_position_checked = *robo_next_position_checked.get();
+    current_position = vec_next_position_checked;
   =}
 }

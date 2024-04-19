@@ -17,23 +17,23 @@ reactor CSV_Instructions {
   //robo facing
   input current_position: Vector;
   input raw_instruction: Vector;
-  input checked_instruction: Vector; 
+  input next_position_checked: Vector; 
 
   reaction(startup){=
     Instruction_Collector ic = Instruction_Collector{}; 
     ic.write_instructions_csv_header("data_analysis_csv/data/instructions.csv");
   =}
 
-  reaction(current_position, raw_instruction, checked_instruction) {=
+  reaction(current_position, raw_instruction, next_position_checked) {=
         Vector vec_current_position = *current_position.get();
         Vector vec_raw_instruction = *raw_instruction.get();
-        Vector vec_checked_instruction = *checked_instruction.get();
+        Vector vec_next_position_checked = *next_position_checked.get();
 
         Instruction_Collector ins_coll  =  Instruction_Collector{
             get_elapsed_physical_time(),
             vec_current_position,
             vec_raw_instruction,
-            vec_checked_instruction,
+            vec_next_position_checked,
         };
         ins_coll.write_instructions_to_csv("data_analysis_csv/data/instructions.csv");
 

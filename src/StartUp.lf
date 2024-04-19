@@ -35,16 +35,16 @@ target Cpp {
     data_collector_world_data = new CSV_WorldData()
   
     controller.raw_instruction -> planner.raw_instruction
-    planner.checked_instruction -> interface.checked_instruction
+    planner.next_position_checked -> interface.next_position_checked
   
     // HARDWARE : REAL ROBO
     // hardware = new RoboXArm7();
-    // interface.robo_checked_instruction -> hardware.robo_checked_instruction;
+    // interface.robo_next_position_checked -> hardware.robo_next_position_checked;
     // hardware.interface_world_data -> interface.interface_world_data;
     
     // HARDWARE : FAKE ROBO
     fake_hardware = new RoboXArm7Fake()
-    interface.robo_checked_instruction -> fake_hardware.robo_checked_instruction
+    interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
     fake_hardware.interface_world_data -> interface.interface_world_data
   
     interface.decoder_world_data -> decoder.decoder_world_data
@@ -54,7 +54,7 @@ target Cpp {
     last_position_holder.last_position_planner -> planner.last_position_planner
   
     controller.raw_instruction -> data_collector_instructions.raw_instruction  // CSV DATA
-    planner.checked_instruction -> data_collector_instructions.checked_instruction
+    planner.next_position_checked -> data_collector_instructions.next_position_checked
     decoder.current_position -> data_collector_instructions.current_position
   
     interface.decoder_world_data -> data_collector_world_data.current_world_data

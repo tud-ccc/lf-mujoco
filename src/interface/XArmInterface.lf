@@ -13,8 +13,8 @@ public preamble {=
 
 reactor XArmInterface {
 
-  input checked_instruction: Vector;
-  output robo_checked_instruction: Vector;
+  input next_position_checked: Vector;
+  output robo_next_position_checked: Vector;
   
   input interface_world_data: WorldData;
   output decoder_world_data: WorldData;
@@ -26,9 +26,9 @@ reactor XArmInterface {
 =}
 
 
-  reaction(checked_instruction) -> robo_checked_instruction{=
-        Vector vec = *checked_instruction.get();
-        robo_checked_instruction.set(vec);   
+  reaction(next_position_checked) -> robo_next_position_checked{=
+        Vector vec = *next_position_checked.get();
+        robo_next_position_checked.set(vec);   
   =}
 
     

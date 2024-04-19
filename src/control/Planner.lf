@@ -14,10 +14,10 @@ reactor Planner {
   input current_position_planner: Vector
   input last_position_planner: Vector
 
-  output checked_instruction: Vector
+  output next_position_checked: Vector
 
 
-  reaction(current_position_planner,last_position_planner, raw_instruction) -> checked_instruction {=
+  reaction(current_position_planner,last_position_planner, raw_instruction) -> next_position_checked {=
 
         Vector  vector_current_position = *current_position_planner.get();
         Vector  vector_last_position = *last_position_planner.get();
@@ -26,8 +26,8 @@ reactor Planner {
 
         PositionEvaluator pe = PositionEvaluator{0.1};
 
-        Vector vector_checked_instruction = pe.calculate_next_position(vector_last_position, vector_current_position,vector_raw_instruction);
-        checked_instruction.set(vector_checked_instruction);
+        Vector vector_next_position_checked = pe.calculate_next_position(vector_last_position, vector_current_position,vector_raw_instruction);
+        next_position_checked.set(vector_next_position_checked);
   =}
 
 }
