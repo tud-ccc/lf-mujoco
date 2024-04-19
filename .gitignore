@@ -50,3 +50,4 @@ instructions.csv
 
 data_analysis/Results
 data_analysis_csv/.venv/
+data_analysis_csv/one_trajectory_analysis/__pycache__
