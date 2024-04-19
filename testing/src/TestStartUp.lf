@@ -1,5 +1,5 @@
 target Cpp {
-    cmake-include: "../../src/xarm.cmake"
+    cmake-include: "testing.cmake"
   }
 
   import Planner from "../../src/control/Planner.lf"
