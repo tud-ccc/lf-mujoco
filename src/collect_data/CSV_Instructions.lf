@@ -22,6 +22,7 @@ reactor CSV_Instructions (instructions_path: std::string = "") {
   reaction(startup){=
     Instruction_Collector ic = Instruction_Collector{}; 
     ic.write_instructions_csv_header(instructions_path);
+    std::cout << instructions_path << std::endl;
   =}
 
   reaction(current_position, raw_instruction, next_position_checked) {=

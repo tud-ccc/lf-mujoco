@@ -18,7 +18,7 @@ target Cpp {
     //the planner should at every point in time receive an input triplet and give back an input triplet
     planner = new Planner()
     planner_tester = new PlannerTester()
-    data_collector_instructions = new CSV_Instructions(instructions_path = "../data_analysis/data_testing/instructions.csv")
+    data_collector_instructions = new CSV_Instructions(instructions_path = "data_analysis/data_testing/instructions.csv")
     
     //planner <--> planner_tester
     planner.next_position_checked -> planner_tester.next_position_checked
