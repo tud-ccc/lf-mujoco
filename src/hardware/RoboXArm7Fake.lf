@@ -11,11 +11,11 @@ public preamble {=
   #endif //ROBOXARMFAKE
 =}
 
-reactor RoboXArm7Fake(initialPos: {=Vector=} = {=Vector{400, -75,0}=}) {
+reactor RoboXArm7Fake(initial_position: {=Vector=} = {=Vector{400, -75,0}=}) {
   input robo_next_position_checked: Vector;  // robo facing
   output interface_world_data: WorldData;
   timer t(200 ms, 8 ms);
-  state current_position: Vector = initialPos;
+  state current_position: Vector = initial_position;
 
   reaction(startup) {=
     std::cout << "Robo X Arm Fake start up" << std::endl;
