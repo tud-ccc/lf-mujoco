@@ -11,7 +11,7 @@ public preamble {=
 =}
 
 
-reactor CSV_WorldData (data_path: std::string = "data_analysis/data/data.csv"){
+reactor CSV_WorldData (data_path: std::string = ""){
 
   //robo facing
   input current_world_data: WorldData;

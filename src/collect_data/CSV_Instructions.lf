@@ -12,7 +12,7 @@ public preamble {=
 =}
 
 
-reactor CSV_Instructions (instructions_path: std::string = "data_analysis/data/instructions.csv") {
+reactor CSV_Instructions (instructions_path: std::string = "") {
 
   //robo facing
   input current_position: Vector;

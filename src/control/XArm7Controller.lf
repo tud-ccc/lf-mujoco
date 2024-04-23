@@ -13,29 +13,26 @@ private preamble {=
    #include <iostream>
 =}
 
-reactor RobotControl {
-  timer t(200 ms, 750 ms)
+reactor RobotControl (positions: {=Vector[4]=} = {={Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}}=}
+){
+  timer t(200 ms, 1000 ms)
   output raw_instruction: Vector
   input current_position:Vector
   //not constant
-  state counter: int
+  state counter: int = 0
   state last_raw_instruction: Vector
   //constant
-  state positions: std::vector<Vector>
   
 
   reaction(startup) {=   
-  this->positions.push_back(Vector{400, -75, 0 });
-  this->positions.push_back(Vector{475, 0, 0 });
-  this->positions.push_back(Vector{400, 75, 0 });
-  this->positions.push_back(Vector{325, 0, 0 });
   =}
 
   reaction(current_position) -> raw_instruction {=
       raw_instruction.set(this->last_raw_instruction);
   =}
   reaction(t) {=
-    this->last_raw_instruction = this->positions.at(counter);
+    // only changes the current raw instruction
+    this->last_raw_instruction = positions[counter];
     this->last_raw_instruction.to_string();
     this->counter = (counter + 1) % 4;
 =}

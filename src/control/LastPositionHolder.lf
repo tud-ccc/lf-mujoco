@@ -12,11 +12,11 @@ private preamble {=
  
 =}
 
-reactor LastPositionHolder {
+reactor LastPositionHolder (initial_last_position: {=Vector=} = {=Vector{0, 0,0}=}){
  input current_position : Vector
  output current_position_planner: Vector
  output last_position_planner: Vector
- state last_position: Vector
+ state last_position: Vector = initial_last_position
   
 
   reaction(startup) {=   
