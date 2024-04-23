@@ -11,16 +11,16 @@ public preamble {=
 
 reactor Planner {
   input raw_instruction: Vector
-  input current_position_planner: Vector
-  input last_position_planner: Vector
+  input current_position: Vector
+  input last_position: Vector
 
   output next_position_checked: Vector
 
 
-  reaction(current_position_planner,last_position_planner, raw_instruction) -> next_position_checked {=
+  reaction(current_position,last_position, raw_instruction) -> next_position_checked {=
 
-        Vector  vector_current_position = *current_position_planner.get();
-        Vector  vector_last_position = *last_position_planner.get();
+        Vector  vector_current_position = *current_position.get();
+        Vector  vector_last_position = *last_position.get();
         Vector  vector_raw_instruction = *raw_instruction.get();
 
 

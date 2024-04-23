@@ -1,0 +1,42 @@
+target Cpp
+
+public preamble {=
+  #ifndef PLANNERTESTER
+  #define PLANNERTESTER
+  #include "common_vector.hpp"
+
+
+  #endif //ROBOXARM
+=}
+
+reactor PlannerTesteLogicalAction {
+  input next_position_checked: Vector  // planner facing
+
+  output planner_raw_instruction: Vector
+  output planner_current_position: Vector
+  output planner_last_position: Vector
+
+  state current_raw_instruction: Vector
+  state current_current_position: Vector
+  state current_last_position: Vector
+
+  logical action next_input_arrived(1ms): Vector
+
+
+  reaction(next_position_checked)-> next_input_arrived {= 
+    next_input_arrived.schedule(next_position_checked.get(),100ms);
+   =}
+
+  reaction(next_input_arrived) -> planner_raw_instruction, planner_current_position, planner_last_position {=
+    //state adaption
+    current_last_position = current_current_position; 
+    current_current_position = *next_input_arrived.get(); 
+    //sending new commands
+    planner_raw_instruction.set(current_raw_instruction);
+    planner_current_position.set(current_current_position);
+    planner_last_position.set(current_last_position);
+    //debug print 
+    std::cout << "This should print every 100 milliseconds" << std::endl;
+
+  =}
+}

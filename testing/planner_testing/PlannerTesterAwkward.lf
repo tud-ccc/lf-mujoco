@@ -9,7 +9,7 @@ public preamble {=
   #endif //ROBOXARM
 =}
 
-reactor PlannerTester {
+reactor PlannerTesterAwkward {
   input next_position_checked: Vector  // planner facing
 
   output planner_raw_instruction: Vector

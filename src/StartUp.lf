@@ -50,8 +50,8 @@ target Cpp {
     interface.decoder_world_data -> decoder.decoder_world_data
     decoder.current_position -> last_position_holder.current_position
     decoder.current_position->controller.current_position
-    last_position_holder.current_position_planner-> planner.current_position_planner
-    last_position_holder.last_position_planner -> planner.last_position_planner
+    last_position_holder.current_position_planner-> planner.current_position
+    last_position_holder.last_position_planner -> planner.last_position
   
     controller.raw_instruction -> data_collector_instructions.raw_instruction  // CSV DATA
     planner.next_position_checked -> data_collector_instructions.next_position_checked
