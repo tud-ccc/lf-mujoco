@@ -1,1 +1,1 @@
-python3 data_analysis_csv/main_analysis.py
+python3 data_analysis/main_analysis.py

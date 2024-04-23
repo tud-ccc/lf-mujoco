@@ -3,8 +3,9 @@ target Cpp {
   }
 
   import Planner from "../src/control/Planner.lf"
+  import CSV_Instructions from "../src/collect_data/CSV_Instructions.lf"
+  import CSV_WorldData from "../src/collect_data/CSV_WorldData.lf"
   import PlannerTester from "planner_testing/PlannerTester.lf"
-
 
   public preamble {=
     #ifndef TEST_START_UP
@@ -18,6 +19,8 @@ target Cpp {
     //the planner should at every point in time receive an input triplet and give back an input triplet
     planner = new Planner()
     planner_tester = new PlannerTester()
+    data_collector_instructions = new CSV_Instructions(instructions_path = "../data_analysis/data_testing/instructions.csv")
+    data_collector_world_data = new CSV_WorldData(data_path = "../data_analysis/data_testing/data.csv")
     
 
 

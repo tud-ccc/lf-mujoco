@@ -11,21 +11,21 @@ public preamble {=
 =}
 
 
-reactor CSV_WorldData {
+reactor CSV_WorldData (data_path: std::string = "data_analysis/data/data.csv"){
 
   //robo facing
   input current_world_data: WorldData;
 
   reaction(startup){=
     WorldDataCollector wdc = WorldDataCollector();
-    wdc.write_csv_header("data_analysis_csv/data/data.csv");
+    wdc.write_csv_header(data_path);
   =}
 
   reaction(current_world_data) {=
         WorldData world_data_current_world_data = *current_world_data.get();
        
         WorldDataCollector wdc = WorldDataCollector(world_data_current_world_data);
-        wdc.write_to_csv("data_analysis_csv/data/data.csv", 0);
+        wdc.write_to_csv(data_path, 0);
 
         =}  
 }
