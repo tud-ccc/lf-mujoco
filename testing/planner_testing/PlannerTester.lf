@@ -22,7 +22,8 @@ reactor PlannerTester {
 
   timer t(2 s, 8 ms)
 
-  reaction(next_position_checked) {=
+  reaction(t) {=
+      std::cout << "Robo X Arm Fake start up" << std::endl;
 
   =}
 }

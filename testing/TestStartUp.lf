@@ -2,7 +2,7 @@ target Cpp {
     cmake-include: "testing.cmake"
   }
 
-  import Planner from "../control/Planner.lf"
+  import Planner from "../src/control/Planner.lf"
   import PlannerTester from "planner_testing/PlannerTester.lf"
 
   public preamble {=
