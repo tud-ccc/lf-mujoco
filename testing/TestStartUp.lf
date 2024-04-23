@@ -27,7 +27,9 @@ target Cpp {
     planner_tester.planner_last_position ->planner.last_position
 
     //planner_tester <--> data_collector
-
+    planner_tester.planner_raw_instruction ->data_collector_instructions.raw_instruction
+    planner_tester.planner_current_position ->data_collector_instructions.current_position
+    planner.next_position_checked ->data_collector_instructions.next_position_checked
 
 
   }
