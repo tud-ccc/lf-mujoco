@@ -23,8 +23,8 @@ target Cpp {
     //planner <--> interface
     planner.next_position_checked -> planner_tester.next_position_checked
     planner_tester.planner_raw_instruction ->planner.raw_instruction
-    planner_tester.planner_current_position ->planner.current_position_planner
-    planner_tester.planner_last_position ->planner.last_position_planner
+    planner_tester.planner_current_position ->planner.current_position
+    planner_tester.planner_last_position ->planner.last_position
 
 
 
