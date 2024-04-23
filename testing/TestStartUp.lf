@@ -4,7 +4,6 @@ target Cpp {
 
   import Planner from "../src/control/Planner.lf"
   import CSV_Instructions from "../src/collect_data/CSV_Instructions.lf"
-  import CSV_WorldData from "../src/collect_data/CSV_WorldData.lf"
   import PlannerTester from "planner_testing/PlannerTester.lf"
 
   public preamble {=
@@ -20,15 +19,14 @@ target Cpp {
     planner = new Planner()
     planner_tester = new PlannerTester()
     data_collector_instructions = new CSV_Instructions(instructions_path = "../data_analysis/data_testing/instructions.csv")
-    data_collector_world_data = new CSV_WorldData(data_path = "../data_analysis/data_testing/data.csv")
     
-
-
-    //planner <--> interface
+    //planner <--> planner_tester
     planner.next_position_checked -> planner_tester.next_position_checked
     planner_tester.planner_raw_instruction ->planner.raw_instruction
     planner_tester.planner_current_position ->planner.current_position
     planner_tester.planner_last_position ->planner.last_position
+
+    //planner_tester <--> data_collector
 
 
 

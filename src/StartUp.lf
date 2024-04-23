@@ -53,7 +53,8 @@ target Cpp {
     last_position_holder.current_position_planner-> planner.current_position
     last_position_holder.last_position_planner -> planner.last_position
   
-    controller.raw_instruction -> data_collector_instructions.raw_instruction  // CSV DATA
+    // CSV DATA
+    controller.raw_instruction -> data_collector_instructions.raw_instruction  
     planner.next_position_checked -> data_collector_instructions.next_position_checked
     decoder.current_position -> data_collector_instructions.current_position
   
