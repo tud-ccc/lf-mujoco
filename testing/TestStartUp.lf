@@ -3,8 +3,7 @@ target Cpp {
   }
 
   import Planner from "../src/control/Planner.lf"
-  import PlannerTesterAwkward from "planner_testing/PlannerTesterAwkward.lf"
-  import PlannerTesterLogicalAction from "planner_testing/PlannerTesterLogicalAction.lf"
+  import PlannerTester from "planner_testing/PlannerTester.lf"
 
 
   public preamble {=
@@ -18,7 +17,7 @@ target Cpp {
   main reactor TestStartUp {
     //the planner should at every point in time receive an input triplet and give back an input triplet
     planner = new Planner()
-    planner_tester = new PlannerTesterAwkward()
+    planner_tester = new PlannerTester()
     
 
 
