@@ -4,6 +4,7 @@ target_include_directories(${LF_MAIN_TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/.
 # in order to include also the .cpp files we execute these two commands
 ADD_LIBRARY(cpp_files 
     ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_vector.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_position_evaluator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_position_evaluator.cpp)
 target_link_libraries(${LF_MAIN_TARGET} cpp_files)
 
