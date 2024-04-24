@@ -32,7 +32,10 @@ double Vector::get_arithmetic_length() {
   return sqrt(sq_X + sq_Y + sq_Z);
 }
 
-Vector Vector::normalize() { return this->scale((1.0 / this->get_arithmetic_length())); }
+Vector Vector::normalize() {
+  assert_for_null_vector(*this);
+  return this->scale((1.0 / this->get_arithmetic_length()));
+}
 
 Vector Vector::scale(double scalar) {
   assert_for_NULLs(scalar);
@@ -52,6 +55,7 @@ double VectorArithmetics::get_dot_product(Vector vec1, Vector vec2) {
   return vec1.X_ * vec2.X_ + vec1.Y_ * vec2.Y_ + vec1.Z_ * vec2.Z_;
 }
 double VectorArithmetics::get_angle(Vector vec1, Vector vec2) {
+  assert_for_null_vector(vec1, vec2);
   assert_for_NULLs(vec1, vec2);
   double angle_in_degree =
       acos(this->get_dot_product(vec1, vec2) / (vec1.get_arithmetic_length() * vec2.get_arithmetic_length()));

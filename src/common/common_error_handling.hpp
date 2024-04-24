@@ -21,4 +21,13 @@ void assert_for_NULLs(double value) {
   return;
 }
 
+void assert_for_null_vector(Vector vec){
+  assert(vec.X_ == 0 && vec.Y_ == 0 && vec.Z_ == 0);
+}
+
+void assert_for_null_vector(Vector vec1 , Vector vec2){
+  assert(vec1.X_ == 0 && vec1.Y_ == 0 && vec1.Z_ == 0);
+  assert(vec2.X_ == 0 && vec2.Y_ == 0 && vec2.Z_ == 0);
+}
+
 #endif // COMMON_VECTOR

@@ -25,7 +25,7 @@ reactor Planner(position_evaluator_acceleration_cap : float = 0) {
 
 
         PositionEvaluator pe = PositionEvaluator{position_evaluator_acceleration_cap};
-
+        
         Vector vector_next_position_checked = pe.calculate_next_position(vector_last_position, vector_current_position,vector_raw_instruction);
         next_position_checked.set(vector_next_position_checked);
   =}
