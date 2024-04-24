@@ -38,7 +38,7 @@ reactor PlannerTester {
     planner_current_position.set(current_current_position);
     planner_last_position.set(current_last_position);
     //debug print 
-    std::cout << "This should print every 100 milliseconds" << std::endl;
+    std::cout << "This should print every Second" << std::endl;
 
   =}
 
