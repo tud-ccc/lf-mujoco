@@ -27,7 +27,7 @@ target Cpp {
   main reactor StartUp {
     controller = new RobotControl(positions = {={Vector{400, -75, 0 }, Vector{475, 0, 0 }, Vector{400, 75, 0}, Vector{325, 0, 0}}=} )
     decoder = new WorldDataDecoder()
-    planner = new Planner(position_evaluator_acceleration_cap = 0.1)
+    planner = new Planner(position_evaluator_acceleration_cap = 0.1, position_evaluator_max_step_length = 1)
     interface = new XArmInterface()
     last_position_holder = new LastPositionHolder(initial_last_position = {=Vector{400, -75,0}=})
   

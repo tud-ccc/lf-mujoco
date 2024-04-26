@@ -6,12 +6,14 @@
 class PositionEvaluator {
 private:
   double acceleration_cap_;
-  VectorArithmetics va_;
+  double max_step_length_;
+    
+    VectorArithmetics va_;
 
 public:
   PositionEvaluator(){};
 
-  PositionEvaluator(double acceleration_cap);
+  PositionEvaluator(double acceleration_cap, double max_step_length);
   Vector calculate_offset_vector_given_max_acceleration(Vector last_position, Vector current_position,
                                                         Vector raw_instruction, double acceleration_length);
 
