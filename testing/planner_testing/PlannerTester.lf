@@ -30,20 +30,29 @@ reactor PlannerTester {
   =}
 
   reaction(next_input_arrived) -> planner_raw_instruction, planner_current_position, planner_last_position {=
-    //state adaption
+   
+    //get Vector out of input_port
+    Vector next_input_arrived_as_vector = *next_input_arrived.get(); 
+
+    //state adaption since we are moving
     current_last_position = current_current_position; 
-    current_current_position = *next_input_arrived.get(); 
-    //sending new commands
+    current_current_position = next_input_arrived_as_vector;
+
+    //finished
+    if(current_current_position.equals(current_raw_instruction)){
+      std::cout << "We have finished the calculation" << std::endl;
+      return;
+    }
+
+    //sending new commands 
     planner_raw_instruction.set(current_raw_instruction);
     planner_current_position.set(current_current_position);
     planner_last_position.set(current_last_position);
-    //debug print 
-    std::cout << "This should print every Second" << std::endl;
 
   =}
 
   reaction(next_position_checked)-> next_input_arrived {= 
-    next_input_arrived.schedule(next_position_checked.get(),100ms);
+    next_input_arrived.schedule(next_position_checked.get(),5ms);
    =}
 
 }
