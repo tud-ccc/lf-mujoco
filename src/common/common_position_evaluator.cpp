@@ -27,11 +27,10 @@ Vector PositionEvaluator::calculate_offset_vector_given_max_acceleration(Vector 
   acceleration_vector.to_string();
 
   Vector offset_vector = this->va_.add_vectors(next_logical_step_offset_vector, acceleration_vector);
-  if (offset_vector.get_arithmetic_length() > max_step_length){offset_vector = offset_vector.normalize().scale(this->max_step_length_);}  
+  if (offset_vector.get_arithmetic_length() > this->max_step_length_){offset_vector = offset_vector.normalize().scale(this->max_step_length_);}  
   std::cout << "Now the offset_vector:" << std::endl;
   offset_vector.to_string();
 
-  std::cout << "##### End of calculation #####" << std::endl;
 
   return offset_vector;
 }
