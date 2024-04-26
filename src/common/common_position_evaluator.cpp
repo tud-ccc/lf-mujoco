@@ -23,7 +23,7 @@ Vector PositionEvaluator::calculate_offset_vector_given_max_acceleration(Vector 
   next_logical_step.to_string();
 
   Vector acceleration_vector = this->va_.get_delta_vector(next_logical_step, raw_instruction);
-  acceleration_vector = acceleration_vector.normalize().scale(acceleration_length);
+  if (acceleration_vector.get_arithmetic_length() > acceleration_length){acceleration_vector = acceleration_vector.normalize().scale(acceleration_length);}
   std::cout << "Now the acceleration_vector:" << std::endl;
   acceleration_vector.to_string();
 
