@@ -51,3 +51,4 @@ instructions.csv
 data_analysis/Results
 data_analysis/.venv/
 data_analysis/one_trajectory_analysis/__pycache__
+data_analysis/data_testing/
