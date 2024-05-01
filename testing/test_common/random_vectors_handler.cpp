@@ -71,5 +71,10 @@ RandomVectorsHandler::get_vector_triplet_from_csv_rows(int index,
 }
 
 std::tuple<Vector, Vector, Vector> RandomVectorsHandler::get_vector_triplet_at_position(int index) const{
+  assert(index>= 0 && index < this->vector_of_triplets_.size()); 
   return this->vector_of_triplets_.at(index);
+}
+
+bool RandomVectorsHandler::index_is_according_to_bounds(int index) const{
+  return index>= 0 && index < this->vector_of_triplets_.size();
 }

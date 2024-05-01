@@ -42,6 +42,8 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
 
   reaction(la_start_new_trajectory)->  planner_raw_instruction, planner_current_position, planner_last_position{=
       // Reads current index
+      if(random_vectors_handler.index_is_according_to_bounds(random_vectors_index)){
+      
       std::tuple<Vector, Vector, Vector> vectors = random_vectors_handler.get_vector_triplet_at_position(random_vectors_index);
 
       current_last_position = std::get<0>(vectors);
@@ -54,15 +56,19 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
 
       //increment index
       random_vectors_index += 1;
+      } else {
+        std::cout << "##### ##### Finished all trajectories ##### #####" << std::endl;
+      } 
   
   =}
 
   reaction(la_trajectory_finished) -> transfer_travelled_path, transfer_file, la_start_new_trajectory {=
 
-      std::cout << "finished one trajectory" << std::endl;
+      std::cout << "Finished one trajectory" << std::endl;
       transfer_travelled_path.set(travelled_path);
       transfer_file.set("data_analysis/data_testing/instructions.csv");
-      // start_new_trajectory.schedule();
+      
+      la_start_new_trajectory.schedule(0ms);
 
   =}
 
