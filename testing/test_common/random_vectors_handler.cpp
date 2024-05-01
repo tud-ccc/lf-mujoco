@@ -1,7 +1,7 @@
 #include "random_vectors_handler.hpp"
 #include "common_vector.hpp"
 
-
+#include <cassert>
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
@@ -11,12 +11,10 @@
 #include <vector>
 
 RandomVectorsHandler::RandomVectorsHandler(std::string path_to_vectors) {
-
-  //retreive vectors once 
-  this->vector_of_rows_ = this->get_csv_rows(path_to_vectors);
-
+  // retreive vectors once
+  this->vector_of_triplets_ = this->get_csv_rows_vec_of_triplets(path_to_vectors);
 }
-std::vector<std::vector<std::string>> RandomVectorsHandler::get_csv_rows(std::string path_to_vectors) {
+std::vector<std::vector<std::string>> RandomVectorsHandler::get_csv_rows_vec_of_vecs(std::string path_to_vectors) {
   std::ifstream input{path_to_vectors};
   std::vector<std::vector<std::string>> csvRows;
 
@@ -40,34 +38,39 @@ std::vector<std::vector<std::string>> RandomVectorsHandler::get_csv_rows(std::st
   }
   return csvRows;
 }
+std::vector<std::tuple<Vector, Vector, Vector>>
+RandomVectorsHandler::get_csv_rows_vec_of_triplets(std::string path_to_vectors) {
+  std::vector<std::vector<std::string>> csv_rows_vec_of_vecs = this->get_csv_rows_vec_of_vecs(path_to_vectors);
+  std::cout << csv_rows_vec_of_vecs.size() << std::endl;
 
-std::tuple<Vector, Vector, Vector> RandomVectorsHandler::get_vector_triplet_from_csv(int index) {
+  std::vector<std::tuple<Vector, Vector, Vector>> vector_of_triplets;
+
+  for (int i = 0; i < csv_rows_vec_of_vecs.size() / 3; i++) {
+    std::tuple<Vector, Vector, Vector> vector_triplet =
+        this->get_vector_triplet_from_csv_rows(i * 3, csv_rows_vec_of_vecs);
+    vector_of_triplets.push_back(vector_triplet);
+  }
+  return vector_of_triplets;
+}
+
+std::tuple<Vector, Vector, Vector>
+RandomVectorsHandler::get_vector_triplet_from_csv_rows(int index,
+                                                       std::vector<std::vector<std::string>> csv_rows_vec_of_vecs) {
   std::tuple<Vector, Vector, Vector> vectors;
 
-  std::vector<std::string> vec_1 = this->vector_of_rows_.at(index);
-  std::vector<std::string> vec_2 = this->vector_of_rows_.at(index + 1);
-  std::vector<std::string> vec_3 = this->vector_of_rows_.at(index + 2);
+  std::vector<std::string> vec_1 = csv_rows_vec_of_vecs.at(index);
+  std::vector<std::string> vec_2 = csv_rows_vec_of_vecs.at(index + 1);
+  std::vector<std::string> vec_3 = csv_rows_vec_of_vecs.at(index + 2);
 
   Vector last_position = Vector{std::stod(vec_1.at(0)), std::stod(vec_1.at(1)), std::stod(vec_1.at(2))};
   Vector current_position = Vector{std::stod(vec_2.at(0)), std::stod(vec_2.at(1)), std::stod(vec_2.at(2))};
   Vector raw_instruction = Vector{std::stod(vec_3.at(0)), std::stod(vec_3.at(1)), std::stod(vec_3.at(2))};
-
-  last_position.to_string();
-
-  current_position.to_string();
-  raw_instruction.to_string();
 
   vectors = std::make_tuple(last_position, current_position, raw_instruction);
 
   return vectors;
 }
 
-
-void RandomVectorsHandler::print_csvRows() {
-  for (const std::vector<std::string>& row : this->vector_of_rows_) {
-    for (const std::string& value : row) {
-      std::cout << std::setw(10) << value;
-    }
-    std::cout << "\n";
-  }
+std::tuple<Vector, Vector, Vector> RandomVectorsHandler::get_vector_triplet_at_position(int index) {
+  return this->vector_of_triplets_.at(index);
 }

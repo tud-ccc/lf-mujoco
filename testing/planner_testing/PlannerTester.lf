@@ -4,6 +4,7 @@ public preamble {=
   #ifndef PLANNERTESTER
   #define PLANNERTESTER
   #include "common_vector.hpp"
+  #include "random_vectors_handler.hpp"
 
 
   #endif //ROBOXARM
@@ -16,43 +17,67 @@ reactor PlannerTester {
   output planner_current_position: Vector
   output planner_raw_instruction: Vector
   
-  state current_last_position: Vector = {=Vector{-1,-1,0}=}
-  state current_current_position: Vector = {=Vector{0,0,0}=}
-  state current_raw_instruction: Vector = {=Vector{1,1,0}=}
+  state current_last_position: Vector 
+  state current_current_position: Vector
+  state current_raw_instruction: Vector
+
+  state random_vectors_index: int = 0;
 
 
-  logical action next_input_arrived: Vector
+  logical action la_next_position_checked: Vector
 
   reaction(startup)-> planner_raw_instruction, planner_current_position, planner_last_position{=
+
+    RandomVectorsHandler rvH = RandomVectorsHandler{"testing/testing_input_data/random_vectors.csv"}; 
+    //every row is a vector, but the row at position 0 is the header
+    std::tuple<Vector, Vector, Vector> vectors = rvH.get_vector_triplet_at_position(0);
+
+    current_last_position = std::get<0>(vectors);
+    current_current_position = std::get<1>(vectors);
+    current_raw_instruction = std::get<2>(vectors);
+    
+
     planner_raw_instruction.set(current_raw_instruction);
     planner_current_position.set(current_current_position);
     planner_last_position.set(current_last_position);
+
+    random_vectors_index = random_vectors_index + 1; 
+
+
   =}
 
-  reaction(next_input_arrived) -> planner_raw_instruction, planner_current_position, planner_last_position {=
+  reaction(la_next_position_checked) -> planner_raw_instruction, planner_current_position, planner_last_position {=
    
     //get Vector out of input_port
-    Vector next_input_arrived_as_vector = *next_input_arrived.get(); 
-
-    //state adaption since we are moving
-    current_last_position = current_current_position; 
-    current_current_position = next_input_arrived_as_vector;
+    Vector next_position_checked = *la_next_position_checked.get();     
 
     //finished
-    if(current_current_position.equals(current_raw_instruction)){
-      std::cout << "We have finished the calculation" << std::endl;
-      return;
-    }
+    if(next_position_checked.equals(current_raw_instruction)){
 
-    //sending new commands 
-    planner_raw_instruction.set(current_raw_instruction);
-    planner_current_position.set(current_current_position);
-    planner_last_position.set(current_last_position);
+      std::cout << "finished one trajectory" << std::endl;
+
+      //sending new commands 
+      planner_raw_instruction.set(current_raw_instruction);
+      planner_current_position.set(current_current_position);
+      planner_last_position.set(current_last_position);
+
+      
+    }else {
+
+      //state adaption since we are moving
+      current_last_position = current_current_position; 
+      current_current_position = next_position_checked;
+
+      //sending new commands 
+      planner_raw_instruction.set(current_raw_instruction);
+      planner_current_position.set(current_current_position);
+      planner_last_position.set(current_last_position);
+  }
 
   =}
 
-  reaction(next_position_checked)-> next_input_arrived {= 
-    next_input_arrived.schedule(next_position_checked.get(),5ms);
+  reaction(next_position_checked)-> la_next_position_checked {= 
+    la_next_position_checked.schedule(next_position_checked.get(),5ms);
    =}
 
 }
