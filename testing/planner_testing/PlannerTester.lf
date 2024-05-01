@@ -64,7 +64,7 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
   reaction(la_trajectory_finished) -> transfer_travelled_path, transfer_file, la_start_new_trajectory {=
       std::cout << "Finished one trajectory" << std::endl;
       
-      std::string path = "data_analysis/data_testing/";
+      std::string path = "testing/testing_analysis/planner_multiple_trajectories_data/";
       std::string file_name = "instructions";
       std::string padding;
 
