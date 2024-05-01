@@ -10,7 +10,7 @@ public preamble {=
   #endif //ROBOXARM
 =}
 
-reactor PlannerTester(random_vector_handler: {=RandomVectorsHandler=} = {=RandomVectorsHandler{""}=}) {
+reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=RandomVectorsHandler{""}=}) {
   input next_position_checked: Vector  // planner facing
 
   output planner_last_position: Vector
@@ -28,7 +28,7 @@ reactor PlannerTester(random_vector_handler: {=RandomVectorsHandler=} = {=Random
 
   reaction(startup)-> planner_raw_instruction, planner_current_position, planner_last_position{=
 
-    std::tuple<Vector, Vector, Vector> vectors = random_vector_handler.get_vector_triplet_at_position(0);
+    std::tuple<Vector, Vector, Vector> vectors = random_vectors_handler.get_vector_triplet_at_position(0);
 
     current_last_position = std::get<0>(vectors);
     current_current_position = std::get<1>(vectors);
