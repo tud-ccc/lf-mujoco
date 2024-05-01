@@ -1,4 +1,4 @@
-from .vector import VectorArithmentics
+from vector import VectorArithmentics
 
 
 class Analyzer:

@@ -2,8 +2,8 @@
 import pandas
 
 
-from .analyzer import Analyzer
-from .plotter_and_parser import Plotter, Parser
+from analyzer import Analyzer
+from plotter_and_parser import Plotter, Parser
 
 class AnalysisInterface:
     def __init__(self, instruction_file_path):

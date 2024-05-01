@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from .vector import Vector
+from vector import Vector
 
 class Plotter: 
     def __init__(self, instructions_csv):
