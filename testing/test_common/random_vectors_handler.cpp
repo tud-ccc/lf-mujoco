@@ -70,6 +70,6 @@ RandomVectorsHandler::get_vector_triplet_from_csv_rows(int index,
   return vectors;
 }
 
-std::tuple<Vector, Vector, Vector> RandomVectorsHandler::get_vector_triplet_at_position(int index) {
+std::tuple<Vector, Vector, Vector> RandomVectorsHandler::get_vector_triplet_at_position(int index) const{
   return this->vector_of_triplets_.at(index);
 }

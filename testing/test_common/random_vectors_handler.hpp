@@ -16,7 +16,7 @@ private:
 
 public:
   RandomVectorsHandler(std::string path_to_vectors);
-  std::tuple<Vector, Vector, Vector> get_vector_triplet_at_position(int index);
+  std::tuple<Vector, Vector, Vector> get_vector_triplet_at_position(int index) const;
 };
 
 #endif // RANDOM_VECTORS_HANDLER
