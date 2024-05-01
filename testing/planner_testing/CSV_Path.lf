@@ -1,0 +1,24 @@
+target Cpp
+
+public preamble {=
+  #ifndef CSVDATA_TESTING_INSTRUCTIONS
+  #define CSVDATA_TESTING_INSTRUCTIONS
+  #include "path_collector.hpp"
+  #include "common_vector.hpp"
+  #include <vector>
+
+
+  #endif //CSVDATA
+=}
+
+reactor CSVPath {
+  input robo_path: std::vector<Vector>  // robo facing
+  input file: std::string
+
+
+  reaction(robo_path, file) {=
+    PathCollector pc = PathCollector{*robo_path.get(), *file.get()};
+    pc.write_path_csv_header();
+    pc.write_path_to_csv();
+  =}
+}

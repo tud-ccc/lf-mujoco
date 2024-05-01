@@ -5,6 +5,7 @@ public preamble {=
   #define PLANNERTESTER
   #include "common_vector.hpp"
   #include "random_vectors_handler.hpp"
+  #include <vector>
 
 
   #endif //ROBOXARM
@@ -21,56 +22,70 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
   state current_current_position: Vector
   state current_raw_instruction: Vector
 
+  output transfer_travelled_path: std::vector<Vector>
+  output transfer_file: std::string
+
+  state travelled_path: std::vector<Vector>
+
   state random_vectors_index: int = 0;
 
+  logical action la_start_new_trajectory: void
+  logical action la_trajectory_finished: void
 
   logical action la_next_position_checked: Vector
 
-  reaction(startup)-> planner_raw_instruction, planner_current_position, planner_last_position{=
 
-    std::tuple<Vector, Vector, Vector> vectors = random_vectors_handler.get_vector_triplet_at_position(0);
+  reaction(startup)-> la_start_new_trajectory{=
+    //start the first path travelling
+    la_start_new_trajectory.schedule(0ms);
+  =}
 
-    current_last_position = std::get<0>(vectors);
-    current_current_position = std::get<1>(vectors);
-    current_raw_instruction = std::get<2>(vectors);
-    
+  reaction(la_start_new_trajectory)->  planner_raw_instruction, planner_current_position, planner_last_position{=
+      // Reads current index
+      std::tuple<Vector, Vector, Vector> vectors = random_vectors_handler.get_vector_triplet_at_position(random_vectors_index);
 
-    planner_raw_instruction.set(current_raw_instruction);
-    planner_current_position.set(current_current_position);
-    planner_last_position.set(current_last_position);
+      current_last_position = std::get<0>(vectors);
+      current_current_position = std::get<1>(vectors);
+      current_raw_instruction = std::get<2>(vectors);    
 
-    random_vectors_index = random_vectors_index + 1; 
+      planner_raw_instruction.set(current_raw_instruction);
+      planner_current_position.set(current_current_position);
+      planner_last_position.set(current_last_position);
 
+      //increment index
+      random_vectors_index += 1;
+  
+  =}
+
+  reaction(la_trajectory_finished) -> transfer_travelled_path, transfer_file, la_start_new_trajectory {=
+
+      std::cout << "finished one trajectory" << std::endl;
+      transfer_travelled_path.set(travelled_path);
+      transfer_file.set("data_analysis/data_testing/instructions.csv");
+      // start_new_trajectory.schedule();
 
   =}
 
-  reaction(la_next_position_checked) -> planner_raw_instruction, planner_current_position, planner_last_position {=
+  
+
+  reaction(la_next_position_checked) ->la_trajectory_finished, planner_raw_instruction, planner_current_position, planner_last_position {=
    
     //get Vector out of input_port
     Vector next_position_checked = *la_next_position_checked.get();     
     VectorArithmetics va = VectorArithmetics{};
 
-    //finished
     if(va.get_distance_between_point_vectors(next_position_checked,current_raw_instruction) <= 1){
-
-      std::cout << "finished one trajectory" << std::endl;
-
-      //sending new commands 
-      // planner_raw_instruction.set(current_raw_instruction);
-      // planner_current_position.set(current_current_position);
-      // planner_last_position.set(current_last_position);
-
-      
+      la_trajectory_finished.schedule(0ms);     
     }else {
+      travelled_path.push_back(current_current_position);
 
       //state adaption since we are moving
       current_last_position = current_current_position; 
       current_current_position = next_position_checked;
-
       //sending new commands 
       planner_raw_instruction.set(current_raw_instruction);
       planner_current_position.set(current_current_position);
-      planner_last_position.set(current_last_position);
+      planner_last_position.set(current_last_position); 
   }
 
   =}
