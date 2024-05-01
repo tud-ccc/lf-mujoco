@@ -41,8 +41,7 @@ std::vector<std::vector<std::string>> RandomVectorsHandler::get_csv_rows_vec_of_
 std::vector<std::tuple<Vector, Vector, Vector>>
 RandomVectorsHandler::get_csv_rows_vec_of_triplets(std::string path_to_vectors) {
   std::vector<std::vector<std::string>> csv_rows_vec_of_vecs = this->get_csv_rows_vec_of_vecs(path_to_vectors);
-  std::cout << csv_rows_vec_of_vecs.size() << std::endl;
-
+  assert(csv_rows_vec_of_vecs.size()%3 == 0 && "Error: vector of VectorTriplets has an uncompatible size");
   std::vector<std::tuple<Vector, Vector, Vector>> vector_of_triplets;
 
   for (int i = 0; i < csv_rows_vec_of_vecs.size() / 3; i++) {

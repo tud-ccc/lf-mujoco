@@ -50,16 +50,17 @@ reactor PlannerTester {
    
     //get Vector out of input_port
     Vector next_position_checked = *la_next_position_checked.get();     
+    VectorArithmetics va = VectorArithmetics{};
 
     //finished
-    if(next_position_checked.equals(current_raw_instruction)){
+    if(va.get_distance_between_point_vectors(next_position_checked,current_raw_instruction) <= 1){
 
       std::cout << "finished one trajectory" << std::endl;
 
       //sending new commands 
-      planner_raw_instruction.set(current_raw_instruction);
-      planner_current_position.set(current_current_position);
-      planner_last_position.set(current_last_position);
+      // planner_raw_instruction.set(current_raw_instruction);
+      // planner_current_position.set(current_current_position);
+      // planner_last_position.set(current_last_position);
 
       
     }else {
@@ -77,7 +78,7 @@ reactor PlannerTester {
   =}
 
   reaction(next_position_checked)-> la_next_position_checked {= 
-    la_next_position_checked.schedule(next_position_checked.get(),5ms);
+    la_next_position_checked.schedule(next_position_checked.get(),0ms);
    =}
 
 }
