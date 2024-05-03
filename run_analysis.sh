@@ -1,1 +1,0 @@
-python3 data_analysis/main_analysis.py

@@ -47,6 +47,7 @@ instructions.csv
 .idea
 *.so*
 
+*.sh
 
 data_analysis/Results
 data_analysis/.venv/
