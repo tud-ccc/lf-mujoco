@@ -50,6 +50,10 @@ class AnalysisInterface:
 
     def get_number_of_single_steps(self):
         return self.analyzer.get_vector_list_len()
+       
+    def get_max_angle_matched_to_distance(self):
+        return self.analyzer.get_max_angle_matched_to_distance()
+    
 
     def combine_analysis_print(self):
         print(f"Minimal distance : {self.get_min_distance()}")
@@ -61,6 +65,9 @@ class AnalysisInterface:
         
     
     def dump_into_dict(self):
+        max_angle_match_to_dis_dict = self.get_max_angle_matched_to_distance()
+        list_of_keys = list(max_angle_match_to_dis_dict.keys())
+        assert len(list_of_keys) == 4, "The dictionary does not have the correct size"
         dumped_information = {    
         "Minimal distance": self.get_min_distance(),
         "Maximum distance": self.get_max_distance(),
@@ -68,7 +75,11 @@ class AnalysisInterface:
         "Minimal angle":  self.get_min_angle(),
         "Maximum angle": self.get_max_angle(),
         "Mean angle":self.get_mean_angle(),
-        "Number of steps" : self.get_number_of_single_steps()
+        "Number of steps" : self.get_number_of_single_steps(),
+        str(list_of_keys[0]) : max_angle_match_to_dis_dict[list_of_keys[0]],
+        str(list_of_keys[1]) : max_angle_match_to_dis_dict[list_of_keys[1]],
+        str(list_of_keys[2]) : max_angle_match_to_dis_dict[list_of_keys[2]],
+        str(list_of_keys[3]) : max_angle_match_to_dis_dict[list_of_keys[3]]
         }
         return dumped_information
-    
+ 

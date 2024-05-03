@@ -27,6 +27,38 @@ class Analyzer:
         
         return angle_list
     
+    def get_list_of_angles_annotated_with_distance(self):
+        angle_distance_list = list()
+        for i in range(0, self.get_vector_list_len()-2):
+            vec_1 = self.vector_arithmetics.two_vectors_delta_vector(self.vec_list[i],self.vec_list[i+1])
+            vec_2 = self.vector_arithmetics.two_vectors_delta_vector(self.vec_list[i+1],self.vec_list[i+2])
+            angle =  self.vector_arithmetics.two_vectors_angle(vec_1,vec_2)
+            current_distance = vec_1.get_arithmetic_length()
+            angle_distance_list.append((angle, current_distance))        
+        return angle_distance_list
+    
+    def get_max_angle_matched_to_distance(self):
+        
+        angle_to_distance = self.get_list_of_angles_annotated_with_distance()
+        one_fourth_of_max_distance = self.get_max_distance()/4
+        
+        small_distances_cap = one_fourth_of_max_distance*1
+        small_middle_distances_cap = one_fourth_of_max_distance*2
+        huge_middle_distances_cap = one_fourth_of_max_distance*3
+        huge_distances_cap = one_fourth_of_max_distance*4
+
+        small_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <= small_distances_cap ]
+        small_middle_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <= small_middle_distances_cap ]
+        huge_middle_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <= huge_middle_distances_cap ]
+        huge_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <=  huge_distances_cap]
+       
+        dict = {}
+        dict[small_distances_cap] = max([angle for (angle, dis) in small_distances]) if small_distances else None
+        dict[small_middle_distances_cap] = max([angle for  (angle, dis) in small_middle_distances]) if small_middle_distances else None
+        dict[huge_middle_distances_cap] = max([angle for  (angle, dis) in huge_middle_distances]) if huge_middle_distances else None
+        dict[huge_distances_cap] =max([angle for  (angle, dis) in huge_distances]) if huge_distances else None
+        
+        return dict
 
     def get_vector_list_len(self):
         return len(self.vec_list)

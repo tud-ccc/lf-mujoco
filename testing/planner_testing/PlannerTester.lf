@@ -63,6 +63,7 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
 
   reaction(la_trajectory_finished) -> transfer_travelled_path, transfer_file, la_start_new_trajectory {=
 
+      if(random_vectors_index == 3) return;
       std::cout << "Finished one trajectory" << std::endl;
       
       std::string path = "testing/testing_output_data/";
