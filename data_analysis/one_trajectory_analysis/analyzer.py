@@ -48,10 +48,10 @@ class Analyzer:
         huge_distances_cap = one_fourth_of_max_distance*4
 
         small_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <= small_distances_cap ]
-        small_middle_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <= small_middle_distances_cap ]
-        huge_middle_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <= huge_middle_distances_cap ]
-        huge_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <=  huge_distances_cap]
-       
+        small_middle_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <= small_middle_distances_cap and dis > small_distances_cap ]
+        huge_middle_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <= huge_middle_distances_cap and dis > small_middle_distances_cap]
+        huge_distances = [(angle,dis) for (angle,dis) in angle_to_distance if dis <=  huge_distances_cap and dis > huge_middle_distances_cap]
+
         dict = {}
         dict[small_distances_cap] = max([angle for (angle, dis) in small_distances]) if small_distances else None
         dict[small_middle_distances_cap] = max([angle for  (angle, dis) in small_middle_distances]) if small_middle_distances else None
