@@ -29,9 +29,9 @@ public:
 
     std::ofstream csvfile;
     csvfile.open(this->file_, std::ios_base::openmode::_S_trunc);
-    write_header(csvfile, "X");
-    write_header(csvfile, "Y");
-    write_header(csvfile, "Z");
+    write_header(csvfile, "current_position_0");
+    write_header(csvfile, "current_position_1");
+    write_header(csvfile, "current_position_2");
     csvfile << "\n";
   }
 

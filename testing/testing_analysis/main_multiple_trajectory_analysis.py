@@ -3,7 +3,7 @@ sys.path.append('/home/benedict/Bibliothek/7.Semester/BachelorArbeit/Lf_projects
 from analyzer_result_gatherer import AnalyzerResultGatherer 
 
 def main():  
-    arg = AnalyzerResultGatherer("testing/testing_analysis/planner_multiple_trajectories_data/")
+    arg = AnalyzerResultGatherer("testing/testing_output_data/")
     arg.analyse_all_files()
 
 if __name__ == "__main__":

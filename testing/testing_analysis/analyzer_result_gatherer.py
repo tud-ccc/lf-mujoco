@@ -24,10 +24,10 @@ class AnalyzerResultGatherer:
                 interface = AnalysisInterface(self.trajectories_file_path + filename)
                 complete_analysis[filename] = interface.dump_into_dict()
 
-        print("We passed and now want to gather the information")
+        print("#### All trajectories have been analyzed #####")
         
         # Write the results to a JSON File to make it readable
         #
         #
-        with open("0000-overview.json", "w") as outfile:
+        with open("testing/testing_output_data/0000-overview.json", "w") as outfile:
             json.dump(complete_analysis, outfile)  
