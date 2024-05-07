@@ -54,7 +54,7 @@ double VectorArithmetics::get_dot_product(Vector vec1, Vector vec2) {
   assert_for_NULLs(vec1, vec2);
   return vec1.X_ * vec2.X_ + vec1.Y_ * vec2.Y_ + vec1.Z_ * vec2.Z_;
 }
-double VectorArithmetics::get_angle(Vector vec1, Vector vec2) {
+double VectorArithmetics::get_angle_in_degree(Vector vec1, Vector vec2) {
   assert_for_null_vector(vec1, vec2);
   assert_for_NULLs(vec1, vec2);
   double angle_in_degree =
