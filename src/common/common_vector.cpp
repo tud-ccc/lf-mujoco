@@ -45,7 +45,7 @@ Vector Vector::scale(double scalar) const {
   return Vector(this->X_ * scalar, this->Y_ * scalar, this->Z_ * scalar);
 }
 
-double VectorArithmetics::get_distance_between_point_vectors(Vector vec1, Vector vec2) {
+double VectorArithmetics::get_distance_between_point_vectors(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1, vec2);
   double diff_sq_X = pow(vec1.X_ - vec2.X_, 2);
   double diff_sq_Y = pow(vec1.Y_ - vec2.Y_, 2);
@@ -53,11 +53,11 @@ double VectorArithmetics::get_distance_between_point_vectors(Vector vec1, Vector
   return sqrt(diff_sq_X + diff_sq_Y + diff_sq_Z);
 }
 
-double VectorArithmetics::get_dot_product(Vector vec1, Vector vec2) {
+double VectorArithmetics::get_dot_product(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1, vec2);
   return vec1.X_ * vec2.X_ + vec1.Y_ * vec2.Y_ + vec1.Z_ * vec2.Z_;
 }
-double VectorArithmetics::get_angle_in_degree(Vector vec1, Vector vec2) {
+double VectorArithmetics::get_angle_in_degree(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1);
   assert_for_null_vector(vec1, vec2);
   double angle_in_degree =
@@ -65,7 +65,7 @@ double VectorArithmetics::get_angle_in_degree(Vector vec1, Vector vec2) {
   return angle_in_degree * 180 / PI;
 }
 
-double VectorArithmetics::get_angle_in_radians(Vector vec1, Vector vec2) {
+double VectorArithmetics::get_angle_in_radians(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1, vec2);
   assert_for_null_vector(vec1, vec2);
   if (this->linear_dependent(vec1, vec2)) {
@@ -80,24 +80,24 @@ double VectorArithmetics::get_angle_in_radians(Vector vec1, Vector vec2) {
   return angle_in_radians;
 }
 
-bool VectorArithmetics::linear_dependent(Vector vec1, Vector vec2) {
+bool VectorArithmetics::linear_dependent(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1, vec2);
   return !((vec1.X_ * vec2.Y_ - vec2.X_ * vec1.Y_) != 0 || (vec1.X_ * vec2.Z_ - vec2.X_ * vec1.Z_) != 0 ||
            (vec1.Y_ * vec2.Z_ - vec2.Y_ * vec1.Z_) != 0);
 }
 
-Vector VectorArithmetics::get_delta_vector(Vector vec1, Vector vec2) {
+Vector VectorArithmetics::get_delta_vector(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1, vec2);
   return Vector(vec2.X_ - vec1.X_, vec2.Y_ - vec1.Y_, vec2.Z_ - vec1.Z_);
 }
 
-Vector VectorArithmetics::get_normalized_delta_vector(Vector vec1, Vector vec2) {
+Vector VectorArithmetics::get_normalized_delta_vector(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1, vec2);
   Vector delta_vec = this->get_delta_vector(vec1, vec2);
   return delta_vec.normalize();
 }
 
-Vector VectorArithmetics::add_vectors(Vector vec1, Vector vec2) {
+Vector VectorArithmetics::add_vectors(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1, vec2);
   return Vector(vec1.X_ + vec2.X_, vec1.Y_ + vec2.Y_, vec1.Z_ + vec2.Z_);
 }

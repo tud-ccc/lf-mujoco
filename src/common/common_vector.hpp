@@ -31,14 +31,14 @@ public:
 
   VectorArithmetics(){};
 
-  double get_distance_between_point_vectors(Vector vec1, Vector vec2);
-  double get_dot_product(Vector vec1, Vector vec2);
-  double get_angle_in_degree(Vector vec1, Vector vec2);
-  double get_angle_in_radians(Vector vec1, Vector vec2); 
-    Vector get_delta_vector(Vector vec1, Vector vec2);
-    Vector get_normalized_delta_vector(Vector vec1, Vector vec2);
-    Vector add_vectors(Vector vec1, Vector vec2);
-    bool linear_dependent(Vector vec1, Vector vec2);
+  double get_distance_between_point_vectors(Vector vec1, Vector vec2) const;
+  double get_dot_product(Vector vec1, Vector vec2) const;
+  double get_angle_in_degree(Vector vec1, Vector vec2) const;
+  double get_angle_in_radians(Vector vec1, Vector vec2) const; 
+    Vector get_delta_vector(Vector vec1, Vector vec2) const;
+    Vector get_normalized_delta_vector(Vector vec1, Vector vec2) const;
+    Vector add_vectors(Vector vec1, Vector vec2) const;
+    bool linear_dependent(Vector vec1, Vector vec2) const;
   };
 
   class PositionTriplet {

@@ -12,7 +12,7 @@ PositionEvaluator::PositionEvaluator(double acceleration_cap, double max_step_le
   this->va_ = VectorArithmetics{};
 }
 Vector PositionEvaluator::calculate_offset_vector_given_max_acceleration(Vector last_position, Vector current_position,
-                                                                         Vector raw_instruction) {
+                                                                         Vector raw_instruction)  const{
 
   // initialize vector collection
   DeaccelerationController vcfd = DeaccelerationController{this->max_step_length_, 5};
@@ -44,14 +44,14 @@ Vector PositionEvaluator::calculate_offset_vector_given_max_acceleration(Vector 
   return vcfd.shorten_for_deacceleration(current_position, raw_instruction);
 }
 
-Vector PositionEvaluator::shorten_if_longer_than_max_stop_length(Vector next_logical_step_offset_vector) {
+Vector PositionEvaluator::shorten_if_longer_than_max_stop_length(Vector next_logical_step_offset_vector) const{
   if (next_logical_step_offset_vector.get_arithmetic_length() > this->max_step_length_)
     next_logical_step_offset_vector = next_logical_step_offset_vector.normalize().scale(this->max_step_length_);
   return next_logical_step_offset_vector;
 }
 
 Vector PositionEvaluator::calculate_next_position(Vector last_position, Vector current_position,
-                                                  Vector raw_instruction) {
+                                                  Vector raw_instruction) const{
 
   Vector offset_vector =
       this->calculate_offset_vector_given_max_acceleration(last_position, current_position, raw_instruction);
