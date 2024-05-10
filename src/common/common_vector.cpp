@@ -62,6 +62,26 @@ double VectorArithmetics::get_angle_in_degree(Vector vec1, Vector vec2) {
   return angle_in_degree * 180 / PI;
 }
 
+double VectorArithmetics::get_angle_in_radians(Vector vec1, Vector vec2) {
+  assert_for_null_vector(vec1, vec2);
+  assert_for_NULLs(vec1, vec2);
+  if (this->linear_dependent(vec1, vec2)) {
+    return 0;
+  }
+  double cos_alpha = this->get_dot_product(vec1, vec2) / (vec1.get_arithmetic_length() * vec2.get_arithmetic_length());
+  if (cos_alpha > 1) {
+    std::cout << "cos_alpha > 0" << cos_alpha << std::endl;
+    return 0;
+  }
+  double angle_in_radians = acos(cos_alpha);
+  return angle_in_radians;
+}
+
+bool VectorArithmetics::linear_dependent(Vector vec1, Vector vec2) {
+  return !((vec1.X_ * vec2.Y_ - vec2.X_ * vec1.Y_) != 0 || (vec1.X_ * vec2.Z_ - vec2.X_ * vec1.Z_) != 0 ||
+           (vec1.Y_ * vec2.Z_ - vec2.Y_ * vec1.Z_) != 0);
+}
+
 Vector VectorArithmetics::get_delta_vector(Vector vec1, Vector vec2) {
   assert_for_NULLs(vec1, vec2);
   return Vector(vec2.X_ - vec1.X_, vec2.Y_ - vec1.Y_, vec2.Z_ - vec1.Z_);
