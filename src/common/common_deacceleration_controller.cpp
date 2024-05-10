@@ -47,13 +47,16 @@ void DeaccelerationController::print_all_collected_vectors() const {
 }
 
 double DeaccelerationController::calculate_deacceleration_maximum() const {
-  // we need the or for arithmeticly unexact calculations
+  // we need the <or> for arithmeticly unexact calculations
   bool nlsov_and_ov_are_ld = this->va_.linear_dependent(this->next_logical_step_offset_vector_, this->offset_vector_);
   bool alpha_is_0 = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->offset_vector_) == 0;
   if (nlsov_and_ov_are_ld || alpha_is_0) {
     // std::cout << "Found a linear dependent pair of vectors" << std::endl;
     return this->next_logical_step_offset_vector_.get_arithmetic_length() -
            acceleration_vector_.get_arithmetic_length();
+  } else if (this->next_logical_step_offset_vector_.get_arithmetic_length() <
+             acceleration_vector_.get_arithmetic_length()) {
+    return 0;
   } else {
     double a = this->acceleration_vector_.get_arithmetic_length();
     // std::cout << "a :  " << a << std::endl;

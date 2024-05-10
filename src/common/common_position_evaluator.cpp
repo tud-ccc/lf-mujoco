@@ -29,8 +29,6 @@ Vector PositionEvaluator::calculate_offset_vector_given_max_acceleration(Vector 
   // next_logical_step.to_string();
 
   Vector acceleration_vector = this->va_.get_delta_vector(next_logical_step, raw_instruction);
-  // if (acceleration_vector.get_arithmetic_length() > this->acceleration_cap_){acceleration_vector =
-  // acceleration_vector.normalize().scale(this->acceleration_cap_);}
   acceleration_vector = acceleration_vector.normalize().scale(this->acceleration_cap_);
   vcfd.set_acceleration_vector(acceleration_vector);
   // std::cout << "Now the acceleration_vector:";
