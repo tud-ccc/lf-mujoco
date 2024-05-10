@@ -45,6 +45,7 @@ Vector PositionEvaluator::calculate_offset_vector_given_max_acceleration(Vector 
 }
 
 Vector PositionEvaluator::shorten_if_longer_than_max_stop_length(Vector next_logical_step_offset_vector) const{
+  //reduce if the previous state was unstable
   if (next_logical_step_offset_vector.get_arithmetic_length() > this->max_step_length_)
     next_logical_step_offset_vector = next_logical_step_offset_vector.normalize().scale(this->max_step_length_);
   return next_logical_step_offset_vector;

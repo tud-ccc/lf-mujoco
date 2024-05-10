@@ -96,7 +96,7 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
     Vector next_position_checked = *la_next_position_checked.get();     
     VectorArithmetics va = VectorArithmetics{};
 
-    if(va.get_distance_between_point_vectors(next_position_checked,current_raw_instruction) <= 1){
+    if(va.get_distance_between_point_vectors(next_position_checked,current_raw_instruction) <= 0.2){
       la_trajectory_finished.schedule(0ms);     
     }else {
       travelled_path.push_back(current_current_position);
