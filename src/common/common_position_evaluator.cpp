@@ -4,7 +4,7 @@
 
 #include "common_position_evaluator.hpp"
 #include "common_vector.hpp"
-#include "deacceleration_controller.hpp"
+#include "common_deacceleration_controller.hpp"
 
 PositionEvaluator::PositionEvaluator(double acceleration_cap, double max_step_length) {
   this->max_step_length_ = max_step_length;

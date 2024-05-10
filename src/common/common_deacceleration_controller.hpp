@@ -1,5 +1,5 @@
-#ifndef DEACCELERATION_CONTROLLER
-#define DEACCELERATION_CONTROLLER
+#ifndef common_deacceleration_controller
+#define common_deacceleration_controller
 
 #include "common_vector.hpp"
 

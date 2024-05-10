@@ -1,6 +1,6 @@
 
 #include "common_vector.hpp"
-#include "deacceleration_controller.hpp"
+#include "common_deacceleration_controller.hpp"
 // #include "common_error_handling.hpp"
 #include <cassert>
 #include <cmath>
