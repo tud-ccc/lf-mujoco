@@ -13,13 +13,13 @@ public:
   Vector(){};
   Vector(double X, double Y, double Z);
 
-  bool equals(Vector vec);
-  void to_string_id();
-  void to_string();
+  bool equals(Vector vec) const;
+  void to_string_id() const;
+  void to_string() const;
 
-  double get_arithmetic_length();
-  Vector normalize();
-  Vector scale(double scalar);
+  double get_arithmetic_length() const;
+  Vector normalize() const;
+  Vector scale(double scalar) const;
 };
 
 class VectorArithmetics {
