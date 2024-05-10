@@ -1,0 +1,4 @@
+#ifndef COLLECTOR_FOR_DEACC
+#define COLLECTOR_FOR_DEACC
+
+#endif
