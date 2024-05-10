@@ -10,7 +10,9 @@ target_include_directories(${LF_MAIN_TARGET} PUBLIC "${X_ARM_INCLUDE_PATH}")
 ADD_LIBRARY(cpp_files_common
     ${CMAKE_CURRENT_LIST_DIR}/common/common_vector.cpp
     ${CMAKE_CURRENT_LIST_DIR}/common/common_position_evaluator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/common/common_world_data.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/common/common_world_data.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/common/deacceleration_controller.cpp
+    )
 
 # add hpp files to library
 target_include_directories(cpp_files_common PRIVATE ${CMAKE_CURRENT_LIST_DIR}/common/)
