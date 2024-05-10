@@ -99,10 +99,10 @@ bool DeaccelerationController::decide_trimming() const {
   return (alpha < alpha_max) ? true : false;
 }
 
-double DeaccelerationController::calculate_speed_next_step(const Vector current_position, const Vector raw_instruction,
-                                                           const Vector offset_vector) const {
+double DeaccelerationController::calculate_speed_next_step(const Vector current_position,
+                                                           const Vector raw_instruction) const {
   double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
-  double max_speed = offset_vector.get_arithmetic_length();
+  double max_speed = this->offset_vector_.get_arithmetic_length();
   double min_speed = this->calculate_deacceleration_maximum();
   assert(max_speed >= min_speed >= 0 && "Max_speed is smaller than Min_speed");
   assert(distance_to_target >= 0 && "We have a negative distance to the target");
@@ -134,26 +134,24 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
   // assert_for_NaNs(this->acceleration_vector_);
   // assert_for_NaNs(this->offset_vector_);
 
-  const Vector offset_vector = this->offset_vector_;
-
   if (this->va_.get_distance_between_point_vectors(current_position, raw_instruction) < this->threshold_deaccelerate_) {
     if (this->next_logical_step_offset_vector_.get_arithmetic_length() >
         this->acceleration_vector_.get_arithmetic_length()) {
       if (this->decide_trimming()) {
-        Vector scaled_offset_vector = offset_vector;
-        double speed_for_next_step = this->calculate_speed_next_step(current_position, raw_instruction, offset_vector);
+        Vector scaled_offset_vector = this->offset_vector_;
+        double speed_for_next_step = this->calculate_speed_next_step(current_position, raw_instruction);
         // std::cout << "Speed for next step : " << speed_for_next_step << std::endl;
         return scaled_offset_vector.normalize().scale(speed_for_next_step);
       } else {
-        return offset_vector;
+        return this->offset_vector_;
       }
     } else {
-      Vector scaled_offset_vector = offset_vector;
-      double speed_for_next_step = this->calculate_speed_next_step(current_position, raw_instruction, offset_vector);
+      Vector scaled_offset_vector = this->offset_vector_;
+      double speed_for_next_step = this->calculate_speed_next_step(current_position, raw_instruction);
       // std::cout << "Speed for next step : " << speed_for_next_step << std::endl;
       return scaled_offset_vector.normalize().scale(speed_for_next_step);
     }
   } else {
-    return offset_vector;
+    return this->offset_vector_;
   }
 }

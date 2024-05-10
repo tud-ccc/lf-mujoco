@@ -17,8 +17,7 @@ private:
   void print_all_collected_vectors() const;
   double calculate_deacceleration_maximum() const;
   bool decide_trimming() const;
-  double calculate_speed_next_step(const Vector current_position, const Vector raw_instruction,
-                                   const Vector offset_vector) const;
+  double calculate_speed_next_step(const Vector current_position, const Vector raw_instruction) const;
 
 public:
   DeaccelerationController(double max_step_length, double threshold_deaccelerate);
