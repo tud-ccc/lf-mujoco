@@ -21,7 +21,7 @@ target Cpp {
   main reactor TestStartUp {
     //the planner should at every point in time receive an input triplet and give back an input triplet
     planner = new Planner(acceleration_cap = 0.3, max_step_length = 1)
-    velocity_control = new VelocityControl(acceleration_cap = 0.3, max_step_length = 1)
+    velocity_control = new VelocityControl(acceleration_cap = 0.3, max_step_length = 1, threshold_deaccelerate = 5)
     sanity_checker = new SanityChecker()
 
     planner_tester = new PlannerTester(random_vectors_handler =  {=RandomVectorsHandler{"testing/testing_input_data/random_vectors.csv"}=})

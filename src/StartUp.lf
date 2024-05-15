@@ -33,10 +33,10 @@ target Cpp {
     interface = new XArmInterface()
 
     //CONTROL
-    planner = new Planner(acceleration_cap = 0.1, max_step_length = 1)
+    planner = new Planner(acceleration_cap = 0.3, max_step_length = 1)
     controller = new RobotControl(positions = {={Vector{400, -75, 0 }, Vector{475, 0, 0 }, Vector{400, 75, 0}, Vector{325, 0, 0}}=} )
     last_position_holder = new LastPositionHolder(initial_last_position = {=Vector{400, -75,0}=})
-    velocity_control = new VelocityControl(acceleration_cap = 0.1, max_step_length = 1)
+    velocity_control = new VelocityControl(acceleration_cap = 0.3, max_step_length = 1, threshold_deaccelerate = 5)
     sanity_checker = new SanityChecker()
 
     //DATA  
