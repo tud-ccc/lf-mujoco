@@ -16,7 +16,7 @@ private:
   double threshold_deaccelerate_;
   void print_all_collected_vectors() const;
   double calculate_deacceleration_maximum() const;
-  bool decide_trimming() const;
+  bool alpha_greater_than_threshold() const;
   double calculate_speed_next_step(const Vector current_position, const Vector raw_instruction) const;
 
 public:

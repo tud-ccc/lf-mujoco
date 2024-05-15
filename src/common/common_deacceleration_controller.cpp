@@ -92,7 +92,7 @@ double DeaccelerationController::calculate_deacceleration_maximum() const {
     return c;
   }
 }
-bool DeaccelerationController::decide_trimming() const {
+bool DeaccelerationController::alpha_greater_than_threshold() const {
   double hypotenus = this->next_logical_step_offset_vector_.get_arithmetic_length();
   double A = this->acceleration_vector_.get_arithmetic_length();
   assert((hypotenus >= A) && "Hypotenus is smaller or equals to A");
@@ -140,7 +140,7 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
   if (this->va_.get_distance_between_point_vectors(current_position, raw_instruction) < this->threshold_deaccelerate_) {
     if (this->next_logical_step_offset_vector_.get_arithmetic_length() >
         this->acceleration_vector_.get_arithmetic_length()) {
-      if (this->decide_trimming()) {
+      if (this->alpha_greater_than_threshold()) {
         Vector scaled_offset_vector = this->offset_vector_;
         double speed_for_next_step = this->calculate_speed_next_step(current_position, raw_instruction);
         // std::cout << "Speed for next step : " << speed_for_next_step << std::endl;
