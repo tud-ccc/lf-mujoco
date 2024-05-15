@@ -8,7 +8,7 @@ public preamble {=
   #endif //VELOCITY_CONTROL
 =}
 
-reactor VelocityControl {
+reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double = 0 ) {
   
   input velocity_control_next_position: Vector
   output sanity_checker_next_position: Vector

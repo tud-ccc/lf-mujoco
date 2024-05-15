@@ -9,7 +9,7 @@ public preamble {=
   #endif //SANITY_CHECKER
 =}
 
-reactor Planner(position_evaluator_acceleration_cap : double = 0, position_evaluator_max_step_length : double = 0 ) {
+reactor Planner(acceleration_cap : double = 0, max_step_length : double = 0 ) {
   input planner_raw_instruction: Vector
   input planner_current_position: Vector
   input planner_last_position: Vector
@@ -24,7 +24,7 @@ reactor Planner(position_evaluator_acceleration_cap : double = 0, position_evalu
         Vector  vector_raw_instruction = *planner_raw_instruction.get();
 
 
-        PositionEvaluator pe = PositionEvaluator{position_evaluator_acceleration_cap, position_evaluator_max_step_length};
+        PositionEvaluator pe = PositionEvaluator{acceleration_cap, max_step_length};
         
         Vector vector_next_position_no_velocity_control = pe.calculate_next_position(vector_last_position, vector_current_position,vector_raw_instruction);
         velocity_control_next_position.set(vector_next_position_no_velocity_control);
