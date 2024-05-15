@@ -25,38 +25,39 @@ public:
 class VectorArithmetics {
 
 public:
-  double X_;
-  double Y_;
-  double Z_;
-
+ 
   VectorArithmetics(){};
 
   double get_distance_between_point_vectors(Vector vec1, Vector vec2) const;
   double get_dot_product(Vector vec1, Vector vec2) const;
   double get_angle_in_degree(Vector vec1, Vector vec2) const;
-  double get_angle_in_radians(Vector vec1, Vector vec2) const; 
-    Vector get_delta_vector(Vector vec1, Vector vec2) const;
-    Vector get_normalized_delta_vector(Vector vec1, Vector vec2) const;
-    Vector add_vectors(Vector vec1, Vector vec2) const;
-    bool linear_dependent(Vector vec1, Vector vec2) const;
-  };
+  double get_angle_in_radians(Vector vec1, Vector vec2) const;
+  Vector get_delta_vector(Vector vec1, Vector vec2) const;
+  Vector get_normalized_delta_vector(Vector vec1, Vector vec2) const;
+  Vector add_vectors(Vector vec1, Vector vec2) const;
+  bool linear_dependent(Vector vec1, Vector vec2) const;
+};
 
-  class PositionTriplet {
-  private:
-    Vector last_position_;
-    Vector current_position_;
-    Vector raw_instruction_;
+class VectorCollectionVelocityControl {
+private:
+  Vector next_logical_step_offset_vector_;
+  Vector next_logical_step_;
+  Vector acceleration_vector_;
+  Vector offset_vector_;
 
-  public:
-    PositionTriplet(Vector last_position, Vector current_position, Vector raw_instruction) {
-      this->last_position_ = last_position;
-      this->current_position_ = current_position;
-      this->raw_instruction_ = raw_instruction;
-    }
+public:
+  VectorCollectionVelocityControl(Vector next_logical_step_offset_vector, Vector next_logical_step, Vector acceleration_vector,
+                  Vector offset_vector) {
+    this->next_logical_step_offset_vector_ = next_logical_step_offset_vector;
+    this->next_logical_step_ = next_logical_step;
+    this->acceleration_vector_ = acceleration_vector;
+    this->offset_vector_ = offset_vector;
+  }
 
-    Vector get_last_position() { return this->last_position_; }
-    Vector get_current_position() { return this->current_position_; }
-    Vector get_raw_instruction() { return this->raw_instruction_; }
-  };
+  Vector get_next_logical_step_offset_vector() const { return this->next_logical_step_offset_vector_; }
+  Vector get_next_logical_step() const { return this->next_logical_step_; }
+  Vector get_acceleration_vector() const { return this->acceleration_vector_; }
+  Vector get_offset_vector() const { return this->offset_vector_; }
+};
 
 #endif // COMMON_VECTOR
