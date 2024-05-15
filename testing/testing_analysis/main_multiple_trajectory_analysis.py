@@ -30,8 +30,21 @@ def analyse_all_files_and_then_one_by_one():
         interface.show_points_of_vector_list_graphically_annotated()
         interface.get_max_angle_matched_to_distance()
 
-def main():  
+def analyse_one_file(path):
 
+    arg = AnalyzerResultGatherer("testing/testing_output_data/")
+    arg.analyse_all_files()
+
+    interface = AnalysisInterface(path)
+
+    interface.show_points_of_vector_list_graphically_annotated()
+    interface.get_max_angle_matched_to_distance()
+
+    return
+
+
+def main():  
+    analyse_one_file("testing/testing_output_data/instructions_000.csv")
     analyse_all_files_and_then_one_by_one()
 
 
