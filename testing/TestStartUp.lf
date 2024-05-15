@@ -3,8 +3,11 @@ target Cpp {
   }
 
   import Planner from "../src/control/Planner.lf"
+  import VelocityControl from "../src/control/VelocityControl.lf"
+  import SanityChecker from "../src/control/SanityChecker.lf"
   import PlannerTester from "planner_testing/PlannerTester.lf"
   import CSVPath from "planner_testing/CSV_Path.lf"
+
 
   public preamble {=
     #ifndef TEST_START_UP
@@ -18,16 +21,29 @@ target Cpp {
   main reactor TestStartUp {
     //the planner should at every point in time receive an input triplet and give back an input triplet
     planner = new Planner(position_evaluator_acceleration_cap = 0.3, position_evaluator_max_step_length = 1)
+    velocity_control = new VelocityControl()
+    sanity_checker = new SanityChecker()
+
     planner_tester = new PlannerTester(random_vectors_handler =  {=RandomVectorsHandler{"testing/testing_input_data/random_vectors.csv"}=})
     CSV_path = new CSVPath();
     
-    //planner <--> planner_tester
-    planner.next_position_checked -> planner_tester.next_position_checked
-    planner_tester.planner_raw_instruction ->planner.raw_instruction
-    planner_tester.planner_current_position ->planner.current_position
-    planner_tester.planner_last_position ->planner.last_position
 
-    //planner_tester <--> CSV_path
+
+    //Planner --> Velocity Control
+    planner.velocity_control_next_position -> velocity_control.velocity_control_next_position
+
+    //Velocity Control --> Sanity Checker
+    velocity_control.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
+
+    //Velocity Control --> Interface
+    sanity_checker.next_position_checked -> planner_tester.next_position_checked
+  
+    //Planner Tester --> Planner
+    planner_tester.planner_raw_instruction ->planner.planner_raw_instruction
+    planner_tester.planner_current_position ->planner.planner_current_position
+    planner_tester.planner_last_position ->planner.planner_last_position
+
+    //Planner Tester <--> CSV_path
     planner_tester.transfer_travelled_path -> CSV_path.robo_path
     planner_tester.transfer_file -> CSV_path.file
 
