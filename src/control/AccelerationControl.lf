@@ -1,0 +1,18 @@
+target Cpp
+
+public preamble {=
+  #ifndef ACCELERATION_CONTROL
+  #define ACCELERATION_CONTROL
+  #include "common_position_evaluator.hpp"
+  #include "common_vector.hpp"
+
+  #endif //ACCELERATION_CONTROL
+=}
+
+reactor AccelerationControl {
+  
+
+  reaction(startup){=
+  =}
+
+}
