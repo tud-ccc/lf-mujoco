@@ -46,73 +46,108 @@ void DeaccelerationController::print_all_collected_vectors() const {
   this->offset_vector_.to_string();
 }
 
-double DeaccelerationController::calculate_deacceleration_maximum() const {
-  // we need the <or> for arithmeticly unexact calculations
-  bool nlsov_and_ov_are_ld = this->va_.linear_dependent(this->next_logical_step_offset_vector_, this->offset_vector_);
-  bool alpha_is_0 = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->offset_vector_) == 0;
-  if (nlsov_and_ov_are_ld || alpha_is_0) {
-    // std::cout << "Found a linear dependent pair of vectors" << std::endl;
-    return this->next_logical_step_offset_vector_.get_arithmetic_length() -
-           acceleration_vector_.get_arithmetic_length();
-  } else if (this->next_logical_step_offset_vector_.get_arithmetic_length() <
-             acceleration_vector_.get_arithmetic_length()) {
-    return 0;
-  } else {
-    double a = this->acceleration_vector_.get_arithmetic_length();
-    // std::cout << "a :  " << a << std::endl;
+double DeaccelerationController::calclulate_min_speed_with_right_angled_triangle() const {
 
-    double alpha = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->offset_vector_);
-    // std::cout << "alpha :  " << alpha << std::endl;
+  double a = this->acceleration_vector_.get_arithmetic_length();
+  // std::cout << "a :  " << a << std::endl;
 
-    double b = this->next_logical_step_offset_vector_.get_arithmetic_length();
-    // std::cout << "b :  " << b << std::endl;
+  double alpha = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->offset_vector_);
+  // std::cout << "alpha :  " << alpha << std::endl;
 
-    double beta = asin((sin(alpha) * b) / a);
-    beta = PI - beta;
-    // std::cout << "beta : " << beta << std::endl;
+  double b = this->next_logical_step_offset_vector_.get_arithmetic_length();
+  // std::cout << "b :  " << b << std::endl;
 
-    double gamma = PI - beta - alpha;
-    // std::cout << "gamma : " << gamma << std::endl;
+  double beta = asin((sin(alpha) * b) / a);
+  beta = PI - beta;
+  // std::cout << "beta : " << beta << std::endl;
 
-    double c = (a * sin(gamma)) / sin(alpha);
-    // std::cout << "c : " << c << std::endl;
-    if (std::isnan(c)) {
-      std::cout << "Next_logical_step_offset_vector:";
-      this->next_logical_step_offset_vector_.to_string();
-      std::cout << "Offset_vector:";
-      this->offset_vector_.to_string();
-      std::cout << "a :  " << a << std::endl;
-      std::cout << "alpha :  " << alpha << std::endl;
-      std::cout << "b :  " << b << std::endl;
-      std::cout << "beta : " << beta << std::endl;
-      std::cout << "c : " << c << std::endl;
-      std::cout << "gamma : " << gamma << std::endl;
-      assert(false && "Preferred speed has a wrong value");
-    }
-    return c;
+  double gamma = PI - beta - alpha;
+  // std::cout << "gamma : " << gamma << std::endl;
+
+  double c = (a * sin(gamma)) / sin(alpha);
+  // std::cout << "c : " << c << std::endl;
+
+  if (std::isnan(c)) {
+    std::cout << "Next_logical_step_offset_vector:";
+    this->next_logical_step_offset_vector_.to_string();
+    std::cout << "Offset_vector:";
+    this->offset_vector_.to_string();
+    std::cout << "a :  " << a << std::endl;
+    std::cout << "alpha :  " << alpha << std::endl;
+    std::cout << "b :  " << b << std::endl;
+    std::cout << "beta : " << beta << std::endl;
+    std::cout << "c : " << c << std::endl;
+    std::cout << "gamma : " << gamma << std::endl;
+    assert(false && "Preferred speed has a wrong value");
   }
+  return c;
 }
+
 bool DeaccelerationController::alpha_greater_than_threshold() const {
   double hypotenus = this->next_logical_step_offset_vector_.get_arithmetic_length();
+  // std::cout << "hypotenus : " << hypotenus << std::endl;
+
   double A = this->acceleration_vector_.get_arithmetic_length();
+  // std::cout << "A : " << A << std::endl;
+
   assert((hypotenus >= A) && "Hypotenus is smaller or equals to A");
+
   double alpha_max = PI - acos(A / hypotenus);
+  // std::cout << "alpha_max : " << alpha_max << std::endl;
+
   double alpha = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->acceleration_vector_);
+  // std::cout << "alpha : " << alpha << std::endl;
+
   assert(alpha_max >= 0 && alpha >= 0 && "Either of the angles is smaller than 0");
+
   return (alpha < alpha_max) ? true : false;
 }
 
-double DeaccelerationController::calculate_speed_next_step(const Vector current_position,
-                                                           const Vector raw_instruction) const {
-  double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
-  double max_speed = this->offset_vector_.get_arithmetic_length();
-  double min_speed = this->calculate_deacceleration_maximum();
+double DeaccelerationController::calculate_min_speed()const {
+
+  bool next_logical_step_offset_vector_shorter_than_acc_vec =
+      this->next_logical_step_offset_vector_.get_arithmetic_length() < acceleration_vector_.get_arithmetic_length();
+
+  bool nlsov_and_ov_are_ld = this->va_.linear_dependent(this->next_logical_step_offset_vector_, this->offset_vector_);
+  bool alpha_is_0 = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->offset_vector_) == 0;
+  bool next_logical_step_offset_vector_linear_dependent_to_acc_vec = nlsov_and_ov_are_ld || alpha_is_0;
+
+  if (next_logical_step_offset_vector_shorter_than_acc_vec) {
+    return 0;
+  } else if (next_logical_step_offset_vector_linear_dependent_to_acc_vec) {
+    return this->next_logical_step_offset_vector_.get_arithmetic_length() -
+           acceleration_vector_.get_arithmetic_length();
+  } else if (this->alpha_greater_than_threshold()) {
+    return this->calclulate_min_speed_with_right_angled_triangle();
+  } else {
+    return this->offset_vector_.get_arithmetic_length();
+  }
+}
+
+double DeaccelerationController::calculate_max_speed()const {
+  double offset_vector_length = this->offset_vector_.get_arithmetic_length();
+  bool next_step_would_be_bigger_than_max_step_length = offset_vector_length > this->max_step_length_;
+  if (next_step_would_be_bigger_than_max_step_length) {
+    return this->max_step_length_;
+  } else {
+    return offset_vector_length;
+  }
+}
+double DeaccelerationController::calculate_speed_selected_by_PID(double distance_to_target) const{
+  double selected_speed = (distance_to_target < this->threshold_deaccelerate_)
+                               ? (distance_to_target * (this->max_step_length_ / this->threshold_deaccelerate_))
+                               : this->max_step_length_;
+  return selected_speed;
+}
+
+double DeaccelerationController::calculate_speed_next_step(const Vector current_position, const Vector raw_instruction,
+                                                           const double distance_to_target, const double max_speed,
+                                                           const double min_speed) const {
+  assert(max_speed <= this->max_step_length_ && "We are moving too fast");
   assert(max_speed >= min_speed >= 0 && "Max_speed is smaller than Min_speed");
   assert(distance_to_target >= 0 && "We have a negative distance to the target");
 
-  double preferred_speed = (distance_to_target < this->threshold_deaccelerate_)
-                               ? (distance_to_target * (this->max_step_length_ / this->threshold_deaccelerate_))
-                               : this->max_step_length_;
+  double preferred_speed = this->calculate_speed_selected_by_PID(distance_to_target);
   assert(preferred_speed >= 0 && "preferred_speed is negative");
   // std::cout << "Preferred_speed for next step : " << preferred_speed << std::endl;
 
@@ -130,6 +165,15 @@ double DeaccelerationController::calculate_speed_next_step(const Vector current_
   }
 }
 
+double DeaccelerationController::calculate_speed_next_step_wrapper(const Vector current_position,
+                                                                   const Vector raw_instruction) const  {
+  double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
+  double max_speed = this->calculate_max_speed();
+  double min_speed = this->calculate_min_speed();
+
+  return this->calculate_speed_next_step(current_position, raw_instruction, distance_to_target, max_speed, min_speed);
+}
+
 Vector DeaccelerationController::shorten_for_deacceleration(const Vector current_position,
                                                             const Vector raw_instruction) const {
   // assert_for_NaNs(this->next_logical_step_offset_vector_);
@@ -137,23 +181,14 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
   // assert_for_NaNs(this->acceleration_vector_);
   // assert_for_NaNs(this->offset_vector_);
 
-  if (this->va_.get_distance_between_point_vectors(current_position, raw_instruction) < this->threshold_deaccelerate_) {
-    if (this->next_logical_step_offset_vector_.get_arithmetic_length() >
-        this->acceleration_vector_.get_arithmetic_length()) {
-      if (this->alpha_greater_than_threshold()) {
-        Vector scaled_offset_vector = this->offset_vector_;
-        double speed_for_next_step = this->calculate_speed_next_step(current_position, raw_instruction);
-        // std::cout << "Speed for next step : " << speed_for_next_step << std::endl;
-        return scaled_offset_vector.normalize().scale(speed_for_next_step);
-      } else {
-        return this->offset_vector_;
-      }
-    } else {
-      Vector scaled_offset_vector = this->offset_vector_;
-      double speed_for_next_step = this->calculate_speed_next_step(current_position, raw_instruction);
-      // std::cout << "Speed for next step : " << speed_for_next_step << std::endl;
-      return scaled_offset_vector.normalize().scale(speed_for_next_step);
-    }
+  double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
+
+  bool near_to_target_start_deaccelerating = distance_to_target < this->threshold_deaccelerate_;
+
+  if (near_to_target_start_deaccelerating) {
+    Vector shortened_vector = this->offset_vector_;
+    double next_speed =  this->calculate_speed_next_step_wrapper(current_position, raw_instruction);
+    return shortened_vector.normalize().scale(next_speed);
   } else {
     return this->offset_vector_;
   }
