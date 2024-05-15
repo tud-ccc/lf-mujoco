@@ -10,12 +10,14 @@ public preamble {=
 
 reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double = 0 ) {
   
-  input velocity_control_next_position: Vector
+  input velocity_control_vector_collection: VectorCollectionVelocityControl
+  input velocity_control_current_position: Vector
+  input velocity_control_raw_instruction: Vector
+  
   output sanity_checker_next_position: Vector
 
-  reaction(velocity_control_next_position) -> sanity_checker_next_position {=
-  Vector vector_velocity_control_next_position = *velocity_control_next_position.get();
-  sanity_checker_next_position.set(vector_velocity_control_next_position);
+  reaction(velocity_control_vector_collection) -> sanity_checker_next_position {=
+  VectorCollectionVelocityControl vector_velocity_control_next_position = *velocity_control_vector_collection.get();
   =}
 
   reaction(startup){=

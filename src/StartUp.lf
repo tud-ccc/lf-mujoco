@@ -53,11 +53,12 @@ target Cpp {
     interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
     fake_hardware.interface_world_data -> interface.interface_world_data
 
-    // Controller --> Planner
+    // Controller --> Planner | Velocity Control
     controller.raw_instruction -> planner.planner_raw_instruction
+    controller.raw_instruction -> velocity_control.velocity_control_raw_instruction
 
     //Planner --> Velocity Control
-    planner.velocity_control_next_position -> velocity_control.velocity_control_next_position
+    planner.velocity_control_vector_collection -> velocity_control.velocity_control_vector_collection
 
     //Velocity Control --> Sanity Checker
     velocity_control.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
@@ -68,9 +69,11 @@ target Cpp {
     // Interface --> Decoder
     interface.world_data -> decoder.decoder_world_data
 
-    // Decoder --> Last Position Holder | Controller
+    // Decoder --> Last Position Holder | Controller | Velocity Control
     decoder.current_position -> last_position_holder.holder_current_position
     decoder.current_position -> controller.robot_control_current_position
+    decoder.current_position -> velocity_control.velocity_control_current_position
+
 
     // Last Position Holder  --> Planner
     last_position_holder.planner_current_position-> planner.planner_current_position
