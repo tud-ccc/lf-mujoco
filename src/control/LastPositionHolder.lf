@@ -24,7 +24,7 @@ reactor LastPositionHolder (initial_last_position: {=Vector=} = {=Vector{0, 0,0}
   =}
 
   reaction(holder_current_position) -> planner_current_position,planner_last_position  {=
-      Vector cur_pos = *current_position.get();
+      Vector cur_pos = *holder_current_position.get();
       planner_current_position.set(cur_pos);
       planner_last_position.set(this->last_position);
       this->last_position = cur_pos;

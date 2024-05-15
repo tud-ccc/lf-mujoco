@@ -22,7 +22,7 @@ reactor CSV_WorldData (data_path: std::string = ""){
   =}
 
   reaction(csv_world_data) {=
-        WorldData world_data_current_world_data = *current_world_data.get();
+        WorldData world_data_current_world_data = *csv_world_data.get();
        
         WorldDataCollector wdc = WorldDataCollector(world_data_current_world_data);
         wdc.write_to_csv(data_path, 0);

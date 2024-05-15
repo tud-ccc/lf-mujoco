@@ -19,9 +19,9 @@ reactor Planner(position_evaluator_acceleration_cap : double = 0, position_evalu
 
   reaction(planner_current_position,planner_last_position, planner_raw_instruction) -> next_position_checked {=
 
-        Vector  vector_current_position = *current_position.get();
-        Vector  vector_last_position = *last_position.get();
-        Vector  vector_raw_instruction = *raw_instruction.get();
+        Vector  vector_current_position = *planner_current_position.get();
+        Vector  vector_last_position = *planner_last_position.get();
+        Vector  vector_raw_instruction = *planner_raw_instruction.get();
 
 
         PositionEvaluator pe = PositionEvaluator{position_evaluator_acceleration_cap, position_evaluator_max_step_length};

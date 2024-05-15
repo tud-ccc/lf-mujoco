@@ -22,12 +22,12 @@ reactor XArmInterface {
 
   reaction(interface_world_data) -> world_data{=
       WorldData data = *interface_world_data.get();
-      decoder_world_data.set(data);  
+      world_data.set(data);  
 =}
 
 
   reaction(interface_next_position_checked) -> robo_next_position_checked{=
-        Vector vec = *next_position_checked.get();
+        Vector vec = *interface_next_position_checked.get();
         robo_next_position_checked.set(vec);   
   =}
 
