@@ -4,11 +4,12 @@ public preamble {=
   #ifndef VELOCITY_CONTROL
   #define VELOCITY_CONTROL
   #include "common_vector.hpp"
+  #include "common_deacceleration_controller.hpp"
 
   #endif //VELOCITY_CONTROL
 =}
 
-reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double = 0 ) {
+reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double = 0, threshold_deaccelerate : double = 0 ) {
   
   input velocity_control_vector_collection: VectorCollectionVelocityControl
   input velocity_control_current_position: Vector
@@ -17,10 +18,21 @@ reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double
   output sanity_checker_next_position: Vector
 
   reaction(velocity_control_vector_collection, velocity_control_current_position, velocity_control_raw_instruction) -> sanity_checker_next_position {=
+  
   VectorCollectionVelocityControl vcvc = *velocity_control_vector_collection.get();
-  Vector offset_vector_not_shortened = vcvc.get_offset_vector();
+
+  DeaccelerationController dc = DeaccelerationController{max_step_length, threshold_deaccelerate};
+  dc.set_next_logical_step_offset_vector(vcvc.get_next_logical_step_offset_vector());
+  dc.set_next_logical_step(vcvc.get_next_logical_step());
+  dc.set_acceleration_vector(vcvc.get_acceleration_vector());
+  dc.set_offset_vector(vcvc.get_offset_vector());
+
+
   VectorArithmetics va = VectorArithmetics{};
-  Vector next_position = va.add_vectors(*velocity_control_current_position.get(), offset_vector_not_shortened);
+  Vector shortened_offset_vector = dc.shorten_for_deacceleration(*velocity_control_current_position.get(), *velocity_control_raw_instruction.get());
+  Vector next_position = va.add_vectors(*velocity_control_current_position.get(), shortened_offset_vector);
+  // std::cout << "Now the next_position:";
+  // next_position.to_string();
   sanity_checker_next_position.set(next_position);
   =}
 
