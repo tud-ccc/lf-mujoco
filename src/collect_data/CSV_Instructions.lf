@@ -15,9 +15,9 @@ public preamble {=
 reactor CSV_Instructions (instructions_path: std::string = "") {
 
   //robo facing
-  input current_position: Vector;
-  input raw_instruction: Vector;
-  input next_position_checked: Vector; 
+  input csv_current_position: Vector;
+  input csv_raw_instruction: Vector;
+  input csv_next_position_checked: Vector; 
 
   reaction(startup){=
     Instruction_Collector ic = Instruction_Collector{}; 
@@ -25,7 +25,7 @@ reactor CSV_Instructions (instructions_path: std::string = "") {
     std::cout << instructions_path << std::endl;
   =}
 
-  reaction(current_position, raw_instruction, next_position_checked) {=
+  reaction(csv_current_position, csv_raw_instruction, csv_next_position_checked) {=
         Vector vec_current_position = *current_position.get();
         Vector vec_raw_instruction = *raw_instruction.get();
         Vector vec_next_position_checked = *next_position_checked.get();

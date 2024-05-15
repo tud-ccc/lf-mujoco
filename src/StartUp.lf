@@ -51,28 +51,28 @@ target Cpp {
     fake_hardware.interface_world_data -> interface.interface_world_data
 
     // Controller --> Planner
-    controller.raw_instruction -> planner.raw_instruction
+    controller.raw_instruction -> planner.planner_raw_instruction
 
     //Planner --> Interface
-    planner.next_position_checked -> interface.next_position_checked
+    planner.next_position_checked -> interface.interface_next_position_checked
   
     // Interface --> Decoder
-    interface.decoder_world_data -> decoder.decoder_world_data
+    interface.world_data -> decoder.decoder_world_data
 
     // Decoder --> Last Position Holder | Controller
-    decoder.current_position -> last_position_holder.current_position
-    decoder.current_position -> controller.current_position
+    decoder.current_position -> last_position_holder.holder_current_position
+    decoder.current_position -> controller.robot_control_current_position
 
     // Last Position Holder  --> Planner
-    last_position_holder.current_position_planner-> planner.current_position
-    last_position_holder.last_position_planner -> planner.last_position
+    last_position_holder.planner_current_position-> planner.planner_current_position
+    last_position_holder.planner_last_position -> planner.planner_last_position
 
     // CSV DATA : Instructions
-    controller.raw_instruction -> data_collector_instructions.raw_instruction  
-    planner.next_position_checked -> data_collector_instructions.next_position_checked
-    decoder.current_position -> data_collector_instructions.current_position
+    controller.raw_instruction -> data_collector_instructions.csv_raw_instruction  
+    planner.next_position_checked -> data_collector_instructions.csv_next_position_checked
+    decoder.current_position -> data_collector_instructions.csv_current_position
 
     // CSV DATA : World data
-    interface.decoder_world_data -> data_collector_world_data.current_world_data
+    interface.world_data -> data_collector_world_data.csv_world_data
   }
   

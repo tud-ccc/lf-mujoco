@@ -14,14 +14,14 @@ public preamble {=
 reactor CSV_WorldData (data_path: std::string = ""){
 
   //robo facing
-  input current_world_data: WorldData;
+  input csv_world_data: WorldData;
 
   reaction(startup){=
     WorldDataCollector wdc = WorldDataCollector();
     wdc.write_csv_header(data_path);
   =}
 
-  reaction(current_world_data) {=
+  reaction(csv_world_data) {=
         WorldData world_data_current_world_data = *current_world_data.get();
        
         WorldDataCollector wdc = WorldDataCollector(world_data_current_world_data);
