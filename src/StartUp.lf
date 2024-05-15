@@ -10,7 +10,7 @@ target Cpp {
   import RoboXArm7Fake from "hardware/RoboXArm7Fake.lf"
   import RoboXArm7 from "hardware/RoboXArm7.lf"
   import LastPositionHolder from "control/LastPositionHolder.lf"
-  import AccelerationControl from "control/AccelerationControl.lf"
+  import VelocityControl from "control/VelocityControl.lf"
 
   public preamble {=
     #ifndef XARM7
@@ -34,7 +34,7 @@ target Cpp {
     planner = new Planner(position_evaluator_acceleration_cap = 0.1, position_evaluator_max_step_length = 1)
     controller = new RobotControl(positions = {={Vector{400, -75, 0 }, Vector{475, 0, 0 }, Vector{400, 75, 0}, Vector{325, 0, 0}}=} )
     last_position_holder = new LastPositionHolder(initial_last_position = {=Vector{400, -75,0}=})
-    acceleration_control = new AccelerationControl()
+    velocity_control = new VelocityControl()
 
     //DATA  
     data_collector_instructions = new CSV_Instructions(instructions_path = "data_analysis/data/instructions.csv")
@@ -53,8 +53,11 @@ target Cpp {
     // Controller --> Planner
     controller.raw_instruction -> planner.planner_raw_instruction
 
-    //Planner --> Interface
-    planner.next_position_checked -> interface.interface_next_position_checked
+    //Planner --> Velocity Control
+    planner.velocity_control_next_position -> velocity_control.velocity_control_next_position
+
+    //Velocity Control --> Interface
+    velocity_control.next_position_checked -> interface.interface_next_position_checked
   
     // Interface --> Decoder
     interface.world_data -> decoder.decoder_world_data
@@ -69,7 +72,7 @@ target Cpp {
 
     // CSV DATA : Instructions
     controller.raw_instruction -> data_collector_instructions.csv_raw_instruction  
-    planner.next_position_checked -> data_collector_instructions.csv_next_position_checked
+    velocity_control.next_position_checked -> data_collector_instructions.csv_next_position_checked
     decoder.current_position -> data_collector_instructions.csv_current_position
 
     // CSV DATA : World data

@@ -14,10 +14,10 @@ reactor Planner(position_evaluator_acceleration_cap : double = 0, position_evalu
   input planner_current_position: Vector
   input planner_last_position: Vector
 
-  output next_position_checked: Vector
+  output velocity_control_next_position: Vector
 
 
-  reaction(planner_current_position,planner_last_position, planner_raw_instruction) -> next_position_checked {=
+  reaction(planner_current_position,planner_last_position, planner_raw_instruction) -> velocity_control_next_position {=
 
         Vector  vector_current_position = *planner_current_position.get();
         Vector  vector_last_position = *planner_last_position.get();
@@ -26,8 +26,8 @@ reactor Planner(position_evaluator_acceleration_cap : double = 0, position_evalu
 
         PositionEvaluator pe = PositionEvaluator{position_evaluator_acceleration_cap, position_evaluator_max_step_length};
         
-        Vector vector_next_position_checked = pe.calculate_next_position(vector_last_position, vector_current_position,vector_raw_instruction);
-        next_position_checked.set(vector_next_position_checked);
+        Vector vector_next_position_no_velocity_control = pe.calculate_next_position(vector_last_position, vector_current_position,vector_raw_instruction);
+        velocity_control_next_position.set(vector_next_position_no_velocity_control);
   =}
 
 }
