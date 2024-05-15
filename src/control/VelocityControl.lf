@@ -11,7 +11,7 @@ public preamble {=
 reactor VelocityControl {
   
   input velocity_control_next_position: Vector
-  output next_position_checked: Vector
+  output sanity_checker_next_position: Vector
 
   reaction(startup){=
   =}

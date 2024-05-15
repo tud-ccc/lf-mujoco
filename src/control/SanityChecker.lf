@@ -1,0 +1,21 @@
+target Cpp
+
+public preamble {=
+  #ifndef SANITY_CHECKER
+  #define SANITY_CHECKER
+  #include "common_vector.hpp"
+
+  #endif //VELOCITY_CONTROL
+=}
+
+reactor SanityChecker {
+  
+  input sanity_checker_next_position: Vector
+  output next_position_checked: Vector
+
+  reaction(startup){=
+  =}
+
+  
+
+}
