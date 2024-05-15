@@ -25,21 +25,21 @@ reactor Planner(acceleration_cap: double = 0, max_step_length: double = 0) {
 
       Vector next_logical_step_offset_vector = va.get_delta_vector(last_position, current_position);
       next_logical_step_offset_vector = shorten_if_longer_than_max_step_length(next_logical_step_offset_vector, max_step_length);
-      // std::cout << "Now the next_logical_step_offset_vector:";
-      // next_logical_step_offset_vector.to_string();
+      std::cout << "Now the next_logical_step_offset_vector:";
+      next_logical_step_offset_vector.to_string();
 
       Vector next_logical_step = va.add_vectors(current_position, next_logical_step_offset_vector);
-      // std::cout << "Now the next_logical_step:";
-      // next_logical_step.to_string();
+      std::cout << "Now the next_logical_step:";
+      next_logical_step.to_string();
 
       Vector acceleration_vector = va.get_delta_vector(next_logical_step, raw_instruction);
       acceleration_vector = acceleration_vector.normalize().scale(acceleration_cap);
-      // std::cout << "Now the acceleration_vector:";
-      // acceleration_vector.to_string();
+      std::cout << "Now the acceleration_vector:";
+      acceleration_vector.to_string();
 
       Vector offset_vector = va.add_vectors(next_logical_step_offset_vector, acceleration_vector);
-      // std::cout << "Now the offset_vector:";
-      // offset_vector.to_string();
+      std::cout << "Now the offset_vector:";
+      offset_vector.to_string();
 
       return VectorCollectionVelocityControl{next_logical_step_offset_vector, next_logical_step, acceleration_vector, offset_vector};
     }
@@ -60,7 +60,7 @@ reactor Planner(acceleration_cap: double = 0, max_step_length: double = 0) {
     Vector  vector_last_position = *planner_last_position.get();
     Vector  vector_raw_instruction = *planner_raw_instruction.get();
 
-    VectorCollectionVelocityControl vcvc = calculate_offset_vector_given_max_acceleration(vector_current_position, vector_last_position, vector_raw_instruction, max_step_length, acceleration_cap);
+    VectorCollectionVelocityControl vcvc = calculate_offset_vector_given_max_acceleration(vector_last_position, vector_current_position, vector_raw_instruction, max_step_length, acceleration_cap);
 
     velocity_control_vector_collection.set(vcvc);
   =}

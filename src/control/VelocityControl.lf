@@ -16,8 +16,12 @@ reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double
   
   output sanity_checker_next_position: Vector
 
-  reaction(velocity_control_vector_collection) -> sanity_checker_next_position {=
-  VectorCollectionVelocityControl vector_velocity_control_next_position = *velocity_control_vector_collection.get();
+  reaction(velocity_control_vector_collection, velocity_control_current_position, velocity_control_raw_instruction) -> sanity_checker_next_position {=
+  VectorCollectionVelocityControl vcvc = *velocity_control_vector_collection.get();
+  Vector offset_vector_not_shortened = vcvc.get_offset_vector();
+  VectorArithmetics va = VectorArithmetics{};
+  Vector next_position = va.add_vectors(*velocity_control_current_position.get(), offset_vector_not_shortened);
+  sanity_checker_next_position.set(next_position);
   =}
 
   reaction(startup){=
