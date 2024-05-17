@@ -10,32 +10,34 @@ public preamble {=
 =}
 
 private preamble {=
-   #include <iostream>
+  #include <iostream>
 =}
 
-reactor RobotControl (positions: {=Vector[4]=} = {={Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}}=}
-){
+reactor RobotControl(positions: {= Vector[14] =} = {=
+  {Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
+   Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
+   Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
+   Vector{0,0,0}, Vector{0,0,0}}
+=}) {
   timer t(200 ms, 1000 ms)
   output raw_instruction: Vector
-  input robot_control_current_position:Vector
-  //not constant
-  state counter: int = 0
+  input robot_control_current_position: Vector
+  state counter: int = 0  // not constant
   state last_raw_instruction: Vector
-  //constant
-  
 
-  reaction(startup) {=   
-  last_raw_instruction = positions[counter];
+  // constant
+  reaction(startup) {=
+    last_raw_instruction = positions[counter];
   =}
 
   reaction(robot_control_current_position) -> raw_instruction {=
-      raw_instruction.set(this->last_raw_instruction);
+    raw_instruction.set(this->last_raw_instruction);
   =}
+
   reaction(t) {=
     // only changes the current raw instruction
     this->last_raw_instruction = positions[counter];
     this->last_raw_instruction.to_string();
-    this->counter = (counter + 1) % 4;
-=}
+    this->counter = (counter + 1) % 14;
+  =}
 }
-

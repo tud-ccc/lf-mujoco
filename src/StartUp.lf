@@ -1,90 +1,93 @@
 target Cpp {
-    cmake-include: "xarm.cmake"
-  }
-  import RobotControl from "control/XArm7Controller.lf"
-  import Planner from "control/Planner.lf"
-  import WorldDataDecoder from "interface/WorldDataDecoder.lf"
-  import XArmInterface from "interface/XArmInterface.lf"
-  import CSV_Instructions from "collect_data/CSV_Instructions.lf"
-  import CSV_WorldData from "collect_data/CSV_WorldData.lf"
-  import RoboXArm7Fake from "hardware/RoboXArm7Fake.lf"
-  import RoboXArm7 from "hardware/RoboXArm7.lf"
-  import LastPositionHolder from "control/LastPositionHolder.lf"
-  import VelocityControl from "control/VelocityControl.lf"
-  import SanityChecker from "control/SanityChecker.lf"
+  cmake-include: "xarm.cmake"
+}
 
+import RobotControl from "control/XArm7Controller.lf"
+import Planner from "control/Planner.lf"
+import WorldDataDecoder from "interface/WorldDataDecoder.lf"
+import XArmInterface from "interface/XArmInterface.lf"
+import CSV_Instructions from "collect_data/CSV_Instructions.lf"
+import CSV_WorldData from "collect_data/CSV_WorldData.lf"
+import RoboXArm7Fake from "hardware/RoboXArm7Fake.lf"
+import RoboXArm7 from "hardware/RoboXArm7.lf"
+import LastPositionHolder from "control/LastPositionHolder.lf"
+import VelocityControl from "control/VelocityControl.lf"
+import SanityChecker from "control/SanityChecker.lf"
 
-  public preamble {=
-    #ifndef XARM7
-    #define XARM7
-    #include "common_vector.hpp"
-  
-    #endif //XARM7
-  =}
-  
-  private preamble {=
+public preamble {=
+  #ifndef XARM7
+  #define XARM7
+  #include "common_vector.hpp"
 
-  =}
-  
- 
-  main reactor StartUp {
-    //INTERFACE
-    decoder = new WorldDataDecoder()
-    interface = new XArmInterface()
+  #endif //XARM7
+=}
 
-    //CONTROL
-    planner = new Planner(acceleration_cap = 0.3, max_step_length = 1)
-    controller = new RobotControl(positions = {={Vector{400, -75, 0 }, Vector{475, 0, 0 }, Vector{400, 75, 0}, Vector{325, 0, 0}}=} )
-    last_position_holder = new LastPositionHolder(initial_last_position = {=Vector{400, -75,0}=})
-    velocity_control = new VelocityControl(acceleration_cap = 0.3, max_step_length = 1, threshold_deaccelerate = 5)
-    sanity_checker = new SanityChecker()
+private preamble {=  =}
 
-    //DATA  
-    data_collector_instructions = new CSV_Instructions(instructions_path = "data_analysis/data/instructions.csv")
-    data_collector_world_data = new CSV_WorldData(data_path = "data_analysis/data/data.csv")  
-  
-    // HARDWARE : REAL ROBO
-    // hardware = new RoboXArm7();
-    // interface.robo_next_position_checked -> hardware.robo_next_position_checked;
-    // hardware.interface_world_data -> interface.interface_world_data;
-    
-    // HARDWARE : FAKE ROBO <--> Interface
-    fake_hardware = new RoboXArm7Fake(initial_current_position = {=Vector{400, -75,0}=})
-    interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
-    fake_hardware.interface_world_data -> interface.interface_world_data
+main reactor StartUp {
+  // INTERFACE
+  decoder = new WorldDataDecoder()
+  interface = new XArmInterface()
 
-    // Controller --> Planner | Velocity Control
-    controller.raw_instruction -> planner.planner_raw_instruction
-    controller.raw_instruction -> velocity_control.velocity_control_raw_instruction
+  // CONTROL
+  planner = new Planner(acceleration_cap=0.3, max_step_length=1)
+  controller = new RobotControl(positions = {=
+          {Vector{5,-10,5}, Vector{0,0,0}, Vector{19,7,-13}, Vector{10,-5,-40},
+          Vector{7,2,-123}, Vector{2,-2,12}, Vector{2,72,5}, Vector{-26,0,34},
+          Vector{-0,7,6}, Vector{23,-63,0}, Vector{-31,2,47}, Vector{1,2,5},
+          Vector{0,0,0}, Vector{0,0,-42}}
+  =})
+  last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75,0} =})
+  velocity_control = new VelocityControl(
+      acceleration_cap=0.3,
+      max_step_length=1,
+      threshold_deaccelerate=5)
+  sanity_checker = new SanityChecker()
 
-    //Planner --> Velocity Control
-    planner.velocity_control_vector_collection -> velocity_control.velocity_control_vector_collection
+  // DATA
+  data_collector_instructions = new CSV_Instructions(
+      instructions_path="data_analysis/data/instructions.csv")
+  data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
 
-    //Velocity Control --> Sanity Checker
-    velocity_control.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
+  // HARDWARE : REAL ROBO
+  // hardware = new RoboXArm7();
+  // interface.robo_next_position_checked -> hardware.robo_next_position_checked;
+  // hardware.interface_world_data -> interface.interface_world_data;
+  // HARDWARE : FAKE ROBO <--> Interface
+  fake_hardware = new RoboXArm7Fake(initial_current_position = {= Vector{400, -75,0} =})
+  interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
+  fake_hardware.interface_world_data -> interface.interface_world_data
 
-    //Velocity Control --> Interface
-    sanity_checker.next_position_checked -> interface.interface_next_position_checked
-  
-    // Interface --> Decoder
-    interface.world_data -> decoder.decoder_world_data
+  // Controller --> Planner | Velocity Control
+  controller.raw_instruction -> planner.planner_raw_instruction
+  controller.raw_instruction -> velocity_control.velocity_control_raw_instruction
 
-    // Decoder --> Last Position Holder | Controller | Velocity Control
-    decoder.current_position -> last_position_holder.holder_current_position
-    decoder.current_position -> controller.robot_control_current_position
-    decoder.current_position -> velocity_control.velocity_control_current_position
+  // Planner --> Velocity Control
+  planner.velocity_control_vector_collection -> velocity_control.velocity_control_vector_collection
 
+  // Velocity Control --> Sanity Checker
+  velocity_control.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
 
-    // Last Position Holder  --> Planner
-    last_position_holder.planner_current_position-> planner.planner_current_position
-    last_position_holder.planner_last_position -> planner.planner_last_position
+  // Velocity Control --> Interface
+  sanity_checker.next_position_checked -> interface.interface_next_position_checked
 
-    // CSV DATA : Instructions
-    controller.raw_instruction -> data_collector_instructions.csv_raw_instruction  
-    sanity_checker.next_position_checked -> data_collector_instructions.csv_next_position_checked
-    decoder.current_position -> data_collector_instructions.csv_current_position
+  // Interface --> Decoder
+  interface.world_data -> decoder.decoder_world_data
 
-    // CSV DATA : World data
-    interface.world_data -> data_collector_world_data.csv_world_data
-  }
-  
+  // Decoder --> Last Position Holder | Controller | Velocity Control
+  decoder.current_position -> last_position_holder.holder_current_position
+  decoder.current_position -> controller.robot_control_current_position
+  decoder.current_position -> velocity_control.velocity_control_current_position
+
+  // Last Position Holder  --> Planner
+  last_position_holder.planner_current_position -> planner.planner_current_position
+  last_position_holder.planner_last_position -> planner.planner_last_position
+
+  // CSV DATA : Instructions
+  controller.raw_instruction -> data_collector_instructions.csv_raw_instruction
+  sanity_checker.next_position_checked -> data_collector_instructions.csv_next_position_checked
+  decoder.current_position -> data_collector_instructions.csv_current_position
+
+  // CSV DATA : World data
+  interface.world_data -> data_collector_world_data.csv_world_data
+}
