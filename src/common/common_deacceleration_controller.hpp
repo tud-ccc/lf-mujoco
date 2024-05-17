@@ -20,7 +20,6 @@ private:
   double calculate_speed_selected_by_PID(const double distance_to_target) const;
   double calculate_max_speed() const;
   double calculate_min_speed() const;
-  bool alpha_greater_than_threshold() const;
   double calclulate_min_speed_with_right_angled_triangle() const;
 
 public:

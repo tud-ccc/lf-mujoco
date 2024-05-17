@@ -83,27 +83,7 @@ double DeaccelerationController::calclulate_min_speed_with_right_angled_triangle
   return c;
 }
 
-bool DeaccelerationController::alpha_greater_than_threshold() const {
-  double hypotenus = this->next_logical_step_offset_vector_.get_arithmetic_length();
-  // std::cout << "hypotenus : " << hypotenus << std::endl;
-
-  double A = this->acceleration_vector_.get_arithmetic_length();
-  // std::cout << "A : " << A << std::endl;
-
-  assert((hypotenus >= A) && "Hypotenus is smaller or equals to A");
-
-  double alpha_max = PI - acos(A / hypotenus);
-  // std::cout << "alpha_max : " << alpha_max << std::endl;
-
-  double alpha = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->acceleration_vector_);
-  // std::cout << "alpha : " << alpha << std::endl;
-
-  assert(alpha_max >= 0 && alpha >= 0 && "Either of the angles is smaller than 0");
-
-  return (alpha < alpha_max) ? true : false;
-}
-
-double DeaccelerationController::calculate_min_speed()const {
+double DeaccelerationController::calculate_min_speed() const {
 
   bool next_logical_step_offset_vector_shorter_than_acc_vec =
       this->next_logical_step_offset_vector_.get_arithmetic_length() < acceleration_vector_.get_arithmetic_length();
@@ -117,14 +97,12 @@ double DeaccelerationController::calculate_min_speed()const {
   } else if (next_logical_step_offset_vector_linear_dependent_to_acc_vec) {
     return this->next_logical_step_offset_vector_.get_arithmetic_length() -
            acceleration_vector_.get_arithmetic_length();
-  } else if (this->alpha_greater_than_threshold()) {
-    return this->calclulate_min_speed_with_right_angled_triangle();
   } else {
-    return this->offset_vector_.get_arithmetic_length();
+    return this->calclulate_min_speed_with_right_angled_triangle();
   }
 }
 
-double DeaccelerationController::calculate_max_speed()const {
+double DeaccelerationController::calculate_max_speed() const {
   double offset_vector_length = this->offset_vector_.get_arithmetic_length();
   bool next_step_would_be_bigger_than_max_step_length = offset_vector_length > this->max_step_length_;
   if (next_step_would_be_bigger_than_max_step_length) {
@@ -133,10 +111,10 @@ double DeaccelerationController::calculate_max_speed()const {
     return offset_vector_length;
   }
 }
-double DeaccelerationController::calculate_speed_selected_by_PID(double distance_to_target) const{
+double DeaccelerationController::calculate_speed_selected_by_PID(double distance_to_target) const {
   double selected_speed = (distance_to_target < this->threshold_deaccelerate_)
-                               ? (distance_to_target * (this->max_step_length_ / this->threshold_deaccelerate_))
-                               : this->max_step_length_;
+                              ? (distance_to_target * (this->max_step_length_ / this->threshold_deaccelerate_))
+                              : this->max_step_length_;
   return selected_speed;
 }
 
@@ -166,7 +144,7 @@ double DeaccelerationController::calculate_speed_next_step(const Vector current_
 }
 
 double DeaccelerationController::calculate_speed_next_step_wrapper(const Vector current_position,
-                                                                   const Vector raw_instruction) const  {
+                                                                   const Vector raw_instruction) const {
   double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
   double max_speed = this->calculate_max_speed();
   double min_speed = this->calculate_min_speed();
@@ -187,7 +165,7 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
 
   if (near_to_target_start_deaccelerating) {
     Vector shortened_vector = this->offset_vector_;
-    double next_speed =  this->calculate_speed_next_step_wrapper(current_position, raw_instruction);
+    double next_speed = this->calculate_speed_next_step_wrapper(current_position, raw_instruction);
     return shortened_vector.normalize().scale(next_speed);
   } else {
     return this->offset_vector_;
