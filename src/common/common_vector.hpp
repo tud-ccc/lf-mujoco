@@ -16,6 +16,8 @@ public:
   bool equals(Vector vec) const;
   void to_string_id() const;
   void to_string() const;
+  bool is_NULL_vector() const;
+
 
   double get_arithmetic_length() const;
   Vector normalize() const;

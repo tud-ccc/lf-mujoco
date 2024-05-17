@@ -11,12 +11,17 @@ Vector::Vector(double X, double Y, double Z) {
   this->Z_ = Z;
 }
 
-bool Vector::equals(Vector vec) const{
+bool Vector::is_NULL_vector() const {
+  assert_for_NaNs(*this);
+  return (this->X_ == 0 && this->Y_ == 0 && this->Z_ == 0);
+}
+
+bool Vector::equals(Vector vec) const {
   assert_for_NaNs(*this, vec);
   return (this->X_ == vec.X_ && this->Y_ == vec.Y_ && this->Z_ == vec.Z_);
 }
 
-void Vector::to_string_id() const{
+void Vector::to_string_id() const {
   std::cout << "X : " << typeid(this->X_).name() << "(" << this->X_ << "), Y : " << typeid(this->Y_).name() << "("
             << this->Y_ << "), Z: " << typeid(this->Z_).name() << "(" << this->Z_ << ")" << std::endl;
 }
@@ -59,7 +64,8 @@ double VectorArithmetics::get_dot_product(Vector vec1, Vector vec2) const {
 }
 double VectorArithmetics::get_angle_in_degree(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1);
-  assert_for_null_vector(vec1, vec2);
+  assert(!(vec1.X_ == 0 && vec1.Y_ == 0 && vec1.Z_ == 0));
+  assert(!(vec2.X_ == 0 && vec2.Y_ == 0 && vec2.Z_ == 0));
   double angle_in_degree =
       acos(this->get_dot_product(vec1, vec2) / (vec1.get_arithmetic_length() * vec2.get_arithmetic_length()));
   return angle_in_degree * 180 / PI;
@@ -67,7 +73,8 @@ double VectorArithmetics::get_angle_in_degree(Vector vec1, Vector vec2) const {
 
 double VectorArithmetics::get_angle_in_radians(Vector vec1, Vector vec2) const {
   assert_for_NaNs(vec1, vec2);
-  assert_for_null_vector(vec1, vec2);
+  assert(!(vec1.X_ == 0 && vec1.Y_ == 0 && vec1.Z_ == 0));
+  assert(!(vec2.X_ == 0 && vec2.Y_ == 0 && vec2.Z_ == 0));
   if (this->linear_dependent(vec1, vec2)) {
     return 0;
   }
