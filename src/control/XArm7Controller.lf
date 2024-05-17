@@ -25,6 +25,7 @@ reactor RobotControl (positions: {=Vector[4]=} = {={Vector{0,0,0}, Vector{0,0,0}
   
 
   reaction(startup) {=   
+  last_raw_instruction = positions[counter];
   =}
 
   reaction(robot_control_current_position) -> raw_instruction {=
