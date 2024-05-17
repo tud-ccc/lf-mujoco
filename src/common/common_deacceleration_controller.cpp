@@ -161,6 +161,10 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
 
   double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
 
+  if (distance_to_target == 0){
+    return Vector{0,0,0};
+  } 
+
   bool near_to_target_start_deaccelerating = distance_to_target < this->threshold_deaccelerate_;
 
   if (near_to_target_start_deaccelerating) {
