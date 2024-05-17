@@ -21,7 +21,13 @@ reactor Planner(acceleration_cap: double = 0, max_step_length: double = 0) {
 
     VectorCollectionVelocityControl calculate_offset_vector_given_max_acceleration(Vector last_position, Vector current_position,
                                                                              Vector raw_instruction, double max_step_length, double acceleration_cap){
-      VectorArithmetics va = VectorArithmetics{};                                                                        
+      VectorArithmetics va = VectorArithmetics{};    
+
+      std::cout << "Now the current_position:";
+      current_position.to_string();
+
+      std::cout << "Now the raw_instruction:";
+      raw_instruction.to_string();
 
       Vector next_logical_step_offset_vector = va.get_delta_vector(last_position, current_position);
       next_logical_step_offset_vector = shorten_if_longer_than_max_step_length(next_logical_step_offset_vector, max_step_length);

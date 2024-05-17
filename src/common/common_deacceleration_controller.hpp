@@ -14,16 +14,19 @@ private:
   VectorArithmetics va_;
   double max_step_length_;
   double threshold_deaccelerate_;
+  double threshold_when_to_stop_;
   double calculate_speed_next_step_wrapper(const Vector current_position, const Vector raw_instruction) const;
   double calculate_speed_next_step(const Vector current_position, const Vector raw_instruction,
-                                   const double distance_to_target, const double max_speed, const double min_speed)const;
+                                   const double distance_to_target, const double max_speed,
+                                   const double min_speed) const;
   double calculate_speed_selected_by_PID(const double distance_to_target) const;
   double calculate_max_speed() const;
   double calculate_min_speed() const;
   double calclulate_min_speed_with_right_angled_triangle() const;
 
 public:
-  DeaccelerationController(const double max_step_length, const double threshold_deaccelerate);
+  DeaccelerationController(const double max_step_length, const double threshold_deaccelerate,
+                           const double threshold_when_to_stop);
 
   void set_next_logical_step_offset_vector(Vector next_logical_step_offset_vector);
   void set_next_logical_step(Vector next_logical_step);

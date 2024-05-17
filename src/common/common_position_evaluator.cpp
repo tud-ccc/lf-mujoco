@@ -15,7 +15,7 @@ Vector PositionEvaluator::calculate_offset_vector_given_max_acceleration(Vector 
                                                                          Vector raw_instruction)  const{
 
   // initialize vector collection
-  DeaccelerationController vcfd = DeaccelerationController{this->max_step_length_, 5};
+  DeaccelerationController vcfd = DeaccelerationController{this->max_step_length_, 5, 0.1};
 
   Vector next_logical_step_offset_vector = this->va_.get_delta_vector(last_position, current_position);
   next_logical_step_offset_vector = shorten_if_longer_than_max_stop_length(next_logical_step_offset_vector);

@@ -1,56 +1,56 @@
 target Cpp {
-    cmake-include: "testing.cmake"
-  }
+  cmake-include: "testing.cmake"
+}
 
-  import Planner from "../src/control/Planner.lf"
-  import VelocityControl from "../src/control/VelocityControl.lf"
-  import SanityChecker from "../src/control/SanityChecker.lf"
-  import PlannerTester from "planner_testing/PlannerTester.lf"
-  import CSVPath from "planner_testing/CSV_Path.lf"
+import Planner from "../src/control/Planner.lf"
+import VelocityControl from "../src/control/VelocityControl.lf"
+import SanityChecker from "../src/control/SanityChecker.lf"
+import PlannerTester from "planner_testing/PlannerTester.lf"
+import CSVPath from "planner_testing/CSV_Path.lf"
 
+public preamble {=
+  #ifndef TEST_START_UP
+  #define TEST_START_UP
+  #include "random_vectors_handler.hpp"
 
-  public preamble {=
-    #ifndef TEST_START_UP
-    #define TEST_START_UP
-    #include "random_vectors_handler.hpp"
+  #endif //XARM7
+=}
 
-    #endif //XARM7
-  =}
-  
-  
-  main reactor TestStartUp {
-    //the planner should at every point in time receive an input triplet and give back an input triplet
-    planner = new Planner(acceleration_cap = 0.3, max_step_length = 1)
-    velocity_control = new VelocityControl(acceleration_cap = 0.3, max_step_length = 1, threshold_deaccelerate = 5)
-    sanity_checker = new SanityChecker()
+main reactor TestStartUp {
+  // the planner should at every point in time receive an input triplet and give back an input triplet
+  planner = new Planner(acceleration_cap=0.3, max_step_length=1)
+  velocity_control = new VelocityControl(
+      acceleration_cap=0.3,
+      max_step_length=1,
+      threshold_deaccelerate=5,
+      threshold_when_to_stop=0.01)
 
-    planner_tester = new PlannerTester(random_vectors_handler =  {=RandomVectorsHandler{"testing/testing_input_data/random_vectors.csv"}=})
-    CSV_path = new CSVPath();
-    
+  sanity_checker = new SanityChecker()
 
+  planner_tester = new PlannerTester(
+      random_vectors_handler = {=
+        RandomVectorsHandler{"testing/testing_input_data/random_vectors.csv"}
+      =})
+  CSV_path = new CSVPath()
 
-    //Planner --> Velocity Control
-    planner.velocity_control_vector_collection -> velocity_control.velocity_control_vector_collection
+  // Planner --> Velocity Control
+  planner.velocity_control_vector_collection -> velocity_control.velocity_control_vector_collection
 
-    //Velocity Control --> Sanity Checker
-    velocity_control.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
+  // Velocity Control --> Sanity Checker
+  velocity_control.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
 
-    //Velocity Control --> Interface
-    sanity_checker.next_position_checked -> planner_tester.next_position_checked
-  
-    //Planner Tester --> Planner | Velocity Control
-    planner_tester.planner_raw_instruction ->planner.planner_raw_instruction
-    planner_tester.planner_current_position ->planner.planner_current_position
-    planner_tester.planner_last_position ->planner.planner_last_position
-    
-    planner_tester.planner_raw_instruction ->velocity_control.velocity_control_raw_instruction
-    planner_tester.planner_current_position ->velocity_control.velocity_control_current_position
+  // Velocity Control --> Interface
+  sanity_checker.next_position_checked -> planner_tester.next_position_checked
 
-    //Planner Tester <--> CSV_path
-    planner_tester.transfer_travelled_path -> CSV_path.robo_path
-    planner_tester.transfer_file -> CSV_path.file
+  // Planner Tester --> Planner | Velocity Control
+  planner_tester.planner_raw_instruction -> planner.planner_raw_instruction
+  planner_tester.planner_current_position -> planner.planner_current_position
+  planner_tester.planner_last_position -> planner.planner_last_position
 
+  planner_tester.planner_raw_instruction -> velocity_control.velocity_control_raw_instruction
+  planner_tester.planner_current_position -> velocity_control.velocity_control_current_position
 
-
-  }
-  
+  // Planner Tester <--> CSV_path
+  planner_tester.transfer_travelled_path -> CSV_path.robo_path
+  planner_tester.transfer_file -> CSV_path.file
+}

@@ -6,9 +6,10 @@
 #include <cmath>
 #include <iostream>
 
-DeaccelerationController::DeaccelerationController(double max_step_length, double threshold_deaccelerate) {
+DeaccelerationController::DeaccelerationController(double max_step_length, double threshold_deaccelerate, double threshold_when_to_stop) {
   this->max_step_length_ = max_step_length;
   this->threshold_deaccelerate_ = threshold_deaccelerate;
+  this->threshold_when_to_stop_ = threshold_when_to_stop;
   this->va_ = VectorArithmetics{};
 };
 
@@ -152,6 +153,7 @@ double DeaccelerationController::calculate_speed_next_step_wrapper(const Vector 
   return this->calculate_speed_next_step(current_position, raw_instruction, distance_to_target, max_speed, min_speed);
 }
 
+
 Vector DeaccelerationController::shorten_for_deacceleration(const Vector current_position,
                                                             const Vector raw_instruction) const {
   // assert_for_NaNs(this->next_logical_step_offset_vector_);
@@ -161,17 +163,16 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
 
   double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
 
-  if (distance_to_target == 0){
-    return Vector{0,0,0};
-  } 
-
-  bool near_to_target_start_deaccelerating = distance_to_target < this->threshold_deaccelerate_;
-
-  if (near_to_target_start_deaccelerating) {
-    Vector shortened_vector = this->offset_vector_;
-    double next_speed = this->calculate_speed_next_step_wrapper(current_position, raw_instruction);
-    return shortened_vector.normalize().scale(next_speed);
+  if (distance_to_target < this->threshold_when_to_stop_) {
+    return Vector{0, 0, 0};
   } else {
-    return this->offset_vector_;
+    bool near_to_target_start_deaccelerating = distance_to_target < this->threshold_deaccelerate_;
+    if (near_to_target_start_deaccelerating) {
+      Vector shortened_vector = this->offset_vector_;
+      double next_speed = this->calculate_speed_next_step_wrapper(current_position, raw_instruction);
+      return shortened_vector.normalize().scale(next_speed);
+    } else {
+      return this->offset_vector_;
+    }
   }
 }
