@@ -81,17 +81,19 @@ public:
               << "robo_pose :";
       write_vec_to_file(csvfile, world_data_.robo_pose_);
       csvfile << "\n"
+              << "sensor_data :";
+      write_vec_to_file(csvfile, world_data_.sensor_data_);
+      /*csvfile << "\n"
               << "sim_joint_positions :";
       write_vec_to_file(csvfile, world_data_.sim_joint_positions_);
       csvfile << "\n"
               << "sim_joint_velocity :";
       write_vec_to_file(csvfile, world_data_.sim_joint_velocity_);
-      csvfile << "\n"
-              << "sim_sensor_data :";
-      write_vec_to_file(csvfile, world_data_.sim_sensor_data_);
+
       csvfile << "\n"
               << "sim_joint_acceleration :";
       write_vec_to_file(csvfile, world_data_.sim_joint_acceleration_);
+      */
       csvfile << "\n";
     } else {
       // xArm
@@ -100,11 +102,12 @@ public:
       write_vec_to_file(csvfile, world_data_.robo_joint_velocity_);
       write_vec_to_file(csvfile, world_data_.robo_joint_effort_);
       write_vec_to_file(csvfile, world_data_.robo_pose_);
+
+      write_vec_to_file(csvfile, world_data_.sensor_data_);
       // simulator
-      write_vec_to_file(csvfile, world_data_.sim_joint_positions_);
-      write_vec_to_file(csvfile, world_data_.sim_joint_velocity_);
-      write_vec_to_file(csvfile, world_data_.sim_sensor_data_);
-      write_vec_to_file(csvfile, world_data_.sim_joint_acceleration_);
+      //write_vec_to_file(csvfile, world_data_.sim_joint_positions_);
+      //write_vec_to_file(csvfile, world_data_.sim_joint_velocity_);
+      //write_vec_to_file(csvfile, world_data_.sim_joint_acceleration_);
 
       csvfile << "\n";
     }

@@ -10,6 +10,7 @@ import CSV_Instructions from "collect_data/CSV_Instructions.lf"
 import CSV_WorldData from "collect_data/CSV_WorldData.lf"
 import RoboXArm7Fake from "hardware/RoboXArm7Fake.lf"
 import RoboXArm7 from "hardware/RoboXArm7.lf"
+import RoboXArm7Sim from "hardware/RoboXArm7Sim.lf"
 import LastPositionHolder from "control/LastPositionHolder.lf"
 import VelocityControl from "control/VelocityControl.lf"
 import SanityChecker from "control/SanityChecker.lf"
@@ -28,6 +29,21 @@ main reactor StartUp {
   // INTERFACE
   decoder = new WorldDataDecoder()
   interface = new XArmInterface()
+  
+  //DATA  
+  data_collector_instructions = new CSV_Instructions(instructions_path = "data_analysis/data/instructions.csv")
+  data_collector_world_data = new CSV_WorldData(data_path = "data_analysis/data/data.csv")  
+
+  // HARDWARE : REAL ROBO
+  // hardware = new RoboXArm7();
+  // interface.robo_next_position_checked -> hardware.robo_next_position_checked;
+  // hardware.interface_world_data -> interface.interface_world_data;
+  
+  // HARDWARE : FAKE ROBO <--> Interface
+  fake_hardware = new RoboXArm7Fake(initial_current_position = {=Vector{400, -75,0}=})
+  sim = new RoboXArm7Sim(file="./models/xarm7_xyz/xarm7_nohand.xml");
+  interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
+  fake_hardware.interface_world_data -> interface.interface_world_data
 
   // CONTROL
   planner = new Planner(acceleration_cap=0.05, max_step_length=1)
@@ -52,20 +68,6 @@ main reactor StartUp {
       threshold_deaccelerate=5, 
       threshold_when_to_stop = 0.01)
   sanity_checker = new SanityChecker()
-
-  // DATA
-  data_collector_instructions = new CSV_Instructions(
-      instructions_path="data_analysis/data/instructions.csv")
-  data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
-
-  // HARDWARE : REAL ROBO
-  // hardware = new RoboXArm7();
-  // interface.robo_next_position_checked -> hardware.robo_next_position_checked;
-  // hardware.interface_world_data -> interface.interface_world_data;
-  // HARDWARE : FAKE ROBO <--> Interface
-  fake_hardware = new RoboXArm7Fake(initial_current_position = {= Vector{400, -75,0} =})
-  interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
-  fake_hardware.interface_world_data -> interface.interface_world_data
 
   // Controller --> Planner | Velocity Control
   controller.raw_instruction -> planner.planner_raw_instruction
@@ -100,3 +102,4 @@ main reactor StartUp {
   // CSV DATA : World data
   interface.world_data -> data_collector_world_data.csv_world_data
 }
+  

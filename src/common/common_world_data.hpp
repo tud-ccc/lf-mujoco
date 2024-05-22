@@ -17,18 +17,15 @@ public:
   std::vector<double> robo_joint_effort_{};
   std::vector<double> robo_pose_{};
 
-  // simulator attributes
-  std::vector<double> sim_sensor_data_{};
-  std::vector<double> sim_joint_positions_{};
-  std::vector<double> sim_joint_velocity_{};
-  std::vector<double> sim_joint_acceleration_{};
+  // sensor values
+  std::vector<double> sensor_data_{};
 
   WorldData() noexcept = default;
 
   WorldData(std::chrono::nanoseconds physical_elapsed_time, std::vector<double> robo_joint_angles,
             std::vector<double> robo_joint_velocities, std::vector<double> robo_joint_effort,
             std::vector<double> robo_pose);
-  WorldData(mjData* data, mjModel* model, std::chrono::nanoseconds physical_elapsed_time) noexcept;
+  WorldData(mjData* data, mjModel* model) noexcept;
 
   ~WorldData() noexcept = default;
 
