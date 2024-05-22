@@ -13,12 +13,22 @@ private preamble {=
   #include <iostream>
 =}
 
-reactor RobotControl(positions: {= Vector[14] =} = {=
-  {Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
-   Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
-   Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
-   Vector{0,0,0}, Vector{0,0,0}}
-=}) {
+reactor RobotControl(positions:
+               {= Vector[4] =} = {=
+            {
+              Vector{0, 0, 0 }, Vector{0, 0, 0 }, Vector{0, 0, 0}, Vector{0, 0, 0}
+            }
+               =})
+            // {=  Vector[14] =} = {=
+            // {
+            // Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
+            //  Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
+            //  Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
+            //  Vector{0,0,0}, Vector{0,0,0}
+            // }
+            // =})
+
+ {
   timer t(200 ms, 1000 ms)
   output raw_instruction: Vector
   input robot_control_current_position: Vector
@@ -38,6 +48,6 @@ reactor RobotControl(positions: {= Vector[14] =} = {=
     // only changes the current raw instruction
     this->last_raw_instruction = positions[counter];
     this->last_raw_instruction.to_string();
-    this->counter = (counter + 1) % 14;
+    this->counter = (counter + 1) % 4;
   =}
 }

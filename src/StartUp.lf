@@ -32,11 +32,19 @@ main reactor StartUp {
   // CONTROL
   planner = new Planner(acceleration_cap=0.05, max_step_length=1)
   controller = new RobotControl(positions = {=
-          {Vector{5,-10,5}, Vector{0,0,0}, Vector{19,7,-13}, Vector{10,-5,-40},
-          Vector{7,2,-123}, Vector{2,-2,12}, Vector{2,72,5}, Vector{-26,0,34},
-          Vector{-0,7,6}, Vector{23,-63,0}, Vector{-31,2,47}, Vector{1,2,5},
-          Vector{0,0,0}, Vector{0,0,-42}}
+          {
+            Vector{400, -75, 0 }, Vector{475, 0, 0 }, Vector{400, 75, 0}, Vector{325, 0, 0}
+          }
+       
   =})
+
+          // {
+          // Vector{5,-10,5}, Vector{0,0,0}, Vector{19,7,-13}, Vector{10,-5,-40},
+          // Vector{7,2,-123}, Vector{2,-2,12}, Vector{2,72,5}, Vector{-26,0,34},
+          // Vector{-0,7,6}, Vector{23,-63,0}, Vector{-31,2,47}, Vector{1,2,5},
+          // Vector{0,0,0}, Vector{0,0,-42}
+          // }
+
   last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75,0} =})
   velocity_control = new VelocityControl(
       acceleration_cap=0.05,

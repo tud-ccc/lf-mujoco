@@ -37,15 +37,15 @@ reactor RoboXArm7 (host: std::string = "192.168.1.227"){
         if (arm->warn_code != 0) {arm->clean_warn();}
         arm->motion_enable(true);
 
-        arm->set_mode(1);
-        // arm->set_mode(0);
+        // arm->set_mode(1);
+        arm->set_mode(0);
 
         std::cout << "Setting state" << std::endl; 
 
         arm->set_state(0);
         // arm->reset(true);
-        fp32 pos[6] = { 400, 0, 200, 180, 0, 0};
-        // int ret = arm->set_position(pos, 0, true);
+        fp32 pos[6] = { 400, -75, 200, 180, 0, 0};
+        int ret = arm->set_position(pos, 0, true);
     }
 
     =}
