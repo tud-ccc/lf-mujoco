@@ -35,4 +35,10 @@
     robo_joint_angles_ = std::vector<mjtNum>{data->qpos, data->qpos + model->nq};
     robo_joint_velocity_ = std::vector<mjtNum>{data->qvel, data->qvel + model->nv};
     robo_joint_effort_ = std::vector<mjtNum>{data->act, data->act + model->na};
+
+    
+    robo_pose_.resize(3);
+    robo_pose_[0] = data->xpos[model->nbody * 3] * 1000.0;
+    robo_pose_[1] = data->xpos[model->nbody * 3 + 1] * 1000.0;
+    robo_pose_[2] = data->xpos[model->nbody * 3 + 2] * 1000.0;
   }
