@@ -31,7 +31,9 @@ class VectorArithmentics():
         l2 = vec2.get_arithmetic_length()
         if(l1*l2 == 0):
             return 0
-        angle_in_rad = math.acos(scalar_prod / (l1*l2))
+        value = scalar_prod / (l1 * l2)
+        value = max(-1, min(1, value))  # Clamp the value to be within the range [-1, 1]
+        angle_in_rad = math.acos(value)
         return math.degrees(angle_in_rad)
     
     def two_vectors_dot_product(self, vec1, vec2):

@@ -52,3 +52,9 @@ instructions.csv
 *.so*
 
 data_analysis_csv/one_trajectory_analysis/__pycache__
+
+testing/
+
+*.pyc
+
+testing_run_all.sh
