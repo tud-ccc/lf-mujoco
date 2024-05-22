@@ -30,10 +30,10 @@ main reactor StartUp {
   interface = new XArmInterface()
 
   // CONTROL
-  planner = new Planner(acceleration_cap=0.05, max_step_length=1)
+  planner = new Planner(acceleration_cap=0.06, max_step_length=1)
   controller = new RobotControl(timer_change_target = 4s, timer_start_change_target_period = 2s, positions = {=
           {
-            Vector{400, -75, 200 }, Vector{475, 0, 200 }, Vector{400, 75, 200}, Vector{325, 0, 200}
+            Vector{400, -75, 220 }, Vector{475, 0, 180 }, Vector{400, 75, 220}, Vector{325, 0, 180}
           }
        
   =})
@@ -50,7 +50,7 @@ main reactor StartUp {
       acceleration_cap=0.05,
       max_step_length=1,
       threshold_deaccelerate=10, 
-      threshold_when_to_stop = 0.00)
+      threshold_when_to_stop = 0.0)
   sanity_checker = new SanityChecker()
 
   // DATA

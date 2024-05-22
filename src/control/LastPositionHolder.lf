@@ -8,23 +8,23 @@ public preamble {=
   #endif //XARM7
 =}
 
-private preamble {=
- 
-=}
+private preamble {=  =}
 
-reactor LastPositionHolder (initial_last_position: {=Vector=} = {=Vector{0, 0,0}=}){
- input holder_current_position : Vector
- output planner_last_position: Vector
- state last_position: Vector = initial_last_position
-  
+reactor LastPositionHolder(initial_last_position: {= Vector =} = {= Vector{0, 0,0} =}) {
+  input holder_current_position: Vector
+  output planner_last_position: Vector
+  state last_position: Vector 
+  state currently_first_iteration: bool = true
 
-  reaction(startup) {=   
+  reaction(startup) {=  =}
 
-  =}
-
-  reaction(holder_current_position) -> planner_last_position  {=
-      Vector cur_pos = *holder_current_position.get();
-      planner_last_position.set(this->last_position);
+  reaction(holder_current_position) -> planner_last_position {=
+    Vector cur_pos = *holder_current_position.get();
+    if (this->currently_first_iteration){ 
       this->last_position = cur_pos;
+      this->currently_first_iteration = false;
+    }
+    planner_last_position.set(this->last_position);
+    this->last_position = cur_pos;
   =}
 }
