@@ -22,7 +22,7 @@ private:
   double calculate_speed_selected_by_PID(const double distance_to_target) const;
   double calculate_max_speed() const;
   double calculate_min_speed() const;
-  double calclulate_min_speed_with_right_angled_triangle() const;
+  double calclulate_min_speed_with_law_of_sines() const;
 
 public:
   DeaccelerationController(const double max_step_length, const double threshold_deaccelerate,

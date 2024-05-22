@@ -47,7 +47,7 @@ void DeaccelerationController::print_all_collected_vectors() const {
   this->offset_vector_.to_string();
 }
 
-double DeaccelerationController::calclulate_min_speed_with_right_angled_triangle() const {
+double DeaccelerationController::calclulate_min_speed_with_law_of_sines() const {
 
   double a = this->acceleration_vector_.get_arithmetic_length();
   // std::cout << "a :  " << a << std::endl;
@@ -55,17 +55,17 @@ double DeaccelerationController::calclulate_min_speed_with_right_angled_triangle
   double alpha = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->offset_vector_);
   // std::cout << "alpha :  " << alpha << std::endl;
 
-  double b = this->next_logical_step_offset_vector_.get_arithmetic_length();
+  double c = this->next_logical_step_offset_vector_.get_arithmetic_length();
   // std::cout << "b :  " << b << std::endl;
 
-  double beta = asin((sin(alpha) * b) / a);
-  beta = PI - beta;
+  double gamma = asin((sin(alpha) * c) / a);
+  gamma = PI - gamma;
   // std::cout << "beta : " << beta << std::endl;
 
-  double gamma = PI - beta - alpha;
+  double beta = PI - gamma - alpha;
   // std::cout << "gamma : " << gamma << std::endl;
 
-  double c = (a * sin(gamma)) / sin(alpha);
+  double b = (a * sin(beta)) / sin(alpha);
   // std::cout << "c : " << c << std::endl;
 
   if (std::isnan(c)) {
@@ -81,7 +81,7 @@ double DeaccelerationController::calclulate_min_speed_with_right_angled_triangle
     std::cout << "gamma : " << gamma << std::endl;
     assert(false && "Preferred speed has a wrong value");
   }
-  return c;
+  return b;
 }
 
 double DeaccelerationController::calculate_min_speed() const {
@@ -99,7 +99,7 @@ double DeaccelerationController::calculate_min_speed() const {
     return this->next_logical_step_offset_vector_.get_arithmetic_length() -
            acceleration_vector_.get_arithmetic_length();
   } else {
-    return this->calclulate_min_speed_with_right_angled_triangle();
+    return this->calclulate_min_speed_with_law_of_sines();
   }
 }
 
