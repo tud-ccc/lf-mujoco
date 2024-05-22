@@ -31,8 +31,6 @@ reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double
   VectorArithmetics va = VectorArithmetics{};
   Vector shortened_offset_vector = dc.shorten_for_deacceleration(*velocity_control_current_position.get(), *velocity_control_raw_instruction.get());
   Vector next_position = va.add_vectors(*velocity_control_current_position.get(), shortened_offset_vector);
-  // std::cout << "Now the next_position:";
-  // next_position.to_string();
   sanity_checker_next_position.set(next_position);
   =}
 

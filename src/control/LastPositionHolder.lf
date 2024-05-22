@@ -14,7 +14,6 @@ private preamble {=
 
 reactor LastPositionHolder (initial_last_position: {=Vector=} = {=Vector{0, 0,0}=}){
  input holder_current_position : Vector
- output planner_current_position: Vector
  output planner_last_position: Vector
  state last_position: Vector = initial_last_position
   
@@ -23,9 +22,8 @@ reactor LastPositionHolder (initial_last_position: {=Vector=} = {=Vector{0, 0,0}
 
   =}
 
-  reaction(holder_current_position) -> planner_current_position,planner_last_position  {=
+  reaction(holder_current_position) -> planner_last_position  {=
       Vector cur_pos = *holder_current_position.get();
-      planner_current_position.set(cur_pos);
       planner_last_position.set(this->last_position);
       this->last_position = cur_pos;
   =}

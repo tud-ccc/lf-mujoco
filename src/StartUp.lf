@@ -30,7 +30,7 @@ main reactor StartUp {
   interface = new XArmInterface()
 
   // CONTROL
-  planner = new Planner(acceleration_cap=0.1, max_step_length=1)
+  planner = new Planner(acceleration_cap=0.05, max_step_length=1)
   controller = new RobotControl(positions = {=
           {Vector{5,-10,5}, Vector{0,0,0}, Vector{19,7,-13}, Vector{10,-5,-40},
           Vector{7,2,-123}, Vector{2,-2,12}, Vector{2,72,5}, Vector{-26,0,34},
@@ -39,7 +39,7 @@ main reactor StartUp {
   =})
   last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75,0} =})
   velocity_control = new VelocityControl(
-      acceleration_cap=0.1,
+      acceleration_cap=0.05,
       max_step_length=1,
       threshold_deaccelerate=5, 
       threshold_when_to_stop = 0.01)
@@ -79,9 +79,9 @@ main reactor StartUp {
   decoder.current_position -> last_position_holder.holder_current_position
   decoder.current_position -> controller.robot_control_current_position
   decoder.current_position -> velocity_control.velocity_control_current_position
+  decoder.current_position -> planner.planner_current_position
 
   // Last Position Holder  --> Planner
-  last_position_holder.planner_current_position -> planner.planner_current_position
   last_position_holder.planner_last_position -> planner.planner_last_position
 
   // CSV DATA : Instructions
