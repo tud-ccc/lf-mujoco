@@ -33,7 +33,7 @@ main reactor StartUp {
   planner = new Planner(acceleration_cap=0.05, max_step_length=1)
   controller = new RobotControl(positions = {=
           {
-            Vector{400, -75, 0 }, Vector{475, 0, 0 }, Vector{400, 75, 0}, Vector{325, 0, 0}
+            Vector{400, -75, 200 }, Vector{475, 0, 200 }, Vector{400, 75, 200}, Vector{325, 0, 200}
           }
        
   =})
@@ -45,7 +45,7 @@ main reactor StartUp {
           // Vector{0,0,0}, Vector{0,0,-42}
           // }
 
-  last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75,0} =})
+  last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75, 200} =})
   velocity_control = new VelocityControl(
       acceleration_cap=0.05,
       max_step_length=1,
@@ -58,14 +58,15 @@ main reactor StartUp {
       instructions_path="data_analysis/data/instructions.csv")
   data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
 
-  // HARDWARE : REAL ROBO
-  // hardware = new RoboXArm7();
-  // interface.robo_next_position_checked -> hardware.robo_next_position_checked;
-  // hardware.interface_world_data -> interface.interface_world_data;
+  // HARDWARE : REAL ROBO <--> Interface
+  hardware = new RoboXArm7();
+  interface.robo_next_position_checked -> hardware.robo_next_position_checked;
+  hardware.interface_world_data -> interface.interface_world_data;
+  
   // HARDWARE : FAKE ROBO <--> Interface
-  fake_hardware = new RoboXArm7Fake(initial_current_position = {= Vector{400, -75,0} =})
-  interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
-  fake_hardware.interface_world_data -> interface.interface_world_data
+  // fake_hardware = new RoboXArm7Fake(initial_current_position = {= Vector{400, -75,0} =})
+  // interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
+  // fake_hardware.interface_world_data -> interface.interface_world_data
 
   // Controller --> Planner | Velocity Control
   controller.raw_instruction -> planner.planner_raw_instruction

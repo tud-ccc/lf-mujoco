@@ -13,7 +13,7 @@ private preamble {=
   #include <iostream>
 =}
 
-reactor RobotControl(positions:
+reactor RobotControl( positions:
                {= Vector[4] =} = {=
             {
               Vector{0, 0, 0 }, Vector{0, 0, 0 }, Vector{0, 0, 0}, Vector{0, 0, 0}
@@ -29,7 +29,7 @@ reactor RobotControl(positions:
             // =})
 
  {
-  timer t(200 ms, 1000 ms)
+  timer t(9 s, 1000 ms)
   output raw_instruction: Vector
   input robot_control_current_position: Vector
   state counter: int = 0  // not constant
