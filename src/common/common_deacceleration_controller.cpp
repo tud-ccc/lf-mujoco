@@ -85,6 +85,7 @@ double DeaccelerationController::calclulate_min_speed_with_law_of_sines() const 
 }
 
 double DeaccelerationController::calculate_min_speed() const {
+  if(this->next_logical_step_offset_vector_.is_NULL_vector()) return 0;
 
   bool next_logical_step_offset_vector_shorter_than_acc_vec =
       this->next_logical_step_offset_vector_.get_arithmetic_length() < acceleration_vector_.get_arithmetic_length();

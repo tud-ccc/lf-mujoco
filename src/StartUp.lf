@@ -49,8 +49,8 @@ main reactor StartUp {
   velocity_control = new VelocityControl(
       acceleration_cap=0.05,
       max_step_length=1,
-      threshold_deaccelerate=5, 
-      threshold_when_to_stop = 0.05)
+      threshold_deaccelerate=10, 
+      threshold_when_to_stop = 0.00)
   sanity_checker = new SanityChecker()
 
   // DATA
