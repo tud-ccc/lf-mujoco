@@ -13,13 +13,13 @@ public preamble {=
 =}
 
 
-reactor RoboXArm7 (host: std::string = "192.168.1.227"){
+reactor RoboXArm7 (timer_start_moving: time = 1s, timer_initiate_movin_period: time = 10ms, host: std::string = "192.168.1.227"){
 
 
   //robo facing
   input robo_next_position_checked: Vector;
   output interface_world_data: WorldData;
-  timer t(8s, 10ms);
+  timer t(timer_start_moving, timer_initiate_movin_period);
   state arm: {=XArmAPI*=};
 
   reaction(startup) {=

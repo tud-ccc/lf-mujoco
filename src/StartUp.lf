@@ -31,7 +31,7 @@ main reactor StartUp {
 
   // CONTROL
   planner = new Planner(acceleration_cap=0.05, max_step_length=1)
-  controller = new RobotControl(positions = {=
+  controller = new RobotControl(timer_change_target = 4s, timer_start_change_target_period = 2s, positions = {=
           {
             Vector{400, -75, 200 }, Vector{475, 0, 200 }, Vector{400, 75, 200}, Vector{325, 0, 200}
           }
@@ -45,12 +45,12 @@ main reactor StartUp {
           // Vector{0,0,0}, Vector{0,0,-42}
           // }
 
-  last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75, 200} =})
+  last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75,200} =})
   velocity_control = new VelocityControl(
       acceleration_cap=0.05,
       max_step_length=1,
       threshold_deaccelerate=5, 
-      threshold_when_to_stop = 0.01)
+      threshold_when_to_stop = 0.05)
   sanity_checker = new SanityChecker()
 
   // DATA
@@ -59,7 +59,7 @@ main reactor StartUp {
   data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
 
   // HARDWARE : REAL ROBO <--> Interface
-  hardware = new RoboXArm7();
+  hardware = new RoboXArm7(timer_start_moving = 3s, timer_initiate_movin_period = 10ms);
   interface.robo_next_position_checked -> hardware.robo_next_position_checked;
   hardware.interface_world_data -> interface.interface_world_data;
   
