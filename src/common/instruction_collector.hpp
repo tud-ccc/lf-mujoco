@@ -15,6 +15,9 @@ private:
 public:
   Instruction_Collector(std::chrono::nanoseconds physical_elapsed_time,
                         std::vector<Vector> positions){
+
+
+        this->physical_elapsed_time_ = physical_elapsed_time;
         this->positions_ = positions;                       
   }
 
