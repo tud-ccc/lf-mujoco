@@ -9,9 +9,7 @@ public preamble {=
 =}
 
 reactor Planner(acceleration_cap: double = 0, max_step_length: double = 0) {
-
   private preamble {=
-
     Vector shorten_if_longer_than_max_step_length(Vector next_logical_step_offset_vector, double max_step_length){
       //reduce if the previous state was unstable
       if (next_logical_step_offset_vector.get_arithmetic_length() > max_step_length)
@@ -19,9 +17,18 @@ reactor Planner(acceleration_cap: double = 0, max_step_length: double = 0) {
       return next_logical_step_offset_vector;
     }
 
+    Vector normalize_if_not_NULL_vector(Vector acceleration_vector, double acceleration_cap){
+      if (acceleration_vector.get_arithmetic_length() > 0){
+        return acceleration_vector.normalize().scale(acceleration_cap);
+        }
+      else{
+        return acceleration_vector;
+        }
+    }
+
     VectorCollectionVelocityControl calculate_offset_vector_given_max_acceleration(Vector last_position, Vector current_position,
                                                                              Vector raw_instruction, double max_step_length, double acceleration_cap){
-      VectorArithmetics va = VectorArithmetics{};    
+      VectorArithmetics va = VectorArithmetics{};
 
       std::cout << "Current_position: ";
       current_position.to_string();
@@ -31,17 +38,18 @@ reactor Planner(acceleration_cap: double = 0, max_step_length: double = 0) {
 
       Vector next_logical_step_offset_vector = va.get_delta_vector(last_position, current_position);
       next_logical_step_offset_vector = shorten_if_longer_than_max_step_length(next_logical_step_offset_vector, max_step_length);
-      std::cout << "Next_logical_step_offset_vector: ";
-      next_logical_step_offset_vector.to_string();
+      // std::cout << "Next_logical_step_offset_vector: ";
+      // next_logical_step_offset_vector.to_string();
 
       Vector next_logical_step = va.add_vectors(current_position, next_logical_step_offset_vector);
-      std::cout << "Next_logical_step: ";
-      next_logical_step.to_string();
+      // std::cout << "Next_logical_step: ";
+      // next_logical_step.to_string();
 
       Vector acceleration_vector = va.get_delta_vector(next_logical_step, raw_instruction);
-      std::cout << "Acceleration_vector (unshortnened): ";
-      acceleration_vector.to_string();
-      if (acceleration_vector.get_arithmetic_length() > 0){acceleration_vector = acceleration_vector.normalize().scale(acceleration_cap);}     
+      acceleration_vector = normalize_if_not_NULL_vector(acceleration_vector, acceleration_cap);
+      // std::cout << "Acceleration_vector (unshortnened): ";
+      // acceleration_vector.to_string();
+
 
       Vector offset_vector = va.add_vectors(next_logical_step_offset_vector, acceleration_vector);
       std::cout << "Offset_vector: ";
@@ -49,9 +57,6 @@ reactor Planner(acceleration_cap: double = 0, max_step_length: double = 0) {
 
       return VectorCollectionVelocityControl{next_logical_step_offset_vector, next_logical_step, acceleration_vector, offset_vector};
     }
-
-   
-
   =}
 
   input planner_raw_instruction: Vector
