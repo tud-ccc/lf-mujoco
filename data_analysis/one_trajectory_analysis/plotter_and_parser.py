@@ -10,35 +10,35 @@ class Plotter:
         inst_time = self.instructions_csv['time'].to_list()
 
 
-        current_position_0 = self.instructions_csv['current_position_0'].to_list()
-        current_position_1 = self.instructions_csv['current_position_1'].to_list()
-        current_position_2 = self.instructions_csv['current_position_2'].to_list()   
+        current_position_0 = self.instructions_csv['last_position_0'].to_list()
+        current_position_1 = self.instructions_csv['last_position_0'].to_list()
+        current_position_2 = self.instructions_csv['last_position_0'].to_list()   
         
-        raw_instruction_0 = self.instructions_csv['raw_instruction_0'].to_list()
-        raw_instruction_1 = self.instructions_csv['raw_instruction_1'].to_list()
-        raw_instruction_2 = self.instructions_csv['raw_instruction_2'].to_list()   
+        raw_instruction_0 = self.instructions_csv['current_position_0'].to_list()
+        raw_instruction_1 = self.instructions_csv['current_position_1'].to_list()
+        raw_instruction_2 = self.instructions_csv['current_position_2'].to_list()   
         
 
-        checked_instruction_0 = self.instructions_csv['checked_instruction_0'].to_list()
-        checked_instruction_1 = self.instructions_csv['checked_instruction_1'].to_list()
-        checked_instruction_2 = self.instructions_csv['checked_instruction_2'].to_list()   
+        checked_instruction_0 = self.instructions_csv['target_0'].to_list()
+        checked_instruction_1 = self.instructions_csv['target_1'].to_list()
+        checked_instruction_2 = self.instructions_csv['target_2'].to_list()   
 
         figure, axis = plt.subplots(2, 2) 
         
         axis[0, 0].plot(inst_time, current_position_0, 'b') 
         axis[0, 0].plot(inst_time, raw_instruction_0, 'r')
         axis[0, 0].plot(inst_time, checked_instruction_0, 'g')
-        axis[0, 0].set_title("X__ Blue : current pos, Red : raw pos, Green : checked pos") 
+        axis[0, 0].set_title("X__ Blue : last pos, Red : cur pos, Green : raw pos") 
         
         axis[0, 1].plot(inst_time, current_position_1, 'b') 
         axis[0, 1].plot(inst_time, raw_instruction_1, 'r')
         axis[0, 1].plot(inst_time, checked_instruction_1, 'g')
-        axis[0, 0].set_title("Y__ Blue : current pos, Red : raw pos, Green : checked pos") 
+        axis[0, 0].set_title("Y__ Blue : last pos, Red : cur pos, Green : raw pos") 
 
         axis[1, 0].plot(inst_time, current_position_2, 'b') 
         axis[1, 0].plot(inst_time, raw_instruction_2, 'r')
         axis[1, 0].plot(inst_time, checked_instruction_2, 'g')
-        axis[0, 0].set_title("Z__ Blue : current pos, Red : raw pos, Green : checked pos") 
+        axis[0, 0].set_title("Z__ Blue : last pos, Red : cur pos, Green : raw pos") 
         
         plt.show() 
 
@@ -53,7 +53,7 @@ class Plotter:
 
         ax.scatter3D(x_values, y_values, z_values,color = "r")
 
-        # ax.set_zlim(0,300)
+        ax.set_zlim(0,300)
 
         plt.show()
 
@@ -75,7 +75,7 @@ class Plotter:
             ax.text(x, y, z, label)
             time_stamp = time_stamp + 1
 
-        # ax.set_zlim(0,300)
+        ax.set_zlim(0,300)
 
         plt.show()
 
