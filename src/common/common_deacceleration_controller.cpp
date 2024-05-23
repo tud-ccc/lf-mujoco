@@ -149,7 +149,9 @@ double DeaccelerationController::calculate_speed_next_step_wrapper(const Vector 
                                                                    const Vector raw_instruction) const {
   double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
   double max_speed = this->calculate_max_speed();
+  // std::cout << "max speed ! <=====> " << max_speed;
   double min_speed = this->calculate_min_speed();
+  // std::cout << "min speed ! <=====> " << min_speed;
 
   return this->calculate_speed_next_step(current_position, raw_instruction, distance_to_target, max_speed, min_speed);
 }
@@ -173,6 +175,7 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
     if (near_to_target_start_deaccelerating) {
       Vector shortened_vector = this->offset_vector_;
       double next_speed = this->calculate_speed_next_step_wrapper(current_position, raw_instruction);
+      // std::cout << "next_speed speed ! <=====> " << next_speed;
       return shortened_vector.normalize().scale(next_speed);
     } else {
       return this->offset_vector_;
