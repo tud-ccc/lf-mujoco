@@ -15,9 +15,10 @@ public preamble {=
 reactor CSV_Instructions (instructions_path: std::string = "") {
 
   //robo facing
+  input csv_last_position: Vector; 
   input csv_current_position: Vector;
   input csv_raw_instruction: Vector;
-  input csv_next_position_checked: Vector; 
+  input csv_vector_collection: VectorCollectionVelocityControl
 
   reaction(startup){=
     Instruction_Collector ic = Instruction_Collector{}; 
@@ -25,16 +26,21 @@ reactor CSV_Instructions (instructions_path: std::string = "") {
     std::cout << instructions_path << std::endl;
   =}
 
-  reaction(csv_current_position, csv_raw_instruction, csv_next_position_checked) {=
-        Vector vec_current_position = *csv_current_position.get();
-        Vector vec_raw_instruction = *csv_raw_instruction.get();
-        Vector vec_next_position_checked = *csv_next_position_checked.get();
+  reaction(csv_last_position, csv_current_position, csv_raw_instruction, csv_vector_collection) {=
+
+        std::vector<Vector> vectors;
+        vectors.push_back(*csv_last_position.get());
+        vectors.push_back(*csv_current_position.get());
+        vectors.push_back(*csv_raw_instruction.get());
+        vectors.push_back((*csv_vector_collection.get()).get_next_logical_step_offset_vector());
+        vectors.push_back((*csv_vector_collection.get()).get_next_logical_step());
+        vectors.push_back((*csv_vector_collection.get()).get_acceleration_vector());
+        vectors.push_back((*csv_vector_collection.get()).get_offset_vector());
 
         Instruction_Collector ins_coll  =  Instruction_Collector{
             get_elapsed_physical_time(),
-            vec_current_position,
-            vec_raw_instruction,
-            vec_next_position_checked,
+            vectors
+            
         };
         ins_coll.write_instructions_to_csv(instructions_path);
 
