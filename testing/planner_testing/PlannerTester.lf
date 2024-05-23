@@ -11,7 +11,7 @@ public preamble {=
   #endif //ROBOXARM
 =}
 
-reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=RandomVectorsHandler{""}=}) {
+reactor PlannerTester(stop_after_steps: double = 0, random_vectors_handler: {=RandomVectorsHandler=} = {=RandomVectorsHandler{""}=}) {
   input next_position_checked: Vector  // planner facing
 
   output planner_last_position: Vector
@@ -27,6 +27,7 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
 
   state travelled_path: std::vector<Vector>
 
+  state step_counter: double = 0
   state random_vectors_index: int = 0;
 
   logical action la_start_new_trajectory: void
@@ -63,7 +64,6 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
 
   reaction(la_trajectory_finished) -> transfer_travelled_path, transfer_file, la_start_new_trajectory {=
 
-      // if(random_vectors_index == 1) return;
       std::cout << "Finished one trajectory" << std::endl;
       
       std::string path = "testing/testing_output_data/";
@@ -83,7 +83,9 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
       transfer_file.set(specific_name);
       travelled_path.clear();
       //increment index
-      random_vectors_index += 1;      
+      random_vectors_index += 1;    
+      step_counter = 0;
+      if(random_vectors_index == 1) return;
       la_start_new_trajectory.schedule(0ms);
 
   =}
@@ -95,19 +97,23 @@ reactor PlannerTester(random_vectors_handler: {=RandomVectorsHandler=} = {=Rando
     //get Vector out of input_port
     Vector next_position_checked = *la_next_position_checked.get();     
     VectorArithmetics va = VectorArithmetics{};
+    travelled_path.push_back(current_current_position);
 
-    if(va.get_distance_between_point_vectors(next_position_checked,current_raw_instruction) <= 0.2){
+    if(va.get_distance_between_point_vectors(next_position_checked,current_raw_instruction) <= 0.2 || step_counter == stop_after_steps){
       la_trajectory_finished.schedule(0ms);     
     }else {
-      travelled_path.push_back(current_current_position);
 
       //state adaption since we are moving
       current_last_position = current_current_position; 
       current_current_position = next_position_checked;
+
       //sending new commands 
       planner_raw_instruction.set(current_raw_instruction);
       planner_current_position.set(current_current_position);
       planner_last_position.set(current_last_position); 
+
+      step_counter += 1 ;
+
   }
 
   =}

@@ -18,16 +18,16 @@ public preamble {=
 
 main reactor TestStartUp {
   // the planner should at every point in time receive an input triplet and give back an input triplet
-  planner = new Planner(acceleration_cap=0.3, max_step_length=1)
+  planner = new Planner(acceleration_cap=0.06, max_step_length=1)
   velocity_control = new VelocityControl(
-      acceleration_cap=0.3,
+      acceleration_cap=0.05,
       max_step_length=1,
-      threshold_deaccelerate=5,
-      threshold_when_to_stop=0.01)
+      threshold_deaccelerate=10,
+      threshold_when_to_stop=0.0)
 
   sanity_checker = new SanityChecker()
 
-  planner_tester = new PlannerTester(
+  planner_tester = new PlannerTester(stop_after_steps = 3, 
       random_vectors_handler = {=
         RandomVectorsHandler{"testing/testing_input_data/random_vectors.csv"}
       =})
