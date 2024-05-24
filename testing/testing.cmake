@@ -3,8 +3,6 @@ SET(CXX_STANDARD 17)
 # add cpp files to library
 ADD_LIBRARY(testing_cpp_files_common
     ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_vector.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_position_evaluator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_position_evaluator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_deacceleration_controller.cpp
     ${CMAKE_CURRENT_LIST_DIR}/test_common/random_vectors_handler.cpp)
 

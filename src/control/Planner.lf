@@ -4,33 +4,35 @@ public preamble {=
   #ifndef SANITY_CHECKER
   #define SANITY_CHECKER
   #include "common_vector.hpp"
+  #include "common_deacceleration_controller.hpp"
 
   #endif //SANITY_CHECKER
 =}
 
-reactor Planner(acceleration_cap: double = 0, max_step_length: double = 0) {
-  private preamble {=
+reactor Planner(max_step_length: double = 0, threshold_deaccelerate: double = 0, threshold_near_target_stop_moving: double = 0, acceleration_cap: double = 0) {
 
-
-    VectorCollectionVelocityControl calculate_offset_vector_given_max_acceleration(Vector last_position, Vector current_position,
-                                                                             Vector raw_instruction, double max_step_length, double acceleration_cap){
-      
-  =}
 
   input planner_raw_instruction: Vector
   input planner_current_position: Vector
   input planner_last_position: Vector
 
-  output velocity_control_vector_collection: VectorCollectionVelocityControl
+  output sanity_checker_next_position: Vector
+  output data_collector_velocity_control_vector_collection: VectorCollectionVelocityControl
 
   reaction(planner_current_position, planner_last_position, planner_raw_instruction) ->
-  velocity_control_vector_collection {=
+  data_collector_velocity_control_vector_collection, sanity_checker_next_position {=
     Vector  vector_current_position = *planner_current_position.get();
     Vector  vector_last_position = *planner_last_position.get();
     Vector  vector_raw_instruction = *planner_raw_instruction.get();
 
-    VectorCollectionVelocityControl vcvc = calculate_offset_vector_given_max_acceleration(vector_last_position, vector_current_position, vector_raw_instruction, max_step_length, acceleration_cap);
+    DeaccelerationController deac = DeaccelerationController{max_step_length, threshold_deaccelerate,
+                           threshold_near_target_stop_moving, acceleration_cap};
 
-    velocity_control_vector_collection.set(vcvc);
+    Vector next_position = deac.compute_next_position(vector_last_position, vector_current_position, vector_raw_instruction);
+    std::cout << "Next Position: ";
+    next_position.to_string();
+
+    sanity_checker_next_position.set(next_position);
+    data_collector_velocity_control_vector_collection.set(deac.get_vector_collection_velocity_control());
   =}
 }

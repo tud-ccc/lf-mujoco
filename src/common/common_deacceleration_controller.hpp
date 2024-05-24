@@ -1,5 +1,5 @@
-#ifndef common_deacceleration_controller
-#define common_deacceleration_controller
+#ifndef COMMON_DEACC_CONTROLLER
+#define COMMON_DEACC_CONTROLLER
 
 #include "common_vector.hpp"
 
@@ -12,6 +12,8 @@ private:
   double threshold_deaccelerate_;
   double threshold_near_target_stop_moving_;
   double acceleration_cap_;
+
+  VectorCollectionVelocityControl vcvc_;
   double calculate_speed_next_step_wrapper(const Vector current_position, const Vector raw_instruction,
                                            const Vector next_logical_step_offset_vector,
                                            const Vector acceleration_vector, const Vector offset_vector) const;
@@ -32,13 +34,9 @@ public:
   DeaccelerationController(const double max_step_length, const double threshold_deaccelerate,
                            const double threshold_near_target_stop_moving, const double acceleration_cap);
 
-  Vector get_next_logical_step_offset_vector() const;
-  Vector get_next_logical_step() const;
-  Vector get_acceleration_vector() const;
-  Vector get_offset_vector() const;
+  VectorCollectionVelocityControl get_vector_collection_velocity_control() const{return this->vcvc_;};
 
-  void print_all_collected_vectors() const;
-  Vector compute_next_position(const last_position, const Vector current_position, const Vector raw_instruction);
+  Vector compute_next_position(const Vector last_position, const Vector current_position, const Vector raw_instruction);
 };
 
 #endif

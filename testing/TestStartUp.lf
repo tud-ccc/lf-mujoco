@@ -3,7 +3,6 @@ target Cpp {
 }
 
 import Planner from "../src/control/Planner.lf"
-import VelocityControl from "../src/control/VelocityControl.lf"
 import SanityChecker from "../src/control/SanityChecker.lf"
 import PathPlanningTester from "planner_testing/PathPlanningTester.lf"
 import CSVPath from "planner_testing/CSV_Path.lf"
@@ -18,26 +17,17 @@ public preamble {=
 
 main reactor TestStartUp {
   // the planner should at every point in time receive an input triplet and give back an input triplet
-  planner = new Planner(acceleration_cap=0.06, max_step_length=1)
-  velocity_control = new VelocityControl(
-      acceleration_cap=0.05,
-      max_step_length=1,
-      threshold_deaccelerate=10,
-      threshold_near_target_stop_moving=0.0)
-
+  planner = new Planner(max_step_length = 1, threshold_deaccelerate = 5, threshold_near_target_stop_moving = 0.1, acceleration_cap = 0.3)
   sanity_checker = new SanityChecker()
 
-  planning_tester = new PathPlanningTester(stop_after_steps = 3, 
+  planning_tester = new PathPlanningTester(stop_after_steps = 20, number_of_paths_to_analyze = 120,
       random_vectors_handler = {=
         RandomVectorsHandler{"testing/testing_input_data/random_vectors.csv"}
       =})
   CSV_path = new CSVPath()
 
   // Planner --> Velocity Control
-  planner.velocity_control_vector_collection -> velocity_control.velocity_control_vector_collection
-
-  // Velocity Control --> Sanity Checker
-  velocity_control.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
+  planner.sanity_checker_next_position-> sanity_checker.sanity_checker_next_position
 
   // Velocity Control --> Interface
   sanity_checker.next_position_checked -> planning_tester.next_position_checked
@@ -47,8 +37,6 @@ main reactor TestStartUp {
   planning_tester.planner_current_position -> planner.planner_current_position
   planning_tester.planner_last_position -> planner.planner_last_position
 
-  planning_tester.planner_raw_instruction -> velocity_control.velocity_control_raw_instruction
-  planning_tester.planner_current_position -> velocity_control.velocity_control_current_position
 
   // Planner Tester <--> CSV_path
   planning_tester.transfer_travelled_path -> CSV_path.robo_path

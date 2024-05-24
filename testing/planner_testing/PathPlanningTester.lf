@@ -11,7 +11,7 @@ public preamble {=
   #endif //ROBOXARM
 =}
 
-reactor PathPlanningTester(stop_after_steps: double = 0, random_vectors_handler: {=RandomVectorsHandler=} = {=RandomVectorsHandler{""}=}) {
+reactor PathPlanningTester(stop_after_steps: int = 0, number_of_paths_to_analyze: int = 0, random_vectors_handler: {=RandomVectorsHandler=} = {=RandomVectorsHandler{""}=}) {
   input next_position_checked: Vector  // planner facing
 
   output planner_last_position: Vector
@@ -65,7 +65,7 @@ reactor PathPlanningTester(stop_after_steps: double = 0, random_vectors_handler:
   reaction(la_trajectory_finished) -> transfer_travelled_path, transfer_file, la_start_new_trajectory {=
 
       std::cout << "Finished one trajectory" << std::endl;
-      
+
       std::string path = "testing/testing_output_data/";
       std::string file_name = "instructions";
       std::string padding;
@@ -85,7 +85,7 @@ reactor PathPlanningTester(stop_after_steps: double = 0, random_vectors_handler:
       //increment index
       random_vectors_index += 1;    
       step_counter = 0;
-      if(random_vectors_index == 1) return;
+      if(random_vectors_index == number_of_paths_to_analyze) return;
       la_start_new_trajectory.schedule(0ms);
 
   =}

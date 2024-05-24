@@ -48,6 +48,7 @@ private:
   Vector offset_vector_;
 
 public:
+  VectorCollectionVelocityControl(){}
   VectorCollectionVelocityControl(Vector next_logical_step_offset_vector, Vector next_logical_step, Vector acceleration_vector,
                   Vector offset_vector) {
     this->next_logical_step_offset_vector_ = next_logical_step_offset_vector;

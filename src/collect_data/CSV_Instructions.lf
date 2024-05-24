@@ -17,7 +17,9 @@ reactor CSV_Instructions (instructions_path: std::string = "") {
   //robo facing
   input csv_last_position: Vector; 
   input csv_current_position: Vector;
+  input csv_next_position_checked: Vector;
   input csv_raw_instruction: Vector;
+  
   input csv_vector_collection: VectorCollectionVelocityControl
 
   reaction(startup){=

@@ -11,7 +11,6 @@ import CSV_WorldData from "collect_data/CSV_WorldData.lf"
 import RoboXArm7Fake from "hardware/RoboXArm7Fake.lf"
 import RoboXArm7 from "hardware/RoboXArm7.lf"
 import LastPositionHolder from "control/LastPositionHolder.lf"
-import VelocityControl from "control/VelocityControl.lf"
 import SanityChecker from "control/SanityChecker.lf"
 
 public preamble {=
@@ -30,7 +29,7 @@ main reactor StartUp {
   interface = new XArmInterface()
 
   // CONTROL
-  planner = new Planner(acceleration_cap=0.06, max_step_length=1)
+  planner = new Planner(max_step_length = 1, threshold_deaccelerate = 5, threshold_near_target_stop_moving = 0.1, acceleration_cap = 0.3)
   controller = new RobotControl(timer_change_target = 4s, timer_start_change_target_period = 3s, positions = {=
           {
             Vector{400, -175, 200 }, Vector{525, 0, 200 }, Vector{400, 175, 200}, Vector{325, 0, 200}
@@ -46,11 +45,7 @@ main reactor StartUp {
           // }
 
   last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75,200} =})
-  velocity_control = new VelocityControl(
-      acceleration_cap=0.05,
-      max_step_length=1,
-      threshold_deaccelerate=10, 
-      threshold_near_target_stop_moving = 0.0)
+
   sanity_checker = new SanityChecker()
 
   // DATA
@@ -70,13 +65,9 @@ main reactor StartUp {
 
   // Controller --> Planner | Velocity Control
   controller.raw_instruction -> planner.planner_raw_instruction
-  controller.raw_instruction -> velocity_control.velocity_control_raw_instruction
 
   // Planner --> Velocity Control
-  planner.velocity_control_vector_collection -> velocity_control.velocity_control_vector_collection
-
-  // Velocity Control --> Sanity Checker
-  velocity_control.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
+  planner.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
 
   // Velocity Control --> Interface
   sanity_checker.next_position_checked -> interface.interface_next_position_checked
@@ -87,7 +78,6 @@ main reactor StartUp {
   // Decoder --> Last Position Holder | Controller | Velocity Control
   decoder.current_position -> last_position_holder.holder_current_position
   decoder.current_position -> controller.robot_control_current_position
-  decoder.current_position -> velocity_control.velocity_control_current_position
   decoder.current_position -> planner.planner_current_position
   decoder.current_position -> sanity_checker.sanity_checker_current_position
 
@@ -97,8 +87,9 @@ main reactor StartUp {
   last_position_holder.planner_last_position -> sanity_checker.sanity_checker_last_position
 
   // CSV DATA : Instructions
-  planner.velocity_control_vector_collection -> data_collector_instructions.csv_vector_collection
+  planner.data_collector_velocity_control_vector_collection -> data_collector_instructions.csv_vector_collection
   last_position_holder.planner_last_position -> data_collector_instructions.csv_last_position
+  sanity_checker.next_position_checked -> data_collector_instructions.csv_next_position_checked
   controller.raw_instruction -> data_collector_instructions.csv_raw_instruction
   decoder.current_position -> data_collector_instructions.csv_current_position
 
