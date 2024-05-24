@@ -68,13 +68,13 @@ double DeaccelerationController::calculate_min_speed(const Vector next_logical_s
       next_logical_step_offset_vector.get_arithmetic_length() < acceleration_vector.get_arithmetic_length();
 
   bool nlsov_and_ov_are_ld = this->va_.linear_dependent(next_logical_step_offset_vector, offset_vector);
-  bool alpha_is_0 = this->va_.get_angle_in_radians(next_logical_step_offset_vector, offset_vector) == 0;
-  bool next_logical_step_offset_vector_linear_dependent_to_acc_vec = nlsov_and_ov_are_ld || alpha_is_0;
+  bool alpha_is_less_than_1 = this->va_.get_angle_in_degree(next_logical_step_offset_vector, offset_vector) <= 1;
+  bool next_logical_step_offset_vector_near_to_linear_dependent_to_acc_vec = nlsov_and_ov_are_ld || alpha_is_less_than_1;
 
   if (next_logical_step_offset_vector_shorter_than_acc_vec) {
     return 0;
   } else if (next_logical_step_offset_vector_linear_dependent_to_acc_vec) {
-    return next_logical_step_offset_vector.get_arithmetic_length() - acceleration_vector.get_arithmetic_length();
+    return next_logical_step_offset_vector.get_arithmetic_length() - this->acceleration_cap_;
   } else {
     return this->calclulate_min_speed_with_law_of_sines(next_logical_step_offset_vector, acceleration_vector,
                                                         offset_vector);
@@ -202,6 +202,7 @@ Vector DeaccelerationController::compute_next_position(const Vector last_positio
  
 
   Vector offset_vector = this->va_.add_vectors(next_logical_step_offset_vector, acceleration_vector);
+  offset_vector = shorten_if_longer_than_max_step_length(next_logical_step_offset_vector, this->max_step_length_);
   std::cout << "Offset_vector: ";
   offset_vector.to_string();
 
