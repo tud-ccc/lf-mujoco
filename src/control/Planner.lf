@@ -29,8 +29,7 @@ reactor Planner(max_step_length: double = 0, threshold_deaccelerate: double = 0,
                            threshold_near_target_stop_moving, acceleration_cap};
 
     Vector next_position = deac.compute_next_position(vector_last_position, vector_current_position, vector_raw_instruction);
-    std::cout << "Next Position: ";
-    next_position.to_string();
+   
 
     sanity_checker_next_position.set(next_position);
     data_collector_velocity_control_vector_collection.set(deac.get_vector_collection_velocity_control());

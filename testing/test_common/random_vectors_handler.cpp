@@ -41,20 +41,25 @@ std::vector<std::vector<std::string>> RandomVectorsHandler::get_csv_rows_vec_of_
 std::vector<std::tuple<Vector, Vector, Vector>>
 RandomVectorsHandler::get_csv_rows_vec_of_triplets(std::string path_to_vectors) {
   std::vector<std::vector<std::string>> csv_rows_vec_of_vecs = this->get_csv_rows_vec_of_vecs(path_to_vectors);
-  assert(csv_rows_vec_of_vecs.size()%3 == 0 && "Error: vector of VectorTriplets has an uncompatible size");
-  std::vector<std::tuple<Vector, Vector, Vector>> vector_of_triplets;
+  assert(csv_rows_vec_of_vecs.size() % 3 == 0 && "Error: vector of VectorTriplets has an uncompatible size");
 
-  for (int i = 0; i < csv_rows_vec_of_vecs.size() / 3; i++) {
+  std::vector<std::tuple<Vector, Vector, Vector>> vector_of_triplets;
+  int size_of_triplet_vector = csv_rows_vec_of_vecs.size()/3 ;
+  for (int i = 0; i < size_of_triplet_vector ; i++) {
     std::tuple<Vector, Vector, Vector> vector_triplet =
         this->get_vector_triplet_from_csv_rows(i * 3, csv_rows_vec_of_vecs);
     vector_of_triplets.push_back(vector_triplet);
+    if (i % 1000 == 0) std::cout << "Another triplet finished" << std::endl;
   }
+
+  std::cout << "Finished parsing the f cin Path" << std::endl;
   return vector_of_triplets;
 }
 
 std::tuple<Vector, Vector, Vector>
 RandomVectorsHandler::get_vector_triplet_from_csv_rows(int index,
-                                                       std::vector<std::vector<std::string>> csv_rows_vec_of_vecs) {
+                                                       std::vector<std::vector<std::string>> &csv_rows_vec_of_vecs) {
+
   std::tuple<Vector, Vector, Vector> vectors;
 
   std::vector<std::string> vec_1 = csv_rows_vec_of_vecs.at(index);
@@ -67,14 +72,15 @@ RandomVectorsHandler::get_vector_triplet_from_csv_rows(int index,
 
   vectors = std::make_tuple(last_position, current_position, raw_instruction);
 
+
   return vectors;
 }
 
-std::tuple<Vector, Vector, Vector> RandomVectorsHandler::get_vector_triplet_at_position(int index) const{
-  assert(index>= 0 && index < this->vector_of_triplets_.size()); 
+std::tuple<Vector, Vector, Vector> RandomVectorsHandler::get_vector_triplet_at_position(int index) const {
+  assert(index >= 0 && index < this->vector_of_triplets_.size());
   return this->vector_of_triplets_.at(index);
 }
 
-bool RandomVectorsHandler::index_is_according_to_bounds(int index) const{
-  return index>= 0 && index < this->vector_of_triplets_.size();
+bool RandomVectorsHandler::index_is_according_to_bounds(int index) const {
+  return index >= 0 && index < this->vector_of_triplets_.size();
 }

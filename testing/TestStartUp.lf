@@ -17,12 +17,12 @@ public preamble {=
 
 main reactor TestStartUp {
   // the planner should at every point in time receive an input triplet and give back an input triplet
-  planner = new Planner(max_step_length = 1, threshold_deaccelerate = 5, threshold_near_target_stop_moving = 0.1, acceleration_cap = 0.3)
+  planner = new Planner(max_step_length = 1, threshold_deaccelerate = 5, threshold_near_target_stop_moving = 0.01, acceleration_cap = 0.3)
   sanity_checker = new SanityChecker()
 
-  planning_tester = new PathPlanningTester(stop_after_steps = 20, number_of_paths_to_analyze = 120,
+  planning_tester = new PathPlanningTester( threshold_near_target_stop_moving = 0.01, stop_after_steps = 3, number_of_paths_to_analyze = 1,
       random_vectors_handler = {=
-        RandomVectorsHandler{"testing/testing_input_data/random_vectors.csv"}
+        RandomVectorsHandler{"testing/testing_input_data/random_vectors_near_to_target.csv"}
       =})
   CSV_path = new CSVPath()
 
