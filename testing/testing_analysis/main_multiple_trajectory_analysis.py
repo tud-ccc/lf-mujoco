@@ -44,7 +44,8 @@ def analyse_one_file(path):
 
 
 def main():  
-    analyse_one_file("testing/testing_output_data/instructions_000.csv")
+  Vector shorten_for_deacceleration(const Vector current_position, const Vector raw_instruction) const;
+    # analyse_one_file("testing/testing_output_data/instructions_000.csv")
     analyse_all_files_and_then_one_by_one()
 
 

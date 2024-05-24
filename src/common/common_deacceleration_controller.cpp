@@ -6,28 +6,16 @@
 #include <cmath>
 #include <iostream>
 
-DeaccelerationController::DeaccelerationController(double max_step_length, double threshold_deaccelerate, double threshold_when_to_stop) {
+DeaccelerationController::DeaccelerationController(const double max_step_length, const double threshold_deaccelerate,
+                                                   const double threshold_when_to_stop, const double acceleration_cap) {
+
   this->max_step_length_ = max_step_length;
   this->threshold_deaccelerate_ = threshold_deaccelerate;
   this->threshold_when_to_stop_ = threshold_when_to_stop;
+  this->acceleration_cap_ = acceleration_cap;
+
   this->va_ = VectorArithmetics{};
 };
-
-void DeaccelerationController::set_next_logical_step_offset_vector(Vector next_logical_step_offset_vector) {
-  this->next_logical_step_offset_vector_ = next_logical_step_offset_vector;
-}
-void DeaccelerationController::set_next_logical_step(Vector next_logical_step) {
-  this->next_logical_step_ = next_logical_step;
-}
-void DeaccelerationController::set_acceleration_vector(Vector acceleration_vector) {
-  this->acceleration_vector_ = acceleration_vector;
-}
-void DeaccelerationController::set_offset_vector(Vector offset_vector) {
-  if (this->offset_vector_.get_arithmetic_length() > this->max_step_length_) {
-    this->offset_vector_ = this->offset_vector_.normalize().scale(this->max_step_length_);
-  }
-  this->offset_vector_ = offset_vector;
-}
 
 Vector DeaccelerationController::get_next_logical_step_offset_vector() const {
   return this->next_logical_step_offset_vector_;
@@ -47,15 +35,17 @@ void DeaccelerationController::print_all_collected_vectors() const {
   this->offset_vector_.to_string();
 }
 
-double DeaccelerationController::calclulate_min_speed_with_law_of_sines() const {
+double DeaccelerationController::calclulate_min_speed_with_law_of_sines(const Vector next_logical_step_offset_vector,
+                                                                        const Vector acceleration_vector,
+                                                                        const Vector offset_vector) const {
 
-  double a = this->acceleration_vector_.get_arithmetic_length();
+  double a = acceleration_vector.get_arithmetic_length();
   // std::cout << "a :  " << a << std::endl;
 
-  double alpha = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->offset_vector_);
+  double alpha = this-va_.get_angle_in_radians(next_logical_step_offset_vector, offset_vector);
   // std::cout << "alpha :  " << alpha << std::endl;
 
-  double c = this->next_logical_step_offset_vector_.get_arithmetic_length();
+  double c = next_logical_step_offset_vector.get_arithmetic_length();
   // std::cout << "b :  " << b << std::endl;
 
   double gamma = asin((sin(alpha) * c) / a);
@@ -70,9 +60,9 @@ double DeaccelerationController::calclulate_min_speed_with_law_of_sines() const 
 
   if (std::isnan(c)) {
     std::cout << "Next_logical_step_offset_vector:";
-    this->next_logical_step_offset_vector_.to_string();
+    next_logical_step_offset_vector_.to_string();
     std::cout << "Offset_vector:";
-    this->offset_vector_.to_string();
+    offset_vector_.to_string();
     std::cout << "a :  " << a << std::endl;
     std::cout << "alpha :  " << alpha << std::endl;
     std::cout << "b :  " << b << std::endl;
@@ -84,28 +74,30 @@ double DeaccelerationController::calclulate_min_speed_with_law_of_sines() const 
   return b;
 }
 
-double DeaccelerationController::calculate_min_speed() const {
-  if(this->next_logical_step_offset_vector_.is_NULL_vector()) return 0;
+double DeaccelerationController::calculate_min_speed(const Vector next_logical_step_offset_vector,
+                                                     const Vector acceleration_vector,
+                                                     const Vector offset_vector) const {
+  if (next_logical_step_offset_vector.is_NULL_vector())
+    return 0;
 
   bool next_logical_step_offset_vector_shorter_than_acc_vec =
-      this->next_logical_step_offset_vector_.get_arithmetic_length() < acceleration_vector_.get_arithmetic_length();
+      next_logical_step_offset_vector.get_arithmetic_length() < acceleration_vector.get_arithmetic_length();
 
-  bool nlsov_and_ov_are_ld = this->va_.linear_dependent(this->next_logical_step_offset_vector_, this->offset_vector_);
-  bool alpha_is_0 = this->va_.get_angle_in_radians(this->next_logical_step_offset_vector_, this->offset_vector_) == 0;
+  bool nlsov_and_ov_are_ld = this->va_.linear_dependent(next_logical_step_offset_vector, offset_vector);
+  bool alpha_is_0 = this->va_.get_angle_in_radians(next_logical_step_offset_vector, offset_vector) == 0;
   bool next_logical_step_offset_vector_linear_dependent_to_acc_vec = nlsov_and_ov_are_ld || alpha_is_0;
 
   if (next_logical_step_offset_vector_shorter_than_acc_vec) {
     return 0;
   } else if (next_logical_step_offset_vector_linear_dependent_to_acc_vec) {
-    return this->next_logical_step_offset_vector_.get_arithmetic_length() -
-           acceleration_vector_.get_arithmetic_length();
+    return next_logical_step_offset_vector.get_arithmetic_length() - acceleration_vector.get_arithmetic_length();
   } else {
     return this->calclulate_min_speed_with_law_of_sines();
   }
 }
 
-double DeaccelerationController::calculate_max_speed() const {
-  double offset_vector_length = this->offset_vector_.get_arithmetic_length();
+double DeaccelerationController::calculate_max_speed(const Vector offset_vector) const {
+  double offset_vector_length = offset_vector.get_arithmetic_length();
   bool next_step_would_be_bigger_than_max_step_length = offset_vector_length > this->max_step_length_;
   if (next_step_would_be_bigger_than_max_step_length) {
     return this->max_step_length_;
@@ -146,19 +138,21 @@ double DeaccelerationController::calculate_speed_next_step(const Vector current_
 }
 
 double DeaccelerationController::calculate_speed_next_step_wrapper(const Vector current_position,
-                                                                   const Vector raw_instruction) const {
+                                                                   const Vector raw_instruction,
+                                                                   const Vector next_logical_step_offset_vector,
+                                                                   const Vector acceleration_vector,
+                                                                   const Vector offset_vector) const {
   double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
-  double max_speed = this->calculate_max_speed();
-  // std::cout << "max speed ! <=====> " << max_speed;
-  double min_speed = this->calculate_min_speed();
-  // std::cout << "min speed ! <=====> " << min_speed;
+  double max_speed = this->calculate_max_speed(offset_vector);
+  double min_speed = this->calculate_min_speed(next_logical_step_offset_vector, acceleration_vector, offset_vector);
 
   return this->calculate_speed_next_step(current_position, raw_instruction, distance_to_target, max_speed, min_speed);
 }
 
-
-Vector DeaccelerationController::shorten_for_deacceleration(const Vector current_position,
-                                                            const Vector raw_instruction) const {
+Vector DeaccelerationController::shorten_for_deacceleration(const Vector current_position, const Vector raw_instruction,
+                                                            const Vector next_logical_step_offset_vector,
+                                                            const Vector acceleration_vector,
+                                                            const Vector offset_vector) const {
   // assert_for_NaNs(this->next_logical_step_offset_vector_);
   // assert_for_NaNs(this->next_logical_step_);
   // assert_for_NaNs(this->acceleration_vector_);
@@ -167,18 +161,65 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
   double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
 
   if (distance_to_target <= this->threshold_when_to_stop_) {
-    std::cout << " <=====> We arrived at our destination ! <=====> ";
     return Vector{0, 0, 0};
-
   } else {
     bool near_to_target_start_deaccelerating = distance_to_target < this->threshold_deaccelerate_;
     if (near_to_target_start_deaccelerating) {
-      Vector shortened_vector = this->offset_vector_;
-      double next_speed = this->calculate_speed_next_step_wrapper(current_position, raw_instruction);
-      // std::cout << "next_speed speed ! <=====> " << next_speed;
-      return shortened_vector.normalize().scale(next_speed);
+      double next_speed =
+          this->calculate_speed_next_step_wrapper(current_position, raw_instruction, next_logical_step_offset_vector,
+                                                  acceleration_vector, Vector offset_vector);
+      return offset_vector.normalize().scale(next_speed);
     } else {
-      return this->offset_vector_;
+      return offset_vector;
     }
   }
+}
+
+Vector DeaccelerationController::compute_next_position(const last_position, const Vector current_position,
+                                                       const Vector raw_instruction) {
+
+  Vector shorten_if_longer_than_max_step_length = [](Vector next_logical_step_offset_vector, double max_step_length) {
+    // reduce if the previous state was unstable
+    if (next_logical_step_offset_vector.get_arithmetic_length() > max_step_length)
+      next_logical_step_offset_vector = next_logical_step_offset_vector.normalize().scale(max_step_length);
+    return next_logical_step_offset_vector;
+  };
+  Vector normalize_if_not_NULL_vector = [](Vector acceleration_vector, double acceleration_cap) {
+    if (acceleration_vector.get_arithmetic_length() > 0) {
+      return acceleration_vector.normalize().scale(acceleration_cap);
+    } else {
+      return acceleration_vector;
+    }
+  };
+
+  std::cout << "Current_position: ";
+  last_position.to_string();
+
+  std::cout << "Current_position: ";
+  current_position.to_string();
+
+  std::cout << "Raw_instruction: ";
+  raw_instruction.to_string();
+
+  Vector next_logical_step_offset_vector = va.get_delta_vector(last_position, current_position);
+  next_logical_step_offset_vector =
+      shorten_if_longer_than_max_step_length(next_logical_step_offset_vector, max_step_length);
+  // std::cout << "Next_logical_step_offset_vector: ";
+  // next_logical_step_offset_vector.to_string();
+
+  Vector next_logical_step = va.add_vectors(current_position, next_logical_step_offset_vector);
+  // std::cout << "Next_logical_step: ";
+  // next_logical_step.to_string();
+
+  Vector acceleration_vector = va.get_delta_vector(next_logical_step, raw_instruction);
+  acceleration_vector = normalize_if_not_NULL_vector(acceleration_vector, acceleration_cap);
+  // std::cout << "Acceleration_vector (unshortnened): ";
+  // acceleration_vector.to_string();
+    
+  Vector offset_vector = va.add_vectors(next_logical_step_offset_vector, acceleration_vector);
+  // std::cout << "Offset_vector: ";
+  // offset_vector.to_string();
+
+  return this->shorten_for_deacceleration(current_position, raw_instruction, next_logical_step_offset_vector,
+                                          next_logical_step, acceleration_vector, offset_vector);
 }
