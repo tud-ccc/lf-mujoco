@@ -9,7 +9,7 @@ public preamble {=
   #endif //VELOCITY_CONTROL
 =}
 
-reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double = 0, threshold_deaccelerate : double = 0, threshold_when_to_stop: double = 0 ) {
+reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double = 0, threshold_deaccelerate : double = 0, threshold_near_target_stop_moving: double = 0 ) {
   
   input velocity_control_vector_collection: VectorCollectionVelocityControl
   input velocity_control_current_position: Vector
@@ -21,7 +21,7 @@ reactor VelocityControl (acceleration_cap : double = 0, max_step_length : double
   
   VectorCollectionVelocityControl vcvc = *velocity_control_vector_collection.get();
 
-  DeaccelerationController dc = DeaccelerationController{max_step_length, threshold_deaccelerate,threshold_when_to_stop};
+  DeaccelerationController dc = DeaccelerationController{max_step_length, threshold_deaccelerate,threshold_near_target_stop_moving};
   dc.set_next_logical_step_offset_vector(vcvc.get_next_logical_step_offset_vector());
   dc.set_next_logical_step(vcvc.get_next_logical_step());
   dc.set_acceleration_vector(vcvc.get_acceleration_vector());

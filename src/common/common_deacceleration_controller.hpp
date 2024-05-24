@@ -10,7 +10,7 @@ private:
 
   double max_step_length_;
   double threshold_deaccelerate_;
-  double threshold_when_to_stop_;
+  double threshold_near_target_stop_moving_;
   double acceleration_cap_;
   double calculate_speed_next_step_wrapper(const Vector current_position, const Vector raw_instruction,
                                            const Vector next_logical_step_offset_vector,
@@ -30,7 +30,7 @@ private:
 
 public:
   DeaccelerationController(const double max_step_length, const double threshold_deaccelerate,
-                           const double threshold_when_to_stop, const double acceleration_cap);
+                           const double threshold_near_target_stop_moving, const double acceleration_cap);
 
   Vector get_next_logical_step_offset_vector() const;
   Vector get_next_logical_step() const;
@@ -38,7 +38,7 @@ public:
   Vector get_offset_vector() const;
 
   void print_all_collected_vectors() const;
-  Vector compute_next_position(const last_positionq, const Vector current_position, const Vector raw_instruction);
+  Vector compute_next_position(const last_position, const Vector current_position, const Vector raw_instruction);
 };
 
 #endif

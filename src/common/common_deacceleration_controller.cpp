@@ -7,11 +7,11 @@
 #include <iostream>
 
 DeaccelerationController::DeaccelerationController(const double max_step_length, const double threshold_deaccelerate,
-                                                   const double threshold_when_to_stop, const double acceleration_cap) {
+                                                   const double threshold_near_target_stop_moving, const double acceleration_cap) {
 
   this->max_step_length_ = max_step_length;
   this->threshold_deaccelerate_ = threshold_deaccelerate;
-  this->threshold_when_to_stop_ = threshold_when_to_stop;
+  this->threshold_near_target_stop_moving_ = threshold_near_target_stop_moving;
   this->acceleration_cap_ = acceleration_cap;
 
   this->va_ = VectorArithmetics{};
@@ -160,7 +160,7 @@ Vector DeaccelerationController::shorten_for_deacceleration(const Vector current
 
   double distance_to_target = this->va_.get_distance_between_point_vectors(current_position, raw_instruction);
 
-  if (distance_to_target <= this->threshold_when_to_stop_) {
+  if (distance_to_target <= this->threshold_near_target_stop_moving_) {
     return Vector{0, 0, 0};
   } else {
     bool near_to_target_start_deaccelerating = distance_to_target < this->threshold_deaccelerate_;
@@ -221,5 +221,5 @@ Vector DeaccelerationController::compute_next_position(const last_position, cons
   // offset_vector.to_string();
 
   return this->shorten_for_deacceleration(current_position, raw_instruction, next_logical_step_offset_vector,
-                                          next_logical_step, acceleration_vector, offset_vector);
+                                          acceleration_vector, offset_vector);
 }

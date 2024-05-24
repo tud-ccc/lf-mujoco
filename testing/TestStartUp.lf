@@ -23,7 +23,7 @@ main reactor TestStartUp {
       acceleration_cap=0.05,
       max_step_length=1,
       threshold_deaccelerate=10,
-      threshold_when_to_stop=0.0)
+      threshold_near_target_stop_moving=0.0)
 
   sanity_checker = new SanityChecker()
 
