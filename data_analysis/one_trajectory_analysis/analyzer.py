@@ -37,8 +37,15 @@ class Analyzer:
             angle_distance_list.append((angle, current_distance))        
         return angle_distance_list
     
-    def get_max_angle_matched_to_distance(self):
-        
+    def get_max_angle_matched_to_distance(self):        
+        if not self.list_of_vec_distances: 
+            dict= {}
+            dict[0] = float('nan') 
+            dict[1] = float('nan') 
+            dict[2] = float('nan') 
+            dict[3] = float('nan')
+            return dict
+
         angle_to_distance = self.get_list_of_angles_annotated_with_distance()
         one_fourth_of_max_distance = self.get_max_distance()/4
         
@@ -68,16 +75,16 @@ class Analyzer:
             print(elem)
         
     def get_max_distance(self):
-        return max(self.list_of_vec_distances) 
+        return max(self.list_of_vec_distances) if self.list_of_vec_distances else float('nan')
     def get_min_distance(self):
-        return min(self.list_of_vec_distances) 
+        return min(self.list_of_vec_distances) if self.list_of_vec_distances else float('nan')
     def get_mean_distance(self):
-        return float(sum(self.list_of_vec_distances)) / max(len(self.list_of_vec_distances), 1)    
+        return float(sum(self.list_of_vec_distances)) / max(len(self.list_of_vec_distances), 1) if self.list_of_vec_distances else float('nan')
     
     def get_max_angle(self):
-        return max(self.list_of_angles_between_vectors)    
+        return max(self.list_of_angles_between_vectors) if self.list_of_angles_between_vectors else float('nan')   
     def get_min_angle(self):
-        return min(self.list_of_angles_between_vectors)
+        return min(self.list_of_angles_between_vectors) if self.list_of_angles_between_vectors else float('nan')
     def get_mean_angle(self):
-        return float(sum(self.list_of_angles_between_vectors)) / max(len(self.list_of_angles_between_vectors), 1)
+        return float(sum(self.list_of_angles_between_vectors)) / max(len(self.list_of_angles_between_vectors), 1) if self.list_of_angles_between_vectors else float('nan')
     

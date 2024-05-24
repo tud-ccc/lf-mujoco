@@ -16,12 +16,15 @@ def analyse_all_files_and_then_one_by_one():
     padding = ""
     for i in range(120):
         if (i >= 0):
-            padding = "00";
+            padding = "000";
 
         if (i >= 10):
-            padding = "0";
+            padding = "00";
 
         if (i >= 100):
+            padding = "0";
+
+        if (i >= 1000):
             padding = "";
 
         name = base + padding + str(i) +".csv"

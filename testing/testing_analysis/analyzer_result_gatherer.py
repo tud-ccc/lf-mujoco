@@ -25,6 +25,18 @@ class AnalyzerResultGatherer:
                 complete_analysis[filename] = interface.dump_into_dict()
 
         print("#### All trajectories have been analyzed #####")
+                
+        number_of_travelled_steps = 0
+        number_of_paths_with_with_stopped_robot = 0
+        for filename, metrics in complete_analysis.items():
+            number_of_travelled_steps += metrics.get("Number of steps")
+            if metrics.get("Minimal distance") == 0:
+                print(f"Entry '{filename}' has a minimal distance of 0.") 
+        else:
+            print("No entry has a minimal distance of 0.")
+        print("Number of analyzed steps: " , number_of_travelled_steps )
+        print("Number_of_paths_with_with_stopped_robot: ", number_of_paths_with_with_stopped_robot)             
+
         
         # Write the results to a JSON File to make it readable
         #
