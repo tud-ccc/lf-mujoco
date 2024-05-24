@@ -52,7 +52,7 @@ instructions.csv
 data_analysis/Results
 data_analysis/.venv/
 data_analysis/one_trajectory_analysis/__pycache__
-testing/testing_output_data
+testing/testing_output_data/*
 testing/testing_analysis/__pycache__
 
 *.pyc
