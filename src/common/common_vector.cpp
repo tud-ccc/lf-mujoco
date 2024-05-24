@@ -63,12 +63,19 @@ double VectorArithmetics::get_dot_product(Vector vec1, Vector vec2) const {
   return vec1.X_ * vec2.X_ + vec1.Y_ * vec2.Y_ + vec1.Z_ * vec2.Z_;
 }
 double VectorArithmetics::get_angle_in_degree(Vector vec1, Vector vec2) const {
-  assert_for_NaNs(vec1);
-  assert(!(vec1.X_ == 0 && vec1.Y_ == 0 && vec1.Z_ == 0));
-  assert(!(vec2.X_ == 0 && vec2.Y_ == 0 && vec2.Z_ == 0));
-  double angle_in_degree =
-      acos(this->get_dot_product(vec1, vec2) / (vec1.get_arithmetic_length() * vec2.get_arithmetic_length()));
-  return angle_in_degree * 180 / PI;
+    assert_for_NaNs(vec1, vec2);
+    assert(!(vec1.X_ == 0 && vec1.Y_ == 0 && vec1.Z_ == 0));
+    assert(!(vec2.X_ == 0 && vec2.Y_ == 0 && vec2.Z_ == 0));
+    if (this->linear_dependent(vec1, vec2)) {
+      return 0;
+    }
+    double cos_alpha = this->get_dot_product(vec1, vec2) / (vec1.get_arithmetic_length() * vec2.get_arithmetic_length());
+    if (cos_alpha > 1) {
+      std::cout << "cos_alpha > 0" << cos_alpha << std::endl;
+      return 0;
+    }
+    double angle_in_radians = acos(cos_alpha);
+    return angle_in_radians * 180 / PI;
 }
 
 double VectorArithmetics::get_angle_in_radians(Vector vec1, Vector vec2) const {
