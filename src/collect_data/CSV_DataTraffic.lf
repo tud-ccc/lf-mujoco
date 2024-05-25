@@ -2,8 +2,8 @@ target Cpp;
 
 public preamble {=
 
-#ifndef CSVDATA_INSTRUCTIONS
-#define CSVDATA_INSTRUCTIONS
+#ifndef CSVDATA_TRAFFIC
+#define CSVDATA_TRAFFIC
 #include "instruction_collector.hpp"
 #include "common_vector.hpp"
 
@@ -12,7 +12,7 @@ public preamble {=
 =}
 
 
-reactor CSV_Instructions (instructions_path: std::string = "") {
+reactor CSV_DataTraffic (instructions_path: std::string = "") {
 
   //robo facing
   input csv_last_position: Vector; 

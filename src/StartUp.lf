@@ -6,7 +6,7 @@ import RobotControl from "control/XArm7Controller.lf"
 import Planner from "control/Planner.lf"
 import WorldDataDecoder from "interface/WorldDataDecoder.lf"
 import XArmInterface from "interface/XArmInterface.lf"
-import CSV_Instructions from "collect_data/CSV_Instructions.lf"
+import CSV_DataTraffic from "collect_data/CSV_DataTraffic.lf"
 import CSV_WorldData from "collect_data/CSV_WorldData.lf"
 import RoboXArm7Fake from "hardware/RoboXArm7Fake.lf"
 import RoboXArm7 from "hardware/RoboXArm7.lf"
@@ -46,10 +46,10 @@ main reactor StartUp {
 
   last_position_holder = new LastPositionHolder(initial_last_position = {= Vector{400, -75,200} =})
 
-  sanity_checker = new SanityChecker()
+  sanity_checker = new SanityChecker(acceleration_cap = 0.4, max_step_length = 1)
 
   // DATA
-  data_collector_instructions = new CSV_Instructions(
+  data_collector_traffic = new CSV_DataTraffic(
       instructions_path="data_analysis/data/instructions.csv")
   data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
 
@@ -87,11 +87,11 @@ main reactor StartUp {
   last_position_holder.planner_last_position -> sanity_checker.sanity_checker_last_position
 
   // CSV DATA : Instructions
-  planner.data_collector_velocity_control_vector_collection -> data_collector_instructions.csv_vector_collection
-  last_position_holder.planner_last_position -> data_collector_instructions.csv_last_position
-  sanity_checker.next_position_checked -> data_collector_instructions.csv_next_position_checked
-  controller.raw_instruction -> data_collector_instructions.csv_raw_instruction
-  decoder.current_position -> data_collector_instructions.csv_current_position
+  planner.data_collector_velocity_control_vector_collection -> data_collector_traffic.csv_vector_collection
+  last_position_holder.planner_last_position -> data_collector_traffic.csv_last_position
+  sanity_checker.next_position_checked -> data_collector_traffic.csv_next_position_checked
+  controller.raw_instruction -> data_collector_traffic.csv_raw_instruction
+  decoder.current_position -> data_collector_traffic.csv_current_position
 
   // CSV DATA : World data
   interface.world_data -> data_collector_world_data.csv_world_data
