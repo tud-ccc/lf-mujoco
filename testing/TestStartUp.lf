@@ -18,9 +18,9 @@ public preamble {=
 main reactor TestStartUp {
   // the planner should at every point in time receive an input triplet and give back an input triplet
   planner = new Planner(max_step_length = 1, threshold_deaccelerate = 5, threshold_near_target_stop_moving = 0.01, acceleration_cap = 0.3)
-  sanity_checker = new SanityChecker()
+  sanity_checker = new SanityChecker(acceleration_cap = 0.4, max_step_length = 1)
 
-  planning_tester = new PathPlanningTester( threshold_near_target_stop_moving = 0.01, stop_after_steps = 3, number_of_paths_to_analyze = 1,
+  planning_tester = new PathPlanningTester( threshold_near_target_stop_moving = 0.01, stop_after_steps = 5, number_of_paths_to_analyze = 1,
       random_vectors_handler = {=
         RandomVectorsHandler{"testing/testing_input_data/random_vectors_near_to_target.csv"}
       =})
@@ -32,11 +32,12 @@ main reactor TestStartUp {
   // Velocity Control --> Interface
   sanity_checker.next_position_checked -> planning_tester.next_position_checked
 
-  // Planner Tester --> Planner | Velocity Control
+  // Planner Tester --> Planner | Sanity Checker
   planning_tester.planner_raw_instruction -> planner.planner_raw_instruction
   planning_tester.planner_current_position -> planner.planner_current_position
   planning_tester.planner_last_position -> planner.planner_last_position
-
+  planning_tester.planner_current_position -> sanity_checker.sanity_checker_current_position
+  planning_tester.planner_last_position -> sanity_checker.sanity_checker_last_position
 
   // Planner Tester <--> CSV_path
   planning_tester.transfer_travelled_path -> CSV_path.robo_path

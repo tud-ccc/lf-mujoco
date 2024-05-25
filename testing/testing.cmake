@@ -4,6 +4,7 @@ SET(CXX_STANDARD 17)
 ADD_LIBRARY(testing_cpp_files_common
     ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_vector.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_deacceleration_controller.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/common/common_sanity_checker_logic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/test_common/random_vectors_handler.cpp)
 
 # add hpp files to library

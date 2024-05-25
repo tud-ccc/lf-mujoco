@@ -49,11 +49,16 @@ reactor PathPlanningTester(threshold_near_target_stop_moving: double = 0, stop_a
 
       current_last_position = std::get<0>(vectors);
       current_current_position = std::get<1>(vectors);
-      current_raw_instruction = std::get<2>(vectors);    
+      current_raw_instruction = std::get<2>(vectors); 
 
+      VectorArithmetics va = VectorArithmetics{};
+      Vector delt_cur_last = va.get_delta_vector(current_current_position, current_last_position);   
+      delt_cur_last = delt_cur_last.normalize().scale(1);
+      Vector new_last_position = va.add_vectors(current_current_position,delt_cur_last);
+
+      planner_last_position.set(new_last_position);
       planner_raw_instruction.set(current_raw_instruction);
       planner_current_position.set(current_current_position);
-      planner_last_position.set(current_last_position);
 
      
       } else {
