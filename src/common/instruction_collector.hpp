@@ -40,6 +40,7 @@ public:
     write_header(csvfile, "last_position", 3);
     write_header(csvfile, "current_position", 3);
     write_header(csvfile, "target", 3);
+    write_header(csvfile, "next_position", 3);
     write_header(csvfile, "next_logical_step_offset_vector", 3);
     write_header(csvfile, "next_logical_step", 3);
     write_header(csvfile, "acceleration_vector", 3);

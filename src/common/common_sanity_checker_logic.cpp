@@ -21,9 +21,9 @@ int SanityCheckerLogic::sanity_check_next_position(Vector last_position, Vector 
 
   if (acceleration_vector.get_arithmetic_length() > this->acceleration_cap_) {
 
-    std::cout << " <====> Entering the error case <====> " << acceleration_vector.get_arithmetic_length() << std::endl;
+    std::cout << " <====> Entering the error case <====> " << std::endl;
 
-    std::cout << "Here the lenght of a : " << acceleration_vector.get_arithmetic_length() << std::endl;
+    std::cout << "Here the length of a : " << acceleration_vector.get_arithmetic_length() << std::endl;
 
     std::cout << "Last position: ";
     last_position.to_string();

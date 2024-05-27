@@ -180,10 +180,10 @@ Vector DeaccelerationController::compute_next_position(const Vector last_positio
     }
   };
 
-  std::cout << "Last_position: ";
+  std::cout << "Last position: (distance to current position: " << this->va_.get_distance_between_point_vectors(last_position, current_position) << ")" ;
   last_position.to_string();
 
-  std::cout << "Current_position: ";
+  std::cout << "Current position: (distance to target position: " << this->va_.get_distance_between_point_vectors(current_position, raw_instruction) << ")" ;
   current_position.to_string();
 
   std::cout << "Raw_instruction: ";
@@ -192,7 +192,7 @@ Vector DeaccelerationController::compute_next_position(const Vector last_positio
   Vector next_logical_step_offset_vector = this->va_.get_delta_vector(last_position, current_position);
   next_logical_step_offset_vector =
       shorten_if_longer_than_max_step_length(next_logical_step_offset_vector, this->max_step_length_);
-  std::cout << "Next_logical_step_offset_vector(" << next_logical_step_offset_vector.get_arithmetic_length()<<"): ";
+  std::cout << "Next_logical_step_offset_vector(" << next_logical_step_offset_vector.get_arithmetic_length()<<") ";
   next_logical_step_offset_vector.to_string();
 
   Vector next_logical_step = this->va_.add_vectors(current_position, next_logical_step_offset_vector);
@@ -200,7 +200,7 @@ Vector DeaccelerationController::compute_next_position(const Vector last_positio
   next_logical_step.to_string();
 
   Vector acceleration_vector = this->va_.get_delta_vector(next_logical_step, raw_instruction);
-  std::cout << "Acceleration_vector (unshortnened)(" << acceleration_vector.get_arithmetic_length()<<"): ";
+  std::cout << "Acceleration_vector (unshortnened)(" << acceleration_vector.get_arithmetic_length()<<") ";
   acceleration_vector.to_string();
   acceleration_vector = normalize_if_not_NULL_vector(acceleration_vector, this->acceleration_cap_);
   std::cout << "Acceleration_vector (shortened)(" << acceleration_vector.get_arithmetic_length()<<"): ";
@@ -221,6 +221,8 @@ Vector DeaccelerationController::compute_next_position(const Vector last_positio
   Vector next_position = this->va_.add_vectors(current_position, shortened_offset_vector);
   std::cout << "Next Position: ";
   next_position.to_string();
+  std::cout << "##### ##### Finished this run ##### #####\n";
+
   // collect data for deug purposes
   this->vcvc_ = VectorCollectionVelocityControl{next_logical_step_offset_vector, next_logical_step, acceleration_vector,
                                                 offset_vector};

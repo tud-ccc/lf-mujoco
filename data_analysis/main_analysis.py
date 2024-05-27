@@ -7,11 +7,11 @@ from analysis_interface import AnalysisInterface
 
   
 def analyse_the_only_single_instruction_file():
-    interface = AnalysisInterface("../../Zwischenspeicher/bug.csv")
+    interface = AnalysisInterface("data_analysis/data/instructions.csv")
     interface.combine_analysis_print()
-    interface.show_points_of_vector_list_graphically()
-    interface.show_X_Y_Z_diagrams()
-    interface.get_max_angle_matched_to_distance()
+    interface.show_points_of_vector_list_graphically_annotated()
+    # interface.show_X_Y_Z_diagrams()
+    # interface.get_max_angle_matched_to_distance()
 
 def main():  
     analyse_the_only_single_instruction_file()
