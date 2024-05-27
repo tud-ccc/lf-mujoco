@@ -45,8 +45,7 @@ reactor RoboXArm7 (timer_start_moving: time = 1s, timer_initiate_movin_period: t
 
         arm->set_state(0);
         // arm->reset(true);
-        fp32 pos[6] = { 400, -75, 200, 180, 0, 0};
-        // int ret = arm->set_position(pos, 0, true);
+
     }
 
     /*

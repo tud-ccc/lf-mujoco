@@ -1,0 +1,57 @@
+target Cpp
+
+public preamble {=
+  #ifndef ROBO_SANITY_CHECKER
+  #define ROBO_SANITY_CHECKER
+  #include "common_vector.hpp"
+  #include "common_robo_sanity_checker_logic.hpp"
+  #endif //XARM7
+=}
+
+
+reactor RobotSanityChecker(acceleration_cap: double = 0.1) {
+  input rsc_holder_current_position: Vector
+  input rsc_holder_preceding_next_position: Vector 
+  
+  output current_position: Vector
+
+
+  state penultimate_current_position: Vector  ;
+  state preceding_current_position: Vector  ;
+
+  state preceding_next_position: Vector 
+
+  state currently_first_iteration: bool = true
+  state currently_second_iteration: bool = true
+
+
+  reaction(startup) {=  =}
+
+  reaction(rsc_holder_current_position) -> current_position {=
+    Vector current_position_in = *rsc_holder_current_position.get();
+    if (this->currently_first_iteration){ 
+      this->penultimate_current_position = current_position_in;
+      this->preceding_current_position = current_position_in;
+      this->currently_first_iteration = false;
+    }
+    else if (this->currently_second_iteration){
+      this->preceding_current_position = current_position_in;
+      this->currently_second_iteration = false;
+    }
+
+    RoboSanityChecker rsc = RoboSanityChecker{acceleration_cap};
+    Vector current_position_out = rsc.robo_sanity_check_current_position(this->penultimate_current_position,
+                                                                         this->preceding_current_position , 
+                                                                         current_position_in , 
+                                                                         this->preceding_next_position);
+    current_position.set(current_position_out);
+
+    this->penultimate_current_position =  this->preceding_current_position;
+    this->preceding_current_position = current_position_out;
+
+  =}
+
+  reaction(rsc_holder_preceding_next_position){= 
+    this->preceding_next_position = *rsc_holder_preceding_next_position.get();
+  =}
+}

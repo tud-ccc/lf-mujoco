@@ -29,14 +29,16 @@ private:
   Vector shorten_for_deacceleration(const Vector current_position, const Vector raw_instruction,
                                     const Vector next_logical_step_offset_vector, const Vector acceleration_vector,
                                     const Vector offset_vector) const;
+  Vector compute_next_position_with_prints(const Vector last_position, const Vector current_position, const Vector raw_instruction);
+  Vector compute_next_position(const Vector last_position, const Vector current_position, const Vector raw_instruction);
 
 public:
   DeaccelerationController(const double max_step_length, const double threshold_deaccelerate,
                            const double threshold_near_target_stop_moving, const double acceleration_cap);
 
-  VectorCollectionVelocityControl get_vector_collection_velocity_control() const{return this->vcvc_;};
+  VectorCollectionVelocityControl get_vector_collection_velocity_control() const { return this->vcvc_; };
 
-  Vector compute_next_position(const Vector last_position, const Vector current_position, const Vector raw_instruction);
+  Vector compute_next_position_wrapper(const Vector last_position, const Vector current_position, const Vector raw_instruction);
 };
 
 #endif

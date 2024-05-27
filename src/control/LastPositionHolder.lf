@@ -10,7 +10,7 @@ public preamble {=
 
 private preamble {=  =}
 
-reactor LastPositionHolder(initial_last_position: {= Vector =} = {= Vector{0, 0,0} =}) {
+reactor LastPositionHolder{
   input holder_current_position: Vector
   output planner_last_position: Vector
   state last_position: Vector 

@@ -28,7 +28,7 @@ reactor Planner(max_step_length: double = 0, threshold_deaccelerate: double = 0,
     DeaccelerationController deac = DeaccelerationController{max_step_length, threshold_deaccelerate,
                            threshold_near_target_stop_moving, acceleration_cap};
 
-    Vector next_position = deac.compute_next_position(vector_last_position, vector_current_position, vector_raw_instruction);
+    Vector next_position = deac.compute_next_position_wrapper(vector_last_position, vector_current_position, vector_raw_instruction);
    
 
     sanity_checker_next_position.set(next_position);

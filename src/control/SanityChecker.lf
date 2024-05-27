@@ -4,7 +4,7 @@ public preamble {=
   #ifndef SANITY_CHECKER
   #define SANITY_CHECKER
   #include "common_vector.hpp"
-  #include "common_sanity_checker_logic.hpp"
+  #include "common_planner_sanity_checker_logic.hpp"
 
 
   #endif //VELOCITY_CONTROL
@@ -24,7 +24,7 @@ reactor SanityChecker(acceleration_cap: double = 0, max_step_length: double = 0)
     Vector vector_sanity_checker_next_position = *sanity_checker_next_position.get();
 
     SanityCheckerLogic scl = SanityCheckerLogic{acceleration_cap, max_step_length};
-    scl.sanity_check_next_position(vector_sanity_checker_last_position, vector_sanity_checker_current_position, vector_sanity_checker_next_position);
+    scl.planner_sanity_check_next_position(vector_sanity_checker_last_position, vector_sanity_checker_current_position, vector_sanity_checker_next_position);
     next_position_checked.set(vector_sanity_checker_next_position);
     =}
 
