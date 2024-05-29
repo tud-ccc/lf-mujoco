@@ -10,15 +10,15 @@ class Instruction_Collector {
 private:
   std::chrono::nanoseconds physical_elapsed_time_;
  
-  std::vector<Vector> positions_;
+  std::vector<std::string> data_vector_;
 
 public:
   Instruction_Collector(std::chrono::nanoseconds physical_elapsed_time,
-                        std::vector<Vector> positions){
+                        std::vector<std::string> data_vector){
 
 
         this->physical_elapsed_time_ = physical_elapsed_time;
-        this->positions_ = positions;                       
+        this->data_vector_ = data_vector;                       
   }
 
   Instruction_Collector() noexcept = default;
@@ -53,12 +53,10 @@ public:
 
   void write_instructions_to_csv(const std::string file) {
 
-    auto write_Vector_to_file = [](std::ofstream& file_handle, std::vector<Vector> positions) {
-        for (Vector vec : positions){
-                file_handle << std::to_string(vec.X_) << ", ";
-                file_handle << std::to_string(vec.Y_) << ", ";
-                file_handle << std::to_string(vec.Z_) << ", ";
-        }
+    auto write_data_to_file = [](std::ofstream& file_handle, std::vector<std::string> data_vector) {
+        for (std::string data_point : data_vector){
+                file_handle << data_point << ", ";
+           }
 
     };
 
@@ -70,7 +68,7 @@ public:
     phys_elaps_t_in_secs = std::chrono::duration_cast<std::chrono::milliseconds>(physical_elapsed_time_);
 
     csvfile << std::to_string(phys_elaps_t_in_secs.count()) << ", ";
-    write_Vector_to_file(csvfile, this->positions_);   
+    write_data_to_file(csvfile, this->data_vector_);   
     csvfile << "\n";
   }
 };

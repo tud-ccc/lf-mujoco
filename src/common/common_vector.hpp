@@ -1,6 +1,8 @@
 #ifndef COMMON_VECTOR
 #define COMMON_VECTOR
 
+#include <vector>
+#include <string>
 #define PI 3.14159265
 
 class Vector {
@@ -16,8 +18,8 @@ public:
   bool equals(Vector vec) const;
   void to_string_id() const;
   void to_string() const;
+  std::vector<std::string> to_vector() const;
   bool is_NULL_vector() const;
-
 
   double get_arithmetic_length() const;
   Vector normalize() const;
@@ -27,7 +29,6 @@ public:
 class VectorArithmetics {
 
 public:
- 
   VectorArithmetics(){};
 
   double get_distance_between_point_vectors(Vector vec1, Vector vec2) const;
@@ -48,9 +49,9 @@ private:
   Vector offset_vector_;
 
 public:
-  VectorCollectionVelocityControl(){}
-  VectorCollectionVelocityControl(Vector next_logical_step_offset_vector, Vector next_logical_step, Vector acceleration_vector,
-                  Vector offset_vector) {
+  VectorCollectionVelocityControl() {}
+  VectorCollectionVelocityControl(Vector next_logical_step_offset_vector, Vector next_logical_step,
+                                  Vector acceleration_vector, Vector offset_vector) {
     this->next_logical_step_offset_vector_ = next_logical_step_offset_vector;
     this->next_logical_step_ = next_logical_step;
     this->acceleration_vector_ = acceleration_vector;
