@@ -56,7 +56,7 @@ main reactor StartUp {
   data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
 
   // HARDWARE : REAL ROBO <--> Interface
-  hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 5ms);
+  hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 10ms);
   interface.robo_next_position_checked -> hardware.robo_next_position_checked;
   hardware.interface_world_data -> interface.interface_world_data;
   
@@ -73,7 +73,6 @@ main reactor StartUp {
 
   // Sanity Checker --> Interface
   sanity_checker.next_position_checked -> interface.interface_next_position_checked
-  sanity_checker.next_position_checked -> robo_sanity_checker.rsc_holder_preceding_next_position
 
   // Interface --> Decoder
   interface.world_data -> decoder.decoder_world_data

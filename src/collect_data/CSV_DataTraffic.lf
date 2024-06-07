@@ -30,15 +30,6 @@ reactor CSV_DataTraffic (instructions_path: std::string = "") {
 
   reaction(csv_last_position, csv_current_position, csv_raw_instruction, csv_next_position_checked, csv_vector_collection ) {=
 
-        std::cout << csv_last_position.is_present() << csv_current_position.is_present() 
-                  << csv_raw_instruction.is_present() << csv_vector_collection.is_present()
-                  << csv_next_position_checked.is_present() << std::endl;
-
-      
-        
-
-
-
         std::vector<std::string> vectors;
         auto last_position_as_std_vector = (*csv_last_position.get()).to_vector();
         auto current_position_as_std_vector  = (*csv_current_position.get()).to_vector();

@@ -10,11 +10,9 @@ private:
   VectorArithmetics va_;
 
 public:
-  RoboSanityChecker(double acceleration_cap) {
-    this->acceleration_cap_ = acceleration_cap;
-  }
+  RoboSanityChecker(double acceleration_cap) { this->acceleration_cap_ = acceleration_cap; }
   Vector robo_sanity_check_current_position(Vector penultimate_current_position, Vector preceding_current_position,
-                                            Vector current_position_by_robot, Vector current_position_by_planner) {
+                                            Vector current_position_by_robot) {
 
     Vector delta_penultimate_preceding_position =
         this->va_.get_delta_vector(penultimate_current_position, preceding_current_position);
@@ -26,6 +24,9 @@ public:
         this->va_.get_delta_vector(delta_penultimate_preceding_position, delta_preceding_current_position_by_robot);
 
     if (deacceleration_vector.get_arithmetic_length() > this->acceleration_cap_) {
+
+      Vector current_position_by_prediction =
+          this->va_.add_vectors(preceding_current_position, delta_penultimate_preceding_position);
 
       std::cout << " *---------* Entering the error case, the robot pretended to stop *---------* " << std::endl;
 
@@ -41,9 +42,9 @@ public:
       current_position_by_robot.to_string();
 
       std::cout << "Current position(by Planner): ";
-      current_position_by_planner.to_string();
+      current_position_by_prediction.to_string();
 
-      return current_position_by_planner;
+      return current_position_by_prediction;
     } else {
       return current_position_by_robot;
     }
