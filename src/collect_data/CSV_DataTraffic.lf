@@ -28,33 +28,36 @@ reactor CSV_DataTraffic (instructions_path: std::string = "") {
     std::cout << instructions_path << std::endl;
   =}
 
-  reaction(csv_last_position, csv_current_position, csv_raw_instruction, csv_vector_collection, csv_next_position_checked) {=
+  reaction(csv_last_position, csv_current_position, csv_raw_instruction, csv_next_position_checked, csv_vector_collection ) {=
+
+        std::cout << csv_last_position.is_present() << csv_current_position.is_present() 
+                  << csv_raw_instruction.is_present() << csv_vector_collection.is_present()
+                  << csv_next_position_checked.is_present() << std::endl;
+
+      
+        
+
+
 
         std::vector<std::string> vectors;
+        auto last_position_as_std_vector = (*csv_last_position.get()).to_vector();
+        auto current_position_as_std_vector  = (*csv_current_position.get()).to_vector();
+        auto raw_position_as_std_vector  = (*csv_raw_instruction.get()).to_vector();
+        auto next_position_checked_as_std_vector = (*csv_last_position.get()).to_vector();
+        auto nlsov_as_std_vector = (*csv_last_position.get()).to_vector();
+        auto nls_position_as_std_vector = (*csv_last_position.get()).to_vector();
+        auto acceleration_vector_as_std_vector = (*csv_last_position.get()).to_vector();
+        auto offset_vector_as_std_vector = (*csv_last_position.get()).to_vector();
 
-        vectors.insert(vectors.end(), (*csv_last_position.get()).to_vector().begin(), (*csv_last_position.get()).to_vector().end());
-        // vectors.push_back(*csv_last_position.get());
+        vectors.insert(vectors.end(), last_position_as_std_vector.begin(), last_position_as_std_vector.end());
+        vectors.insert(vectors.end(), current_position_as_std_vector.begin(), current_position_as_std_vector.end());
+        vectors.insert(vectors.end(), raw_position_as_std_vector.begin(), raw_position_as_std_vector.end());
+        vectors.insert(vectors.end(), next_position_checked_as_std_vector.begin(), next_position_checked_as_std_vector.end());
+        vectors.insert(vectors.end(), nlsov_as_std_vector.begin(), nlsov_as_std_vector.end());
+        vectors.insert(vectors.end(), nls_position_as_std_vector.begin(), nls_position_as_std_vector.end());
+        vectors.insert(vectors.end(), acceleration_vector_as_std_vector.begin(), acceleration_vector_as_std_vector.end());
+        vectors.insert(vectors.end(), offset_vector_as_std_vector.begin(), offset_vector_as_std_vector.end());
         
-        vectors.insert(vectors.end(), (*csv_current_position.get()).to_vector().begin(), (*csv_current_position.get()).to_vector().end());
-        // vectors.push_back(*csv_current_position.get());
-        
-        vectors.insert(vectors.end(), (*csv_raw_instruction.get()).to_vector().begin(), (*csv_raw_instruction.get()).to_vector().end());
-        // vectors.push_back(*csv_raw_instruction.get());
-        
-        vectors.insert(vectors.end(), (*csv_next_position_checked.get()).to_vector().begin(), (*csv_next_position_checked.get()).to_vector().end());
-        // vectors.push_back(*csv_next_position_checked.get());
-        
-        vectors.insert(vectors.end(),  (*csv_vector_collection.get()).get_next_logical_step_offset_vector().to_vector().begin(), (*csv_vector_collection.get()).get_next_logical_step_offset_vector().to_vector().end());
-        // vectors.push_back((*csv_vector_collection.get()).get_next_logical_step_offset_vector());
-        
-        vectors.insert(vectors.end(), (*csv_vector_collection.get()).get_next_logical_step().to_vector().begin(),  (*csv_vector_collection.get()).get_next_logical_step().to_vector().end());
-        // vectors.push_back((*csv_vector_collection.get()).get_next_logical_step());
-        
-        vectors.insert(vectors.end(), (*csv_vector_collection.get()).get_acceleration_vector().to_vector().begin(),  (*csv_vector_collection.get()).get_acceleration_vector().to_vector().end());
-        // vectors.push_back((*csv_vector_collection.get()).get_acceleration_vector());
-        
-        vectors.insert(vectors.end(),  (*csv_vector_collection.get()).get_offset_vector().to_vector().begin(),  (*csv_vector_collection.get()).get_offset_vector().to_vector().end());
-        // vectors.push_back((*csv_vector_collection.get()).get_offset_vector());
 
         Instruction_Collector ins_coll  =  Instruction_Collector{
             get_elapsed_physical_time(),
