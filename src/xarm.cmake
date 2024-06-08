@@ -1,7 +1,15 @@
 SET(CXX_STANDARD 17)
 
+find_package (Threads)
+find_package (glfw)
+find_package(mujoco REQUIRED)
 find_library(X_ARM_LIB xarm)
-target_link_libraries(${LF_MAIN_TARGET} "${X_ARM_LIB}")
+
+#link_libraries(mujoco::mujoco)
+
+target_link_libraries(${LF_MAIN_TARGET} ${CMAKE_THREAD_LIBS_INIT} mujoco::mujoco glfw "${X_ARM_LIB}")
+
+#target_link_libraries(${LF_MAIN_TARGET} )
 
 find_path(X_ARM_INCLUDE_PATH xarm)
 target_include_directories(${LF_MAIN_TARGET} PUBLIC "${X_ARM_INCLUDE_PATH}")

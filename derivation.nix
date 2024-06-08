@@ -1,4 +1,25 @@
 { stdenv, pkgs, lib, fetchFromGitHub, reactor-cpp, ... }:
+let 
+	xarm7 = stdenv.mkDerivation {
+		name = "xarm7";
+
+		src = fetchFromGitHub {
+			owner = "xArm-Developer";
+			repo = "xArm-CPLUS-SDK";
+			rev = "v1.13.21";
+			hash = "sha256-QuR7TltD/mjXASa3smJN76h53iRnhHEz+3H4u+841m4=";
+		};
+		installPhase = ''
+			ls -alh
+			ls -alh ./build
+			find ./build 
+			mkdir -p $out/
+			cp -r ./build/lib $out/
+			cp -r ./include/ $out/
+		'';
+
+	};
+in
 stdenv.mkDerivation {
   name = "alarm-clock";
   version = "0.0.1";
@@ -38,6 +59,7 @@ stdenv.mkDerivation {
     glfw
     glfw2
     glfw-wayland
+		xarm7
   ];
 
   configurePhase = ''
