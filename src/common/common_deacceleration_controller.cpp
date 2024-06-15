@@ -93,7 +93,7 @@ double DeaccelerationController::calculate_max_speed(const Vector offset_vector)
 }
 double DeaccelerationController::calculate_speed_selected_by_PID(double distance_to_target) const {
   double selected_speed = (distance_to_target < this->threshold_deaccelerate_)
-                              ? (distance_to_target * (this->max_step_length_ / this->threshold_deaccelerate_))
+                              ? (distance_to_target * (this->max_step_length_ / this->threshold_deaccelerate_) * (2/5))
                               : this->max_step_length_;
   return selected_speed;
 }

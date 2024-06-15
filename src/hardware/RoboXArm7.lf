@@ -39,44 +39,24 @@ reactor RoboXArm7 (timer_start_moving: time = 1s, timer_initiate_movin_period: t
         arm->motion_enable(true);
 
         arm->set_mode(1);
+        arm->set_state(0);
+
+
+        // int ret;
+
+        // ret = arm->set_reduced_max_tcp_speed(500);
+        // printf("set_reduced_max_tcp_speed, ret=%d\n", ret);
+
+        // ret = arm->set_reduced_max_joint_speed(100);
+        // printf("set_reduced_max_tcp_speed, ret=%d\n", ret);
+        // ret = arm->set_reduced_mode(true);
+        // printf("set_reduced_mode, ret=%d\n", ret);
+
         // arm->set_mode(0);
 
-        std::cout << "Setting state" << std::endl; 
 
-        arm->set_state(0);
-        // arm->reset(true);
 
     }
-
-    /*
-        this->arm = new XArmAPI(host);
-
-        if (this->arm == nullptr) {
-            std::cerr << "Couldn't connect to Robot! on: " << host << std::endl << std::flush;
-            return;
-        }
-        if (arm->error_code != 0){
-            arm->clean_error();
-        }
-        if (arm->warn_code != 0) {arm->clean_warn();}
-        arm->motion_enable(true);
-        arm->set_mode(0);
-        arm->set_state(0);
-        std::cout << "! ================== !" << std::endl;
-        std::cout << "! Waiting some seconds !" << std::endl;
-        std::cout << "! Waited now for 3 seconds, resetting !" << std::endl;
-        arm->reset(true);
-
-        fp32 pos[6] = { 400, 0, 200, 180, 0, 0};
-        int ret = arm->set_position(pos, 0, false);
-    
-        std::cout << "! <====> We passed the startup-function <====> !" << std::endl;
-        sleep_milliseconds(5000);
-        arm->set_mode(1);
-        std::cout << "! Set mode to servo cartesian !" << std::endl;
-
-        */
-
 
     =}
   
@@ -116,7 +96,7 @@ reactor RoboXArm7 (timer_start_moving: time = 1s, timer_initiate_movin_period: t
   reaction(robo_next_position_checked) {=
         Vector vec_next_position_checked = *robo_next_position_checked.get();
           
-        fp32 pos[6] = {vec_next_position_checked.X_, vec_next_position_checked.Y_, vec_next_position_checked.Z_, 180, 0 , 0};
+        fp32 pos[6] = {vec_next_position_checked.X_, vec_next_position_checked.Y_, vec_next_position_checked.Z_, 150, 0 , 0};
         // arm->set_mode(1);
         int error_code = arm->set_servo_cartesian(pos);
         // int error_code = arm->set_position(pos, 0, false);
