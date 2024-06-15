@@ -14,6 +14,12 @@ import RoboXArm7Sim from "hardware/RoboXArm7Sim.lf"
 import LastPositionHolder from "control/LastPositionHolder.lf"
 import SanityChecker from "control/SanityChecker.lf"
 import RobotSanityChecker from "control/RoboSanityChecker.lf"
+import RobotSanityChecker from "control/RoboSanityChecker.lf"
+import CameraInterface from "camera/CameraInterface.lf"
+import CameraFake from "camera/CameraFake.lf"
+
+
+
 
 public preamble {=
   #ifndef XARM7
@@ -26,15 +32,18 @@ public preamble {=
 private preamble {=  =}
 
 main reactor StartUp {
+  // CAMERA
+  camera = new CameraFake (start_changing_target = 1s, changing_target_period = 4s, positions = {=
+    {
+      Position{Vector{400, -175, 200 },Vector{180, 10, 0 }},Position{ Vector{525, 0, 200 },Vector{170, 0, 0 }}, Position{Vector{400, 175, 200},Vector{180, 0, 10 }}, Position{Vector{275, 0, 200},Vector{180, 10, 0 }}
+    }
+  =})
+
+  camera_interface = new CameraInterface()
+
   // INTERFACE
   decoder = new WorldDataDecoder()
   interface = new XArmInterface()
-  
-  //DATA  
-  // HARDWARE : REAL ROBO
-  // hardware = new RoboXArm7();
-  // interface.robo_next_position_checked -> hardware.robo_next_position_checked;
-  // hardware.interface_world_data -> interface.interface_world_data;
   
   // HARDWARE : FAKE ROBO <--> Interface
   // CONTROL
@@ -47,12 +56,7 @@ main reactor StartUp {
                       roll_pitch_yaw_near_target_stop_moving = 0.01,
                       roll_pitch_yaw_acceleration_cap = 0.2)
   last_position_holder = new LastPositionHolder()
-  controller = new RobotControl(start_changing_target = 1s, changing_target_period = 4s, positions = {=
-          {
-            Position{Vector{400, -175, 200 },Vector{180, 10, 0 }},Position{ Vector{525, 0, 200 },Vector{170, 0, 0 }}, Position{Vector{400, 175, 200},Vector{180, 0, 10 }}, Position{Vector{275, 0, 200},Vector{180, 10, 0 }}
-          }
-       
-  =})   
+  controller = new RobotControl()
 
   // SANITY CHECKS
   sanity_checker = new SanityChecker(max_step_length = 1, acceleration_cap = 0.2,
@@ -77,10 +81,13 @@ main reactor StartUp {
   // interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
   // fake_hardware.interface_world_data -> interface.interface_world_data
 
-  // Controller --> Planner 
 
-  // Controller --> Planner | Velocity Control
-  controller.raw_instruction -> planner.planner_raw_instruction
+  // Camera --> Interface --> Controller
+  camera.controller_interface_target -> camera_interface.interface_target
+  camera_interface.controller_target -> controller.robot_control_target 
+
+  // Controller --> Planner  
+  controller.target_unchecked -> planner.planner_raw_instruction
 
   // Planner --> Sanity Checker
   planner.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
@@ -108,7 +115,7 @@ main reactor StartUp {
   planner.data_collector_velocity_control_vector_collection -> data_collector_traffic.csv_vector_collection
   decoder.current_position -> data_collector_traffic.csv_current_position
   last_position_holder.planner_last_position -> data_collector_traffic.csv_last_position
-  controller.raw_instruction -> data_collector_traffic.csv_raw_instruction
+  controller.target_unchecked -> data_collector_traffic.csv_raw_instruction
   sanity_checker.next_position_checked -> data_collector_traffic.csv_next_position_checked
 
   // CSV DATA : World data

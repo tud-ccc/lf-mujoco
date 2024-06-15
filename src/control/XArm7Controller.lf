@@ -13,31 +13,19 @@ private preamble {=
   #include <iostream>
 =}
 
-reactor RobotControl(start_changing_target: time = 1s, changing_target_period = 2s, positions:
-               {= Position[4] =} = {=
-            {
-              Position{Vector{0, 0, 0 },Vector{0, 0, 0 }},Position{ Vector{0, 0, 0 },Vector{0, 0, 0 }}, Position{Vector{0, 0, 0},Vector{0, 0, 0 }}, Position{Vector{0, 0, 0},Vector{0, 0, 0 }}
-            }
-               =})
- {
-  timer t(start_changing_target, changing_target_period)
-  output raw_instruction: Position
+reactor RobotControl {
+  output target_unchecked: Position
   input robot_control_current_position: Position
-  state counter: int = 0  // not constant
-  state last_raw_instruction: Position
+  input robot_control_target: Position
 
-  // constant
-  reaction(startup) {=
-    last_raw_instruction = positions[counter];
+  state last_target: Position
+
+  reaction(robot_control_target) {=
+      this->last_target = *robot_control_target.get();
+    =}
+
+  reaction(robot_control_current_position) -> target_unchecked {=
+    target_unchecked.set(this->last_target);
   =}
 
-  reaction(robot_control_current_position) -> raw_instruction {=
-    raw_instruction.set(this->last_raw_instruction);
-  =}
-
-  reaction(t) {=
-    // only changes the current raw instruction
-    this->last_raw_instruction = positions[counter];
-    this->counter = (counter + 1) % 4;
-  =}
 }

@@ -1,15 +1,18 @@
 SET(CXX_STANDARD 17)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 find_package (Threads)
 find_package (glfw)
 find_package(mujoco REQUIRED)
 find_library(X_ARM_LIB xarm)
+find_package(Eigen3 REQUIRED)
+
 
 #link_libraries(mujoco::mujoco)
 
 target_link_libraries(${LF_MAIN_TARGET} ${CMAKE_THREAD_LIBS_INIT} mujoco::mujoco glfw "${X_ARM_LIB}")
-
-#target_link_libraries(${LF_MAIN_TARGET} )
 
 find_path(X_ARM_INCLUDE_PATH xarm)
 target_include_directories(${LF_MAIN_TARGET} PUBLIC "${X_ARM_INCLUDE_PATH}")
@@ -23,7 +26,8 @@ ADD_LIBRARY(cpp_files_common
     )
 
 # add hpp files to library
-target_include_directories(cpp_files_common PRIVATE ${CMAKE_CURRENT_LIST_DIR}/common/)
+target_include_directories(cpp_files_common PRIVATE ${CMAKE_CURRENT_LIST_DIR}/common/ ${Eigen_INCLUDE_DIRS})
+target_link_libraries(cpp_files_common ${Eigen_LIBRARIES})
 
 # link the library 
 target_link_libraries(${LF_MAIN_TARGET} cpp_files_common)

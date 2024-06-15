@@ -1,0 +1,43 @@
+target Cpp
+
+public preamble {=
+  #ifndef CAMERA
+  #define CAMERA
+  #include "common_vector.hpp"
+  #include "coordinate_transformation.hpp"
+
+
+  #endif //XARM7
+=}
+
+private preamble {=
+  #include <iostream>
+=}
+
+reactor CameraFake(start_changing_target: time = 1s, changing_target_period = 2s, positions:
+               {= Position[4] =} = {=
+            {
+              Position{Vector{0, 0, 0 },Vector{0, 0, 0 }},Position{ Vector{0, 0, 0 },Vector{0, 0, 0 }}, Position{Vector{0, 0, 0},Vector{0, 0, 0 }}, Position{Vector{0, 0, 0},Vector{0, 0, 0 }}
+            }
+               =})
+ {
+  timer t(start_changing_target, changing_target_period)
+  output controller_interface_target: Position
+
+  state counter: int = 0 
+  state last_target: Position
+
+  reaction(startup) {=
+    last_target = positions[counter];
+  =}
+
+  reaction(t) -> controller_interface_target {=
+
+    this->last_target = positions[counter];
+
+    controller_interface_target.set(this->last_target);
+
+    this->counter = (counter + 1) % 4;
+
+  =}
+}
