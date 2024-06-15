@@ -11,15 +11,15 @@ public preamble {=
 private preamble {=  =}
 
 reactor LastPositionHolder{
-  input holder_current_position: Vector
-  output planner_last_position: Vector
-  state last_position: Vector 
+  input holder_current_position: Position
+  output planner_last_position: Position
+  state last_position: Position 
   state currently_first_iteration: bool = true
 
   reaction(startup) {=  =}
 
   reaction(holder_current_position) -> planner_last_position {=
-    Vector cur_pos = *holder_current_position.get();
+    Position cur_pos = *holder_current_position.get();
     if (this->currently_first_iteration){ 
       this->last_position = cur_pos;
       this->currently_first_iteration = false;

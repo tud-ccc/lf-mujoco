@@ -15,10 +15,10 @@ public preamble {=
 reactor CSV_DataTraffic (instructions_path: std::string = "") {
 
   //robo facing
-  input csv_last_position: Vector; 
-  input csv_current_position: Vector;
-  input csv_raw_instruction: Vector;
-  input csv_next_position_checked: Vector;
+  input csv_last_position: Position; 
+  input csv_current_position: Position;
+  input csv_raw_instruction: Position;
+  input csv_next_position_checked: Position;
   
   input csv_vector_collection: VectorCollectionVelocityControl
 

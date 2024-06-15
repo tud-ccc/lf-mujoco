@@ -14,26 +14,17 @@ private preamble {=
 =}
 
 reactor RobotControl(start_changing_target: time = 1s, changing_target_period = 2s, positions:
-               {= Vector[4] =} = {=
+               {= Position[4] =} = {=
             {
-              Vector{0, 0, 0 }, Vector{0, 0, 0 }, Vector{0, 0, 0}, Vector{0, 0, 0}
+              Position{Vector{0, 0, 0 },Vector{0, 0, 0 }},Position{ Vector{0, 0, 0 },Vector{0, 0, 0 }}, Position{Vector{0, 0, 0},Vector{0, 0, 0 }}, Position{Vector{0, 0, 0},Vector{0, 0, 0 }}
             }
                =})
-            // {=  Vector[14] =} = {=
-            // {
-            // Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
-            //  Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
-            //  Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0}, Vector{0,0,0},
-            //  Vector{0,0,0}, Vector{0,0,0}
-            // }
-            // =})
-
  {
   timer t(start_changing_target, changing_target_period)
-  output raw_instruction: Vector
-  input robot_control_current_position: Vector
+  output raw_instruction: Position
+  input robot_control_current_position: Position
   state counter: int = 0  // not constant
-  state last_raw_instruction: Vector
+  state last_raw_instruction: Position
 
   // constant
   reaction(startup) {=
@@ -47,7 +38,6 @@ reactor RobotControl(start_changing_target: time = 1s, changing_target_period = 
   reaction(t) {=
     // only changes the current raw instruction
     this->last_raw_instruction = positions[counter];
-    this->last_raw_instruction.to_string();
     this->counter = (counter + 1) % 4;
   =}
 }

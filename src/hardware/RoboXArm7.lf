@@ -17,7 +17,7 @@ reactor RoboXArm7 (timer_start_moving: time = 1s, timer_initiate_movin_period: t
 
 
   //robo facing
-  input robo_next_position_checked: Vector;
+  input robo_next_position_checked: Position;
   output interface_world_data: WorldData;
   timer t(timer_start_moving, timer_initiate_movin_period);
   state arm: {=XArmAPI*=};
@@ -94,9 +94,10 @@ reactor RoboXArm7 (timer_start_moving: time = 1s, timer_initiate_movin_period: t
 
 
   reaction(robo_next_position_checked) {=
-        Vector vec_next_position_checked = *robo_next_position_checked.get();
+        Vector coordinates = (*robo_next_position_checked.get()).get_coordinates();
+        Vector roll_pitch_yaw = (*robo_next_position_checked.get()).get_roll_pitch_yaw();
           
-        fp32 pos[6] = {vec_next_position_checked.X_, vec_next_position_checked.Y_, vec_next_position_checked.Z_, 150, 0 , 0};
+        fp32 pos[6] = {coordinates.X_, coordinates.Y_, coordinates.Z_, roll_pitch_yaw.X_, roll_pitch_yaw.Y_, roll_pitch_yaw.Z_};
         // arm->set_mode(1);
         int error_code = arm->set_servo_cartesian(pos);
         // int error_code = arm->set_position(pos, 0, false);

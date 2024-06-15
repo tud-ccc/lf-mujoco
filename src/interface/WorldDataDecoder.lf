@@ -1,28 +1,29 @@
-target Cpp;
+target Cpp
 
 public preamble {=
+  #ifndef DECODER
+  #define DECODER
+  #include "common_vector.hpp"
+  #include "world_data_collector.hpp"
 
-#ifndef DECODER
-#define DECODER
-#include "common_vector.hpp"
-#include "world_data_collector.hpp"
-
-#endif //DECODER
+  #endif //DECODER
 =}
 
-
 reactor WorldDataDecoder {
+  input decoder_world_data: WorldData  // robo facing
+  output current_position: Position
 
-  //robo facing
-  input decoder_world_data: WorldData;
-  output current_position: Vector;
+  reaction(decoder_world_data) -> current_position {=
+    WorldData current_world_data = *decoder_world_data.get();
+    Vector vector_current_coordinates = Vector(current_world_data.position().at(0),
+                                              current_world_data.position().at(1),
+                                              current_world_data.position().at(2));
 
-  reaction(decoder_world_data) -> current_position{=
-     WorldData current_world_data = *decoder_world_data.get();
-     Vector vector_current_position = Vector(current_world_data.position().at(0),current_world_data.position().at(1), current_world_data.position().at(2)); 
-     current_position.set(vector_current_position); 
+    Vector vector_yaw_pitch_roll = Vector(current_world_data.position().at(3),
+                                              current_world_data.position().at(4),
+                                              current_world_data.position().at(5));
+
+    Position pos_current_position = Position{vector_current_coordinates, vector_yaw_pitch_roll};
+    current_position.set(pos_current_position);
   =}
-  
-
-
 }

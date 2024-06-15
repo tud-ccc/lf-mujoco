@@ -1,8 +1,8 @@
 #ifndef COMMON_VECTOR
 #define COMMON_VECTOR
 
-#include <vector>
 #include <string>
+#include <vector>
 #define PI 3.14159265
 
 class Vector {
@@ -41,7 +41,6 @@ public:
   bool linear_dependent(Vector vec1, Vector vec2) const;
 };
 
-
 class VectorCollectionVelocityControl {
 private:
   Vector next_logical_step_offset_vector_;
@@ -67,19 +66,29 @@ public:
 
 class Position {
 private:
-  Vector coordiantes_;
+  Vector coordinates_;
   Vector roll_pitch_yaw_;
 
 public:
   Position() {}
-  Position(Vector coordiantes, Vector roll_pitch_yaw) {
-    this->coordiantes_ = coordiantes;
+  Position(Vector coordinates, Vector roll_pitch_yaw) {
+    this->coordinates_ = coordinates;
     this->roll_pitch_yaw_ = roll_pitch_yaw;
   }
-  Vector get_coordiantes() const { return this->coordiantes_; }
+  Vector get_coordinates() const { return this->coordinates_; }
   Vector get_roll_pitch_yaw() const { return this->roll_pitch_yaw_; }
+
+  std::vector<std::string> to_vector() const {
+    std::vector<std::string> vector_of_x_Y_Z;
+    vector_of_x_Y_Z.push_back(std::to_string(this->get_coordinates().X_));
+    vector_of_x_Y_Z.push_back(std::to_string(this->get_coordinates().Y_));
+    vector_of_x_Y_Z.push_back(std::to_string(this->get_coordinates().Z_));
+    vector_of_x_Y_Z.push_back(std::to_string(this->get_roll_pitch_yaw().X_));
+    vector_of_x_Y_Z.push_back(std::to_string(this->get_roll_pitch_yaw().Y_));
+    vector_of_x_Y_Z.push_back(std::to_string(this->get_roll_pitch_yaw().Z_));
+
+    return vector_of_x_Y_Z;
+  }
 };
-
-
 
 #endif // COMMON_VECTOR

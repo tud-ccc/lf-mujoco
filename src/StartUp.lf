@@ -48,26 +48,40 @@ main reactor StartUp {
   fake_hardware.interface_world_data -> interface.interface_world_data
 
   // CONTROL
-  planner = new Planner(max_step_length = 1, threshold_deaccelerate = 20, threshold_near_target_stop_moving = 0.001, acceleration_cap = 0.1)
+  planner = new Planner(max_step_length = 1,
+                      threshold_deaccelerate = 20, 
+                      threshold_near_target_stop_moving = 0.001, 
+                      acceleration_cap = 0.1,
+                      roll_pitch_yaw_max_angle = 0.5,
+                      roll_pitch_yaw_threshold_deaccelerate = 5,
+                      roll_pitch_yaw_near_target_stop_moving = 0.01,
+                      roll_pitch_yaw_acceleration_cap = 0.2)
   last_position_holder = new LastPositionHolder()
   controller = new RobotControl(start_changing_target = 1s, changing_target_period = 4s, positions = {=
           {
-            Vector{400, -175, 150 }, Vector{525, 0, 250 }, Vector{400, 175, 150}, Vector{325, 0, 250}
+            Position{Vector{400, -175, 200 },Vector{180, 10, 0 }},Position{ Vector{525, 0, 200 },Vector{170, 0, 0 }}, Position{Vector{400, 175, 200},Vector{180, 0, 10 }}, Position{Vector{275, 0, 200},Vector{180, 10, 0 }}
           }
        
-  =})     // {
-          // Vector{5,-10,5}, Vector{0,0,0}, Vector{19,7,-13}, Vector{10,-5,-40},
-          // Vector{7,2,-123}, Vector{2,-2,12}, Vector{2,72,5}, Vector{-26,0,34},
-          // Vector{-0,7,6}, Vector{23,-63,0}, Vector{-31,2,47}, Vector{1,2,5},
-          // Vector{0,0,0}, Vector{0,0,-42}
-          // }
-
+  =})   
 
   // SANITY CHECKS
-  sanity_checker = new SanityChecker(acceleration_cap = 0.2, max_step_length = 1)
+  sanity_checker = new SanityChecker(max_step_length = 1, acceleration_cap = 0.2,
+                                    roll_pitch_yaw_max_angle = 0.5, roll_pitch_yaw_acceleration_cap = 0.3)
 
-  robo_sanity_checker = new RobotSanityChecker (acceleration_cap = 0.2)
+  robo_sanity_checker = new RobotSanityChecker (acceleration_cap = 0.2, 
+                                      roll_pitch_yaw_acceleration_cap = 0.3)
 
+
+  // DATA
+  data_collector_traffic = new CSV_DataTraffic(
+      instructions_path="data_analysis/data/instructions.csv")
+  data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
+
+  // HARDWARE : REAL ROBO <--> Interface
+  hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 12ms);
+  interface.robo_next_position_checked -> hardware.robo_next_position_checked;
+  hardware.interface_world_data -> interface.interface_world_data;
+  
   // HARDWARE : FAKE ROBO <--> Interface
   // fake_hardware = new RoboXArm7Fake(initial_current_position = {= Vector{400, -75,0} =})
   // interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked

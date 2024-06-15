@@ -9,33 +9,44 @@ public preamble {=
   #endif //SANITY_CHECKER
 =}
 
-reactor Planner(max_step_length: double = 0, threshold_deaccelerate: double = 0, threshold_near_target_stop_moving: double = 0, acceleration_cap: double = 0) {
+reactor Planner(max_step_length: double = 0, threshold_deaccelerate: double = 0, threshold_near_target_stop_moving: double = 0, acceleration_cap: double = 0,
+   roll_pitch_yaw_max_angle: double = 0, roll_pitch_yaw_threshold_deaccelerate: double = 0, roll_pitch_yaw_near_target_stop_moving: double = 0, roll_pitch_yaw_acceleration_cap: double = 0) {
 
 
-  input planner_raw_instruction: Vector
-  input planner_current_position: Vector
-  input planner_last_position: Vector
+  input planner_raw_instruction: Position
+  input planner_current_position: Position
+  input planner_last_position: Position
 
-  output sanity_checker_next_position: Vector
+  output sanity_checker_next_position: Position
   output data_collector_velocity_control_vector_collection: VectorCollectionVelocityControl
 
   reaction(planner_current_position, planner_last_position, planner_raw_instruction) ->
   data_collector_velocity_control_vector_collection, sanity_checker_next_position {=
-    Vector  vector_current_position = *planner_current_position.get();
-    Vector  vector_last_position = *planner_last_position.get();
-    Vector  vector_raw_instruction = *planner_raw_instruction.get();
+    Position  position_current_position = *planner_current_position.get();
+    Position  position_last_position = *planner_last_position.get();
+    Position  position_raw_instruction = *planner_raw_instruction.get();
 
-    DeaccelerationController deac = DeaccelerationController{max_step_length, 
+    DeaccelerationController deac_coordinates = DeaccelerationController{max_step_length, 
                                                             threshold_deaccelerate,  
                                                             threshold_near_target_stop_moving, 
                                                             acceleration_cap};
+    DeaccelerationController deac_roll_pitch_yaw = DeaccelerationController{roll_pitch_yaw_max_angle, 
+                                                            roll_pitch_yaw_threshold_deaccelerate,  
+                                                            roll_pitch_yaw_near_target_stop_moving, 
+                                                            roll_pitch_yaw_acceleration_cap};
 
-    Vector next_position = deac.compute_next_position_wrapper(vector_last_position, 
-                                                              vector_current_position, 
-                                                              vector_raw_instruction);
+    Vector next_coordinates = deac_coordinates.compute_next_position_wrapper(position_last_position.get_coordinates(), 
+                                                              position_current_position.get_coordinates(), 
+                                                              position_raw_instruction.get_coordinates());
+
+    Vector next_roll_pitch_yaw = deac_roll_pitch_yaw.compute_next_position_wrapper(position_last_position.get_roll_pitch_yaw(), 
+                                                              position_current_position.get_roll_pitch_yaw(), 
+                                                              position_raw_instruction.get_roll_pitch_yaw());
+
+    Position next_position = Position{next_coordinates , next_roll_pitch_yaw};
    
 
     sanity_checker_next_position.set(next_position);
-    data_collector_velocity_control_vector_collection.set(deac.get_vector_collection_velocity_control());
+    data_collector_velocity_control_vector_collection.set(deac_coordinates.get_vector_collection_velocity_control());
   =}
 }

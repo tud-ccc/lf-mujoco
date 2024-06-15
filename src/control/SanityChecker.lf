@@ -10,22 +10,27 @@ public preamble {=
   #endif //VELOCITY_CONTROL
 =}
 
-reactor SanityChecker(acceleration_cap: double = 0, max_step_length: double = 0) {
+reactor SanityChecker(acceleration_cap: double = 0, max_step_length: double = 0,
+                      roll_pitch_yaw_max_angle: double = 0, roll_pitch_yaw_acceleration_cap: double = 0) {
   
-  input sanity_checker_last_position: Vector
-  input sanity_checker_current_position: Vector
-  input sanity_checker_next_position: Vector
+  input sanity_checker_last_position: Position
+  input sanity_checker_current_position: Position
+  input sanity_checker_next_position: Position
 
-  output next_position_checked: Vector
+  output next_position_checked: Position
 
   reaction(sanity_checker_last_position, sanity_checker_current_position, sanity_checker_next_position) -> next_position_checked {=
-    Vector vector_sanity_checker_last_position = *sanity_checker_last_position.get();
-    Vector vector_sanity_checker_current_position = *sanity_checker_current_position.get();
-    Vector vector_sanity_checker_next_position = *sanity_checker_next_position.get();
+    Position last_position = (*sanity_checker_last_position.get());
+    Position current_position = (*sanity_checker_current_position.get());
+    Position next_position = (*sanity_checker_next_position.get());
 
-    SanityCheckerLogic scl = SanityCheckerLogic{acceleration_cap, max_step_length};
-    scl.planner_sanity_check_next_position(vector_sanity_checker_last_position, vector_sanity_checker_current_position, vector_sanity_checker_next_position);
-    next_position_checked.set(vector_sanity_checker_next_position);
+    SanityCheckerLogic scl_coordinates = SanityCheckerLogic{acceleration_cap, max_step_length};
+    SanityCheckerLogic scl_roll_pitch_yaw = SanityCheckerLogic{roll_pitch_yaw_acceleration_cap, roll_pitch_yaw_max_angle};
+
+    scl_coordinates.planner_sanity_check_next_position(last_position.get_coordinates(), current_position.get_coordinates(), next_position.get_coordinates());
+    scl_roll_pitch_yaw.planner_sanity_check_next_position(last_position.get_roll_pitch_yaw(), current_position.get_roll_pitch_yaw(), next_position.get_roll_pitch_yaw());
+    
+    next_position_checked.set(next_position);
     =}
 
   reaction(startup){=
