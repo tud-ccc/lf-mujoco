@@ -1,0 +1,31 @@
+target Cpp
+
+public preamble {=
+  #ifndef CAMERA
+  #define CAMERA
+  #include "common_vector.hpp"
+  #include "coordinate_transformation.hpp"
+
+
+  #endif //XARM7
+=}
+
+private preamble {=
+  #include <iostream>
+=}
+
+reactor Camera(start_stream: time = 1s, frame_fetch_period = 2s)
+ {
+  timer t(start_stream, frame_fetch_period)
+  output controller_interface_target: Position
+
+
+  reaction(startup) {=
+  =}
+
+  reaction(t) -> controller_interface_target {=
+
+this->counter = (counter + 1) % 4;
+
+  =}
+}
