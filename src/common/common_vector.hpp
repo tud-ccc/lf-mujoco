@@ -41,6 +41,7 @@ public:
   bool linear_dependent(Vector vec1, Vector vec2) const;
 };
 
+
 class VectorCollectionVelocityControl {
 private:
   Vector next_logical_step_offset_vector_;
@@ -63,5 +64,22 @@ public:
   Vector get_acceleration_vector() const { return this->acceleration_vector_; }
   Vector get_offset_vector() const { return this->offset_vector_; }
 };
+
+class Position {
+private:
+  Vector coordiantes_;
+  Vector roll_pitch_yaw_;
+
+public:
+  Position() {}
+  Position(Vector coordiantes, Vector roll_pitch_yaw) {
+    this->coordiantes_ = coordiantes;
+    this->roll_pitch_yaw_ = roll_pitch_yaw;
+  }
+  Vector get_coordiantes() const { return this->coordiantes_; }
+  Vector get_roll_pitch_yaw() const { return this->roll_pitch_yaw_; }
+};
+
+
 
 #endif // COMMON_VECTOR
