@@ -1,4 +1,4 @@
-#include "camera_library_includes.hpp"
+#include "../camera_library_includes.hpp"
 
 float3 float3::operator*(float t) { return {x * t, y * t, z * t}; }
 
@@ -34,8 +34,3 @@ rect rect::adjust_ratio(float2 size) const {
   return {x + (w - W) / 2, y + (h - H) / 2, W, H};
 }
 
-void text_renderer::put_text(const std::string& msg, float norm_x_pos, float norm_y_pos, const rect& r);
-{
-  set_viewport(r);
-  draw_text(int(norm_x_pos * r.w), int(norm_y_pos * r.h), msg.c_str());
-}

@@ -17,11 +17,10 @@ find_package(OpenGL REQUIRED)
 find_path(X_ARM_INCLUDE_PATH xarm)
 
 ADD_LIBRARY(camera_library 
-    ${CMAKE_CURRENT_LIST_DIR}/camera_library/camera_interface.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/camera_library/common_blue_center_to_3d.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/camera_library/common.cpp)
-
-target_include_directories(camera_library PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src/camera_library/)
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/camera_interface.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/common_blue_center_to_3d.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/common.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/data_structures.cpp)
 
 # add cpp files to library
 ADD_LIBRARY(cpp_files_common

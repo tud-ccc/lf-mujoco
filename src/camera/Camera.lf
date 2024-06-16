@@ -22,12 +22,14 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 2s)
   timer t(start_stream, frame_fetch_period)
   output controller_interface_target: Position
   state pipe: {=rs2::pipeline=}
+  state texture: {=custom_benes_texture=}
 
 
   reaction(startup) {=
-  // init_camera(this->pipe);
+      init_camera(this->pipe);
   =}
 
   reaction(t) -> controller_interface_target {=
+    receive_current_target
   =}
 }

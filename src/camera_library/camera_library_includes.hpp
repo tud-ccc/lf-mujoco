@@ -22,8 +22,7 @@
 #include <sstream>
 #include <string>
 
-#include "stb_easy_font.hpp"
-
+#include "header_files/stb_easy_font.hpp"
 // consts
 const float IMU_FRAME_WIDTH = 1280.f;
 const float IMU_FRAME_HEIGHT = 720.f;
@@ -63,10 +62,14 @@ struct frame_pixel {
 };
 
 int round_float_to_int(float x);
-inline void draw_text(int x, int y, const char* text);
+void draw_text(int x, int y, const char* text);
 void set_viewport(const rect& r);
+
 struct text_renderer {
-  void put_text(const std::string& msg, float norm_x_pos, float norm_y_pos, const rect& r);
+  void put_text(const std::string& msg, float norm_x_pos, float norm_y_pos, const rect& r) {
+    set_viewport(r);
+    draw_text(int(norm_x_pos * r.w), int(norm_y_pos * r.h), msg.c_str());
+  }
 };
 
 // blue_center
@@ -82,12 +85,13 @@ bool device_with_streams(std::vector<rs2_stream> stream_requests, std::string& o
 using frame_and_tile_property = std::pair<rs2::frame, tile_properties>;
 using frames_mosaic = std::map<int, frame_and_tile_property>;
 
-#include "renderer.hpp"
-#include "texture.hpp"
-#include "window.hpp"
+#include "class_header_files/renderer.hpp"
+#include "class_header_files/texture.hpp"
+#include "class_header_files/window.hpp"
 
 // interface
 void init_camera(rs2::pipeline& pipe);
-void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, window& app);
+void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, int window_width,
+                            int window_height);
 
 #endif

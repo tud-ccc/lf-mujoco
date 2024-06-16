@@ -1,7 +1,7 @@
 // Copyright(c) 2015 Intel Corporation. All Rights Reserved.
 #ifndef COMMON_WINDOW_HPP
 #define COMMON_WINDOW_HPP
-#include "camera_library_includes.hpp"
+#include "../camera_library_includes.hpp"
 
 
 inline void draw_text(int x, int y, const char *text)

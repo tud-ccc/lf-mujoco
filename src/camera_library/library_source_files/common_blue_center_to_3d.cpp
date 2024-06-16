@@ -2,7 +2,7 @@
 #define COMMON_BLUE_CENTER_HPP
 
 #include <queue>
-#include "camera_library_includes.hpp"
+#include "../camera_library_includes.hpp"
 
 int round_float_to_int(float x)
 {

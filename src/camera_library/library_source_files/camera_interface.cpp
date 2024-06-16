@@ -9,7 +9,7 @@
 #define GL_SILENCE_DEPRECATION
 #define GLFW_INCLUDE_GLU
 
-#include "camera_library_includes.hpp"
+#include "../camera_library_includes.hpp"
 
 void init_camera(rs2::pipeline& pipe) {
 
@@ -42,7 +42,7 @@ void init_camera(rs2::pipeline& pipe) {
   window app(stream.width(), stream.height(), "RealSense Measure Example");
 }
 
-void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, window& app) {
+void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, int window_width, int window_height) {
 
   rs2::frameset current_frameset = pipe.wait_for_frames();
 
@@ -54,7 +54,7 @@ void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_ima
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  pixel center_blue = color_image.render(color, {0, 0, app.width(), app.height()});
+  pixel center_blue = color_image.render(color, {0, 0, window_width, window_height});
 
   std::cout << center_blue.first << ", " << center_blue.second << std::endl;
 
