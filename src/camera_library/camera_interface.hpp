@@ -17,13 +17,13 @@
 #include <functional>
 #include <cassert>
 
-#include "camera_lib/stb_easy_font.hpp"
-#include "camera_lib/data_structures.hpp"
-#include "camera_lib/common_blue_center_to_3d.hpp"
-#include "camera_lib/common.hpp"
-#include "camera_lib/renderer.hpp"
-#include "camera_lib/texture.hpp"
-#include "camera_lib/window.hpp"
+#include "stb_easy_font.hpp"
+#include "data_structures.hpp"
+#include "common_blue_center_to_3d.hpp"
+#include "common.hpp"
+#include "renderer.hpp"
+#include "texture.hpp"
+#include "window.hpp"
 
 void init_camera(rs2::pipeline& pipe) {
 

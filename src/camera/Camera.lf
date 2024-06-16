@@ -4,8 +4,8 @@ public preamble {=
   #ifndef CAMERA
   #define CAMERA
   #include "common_vector.hpp"
-  #include "coordinate_transformation.hpp"
-  #include "common_camera.hpp"
+  #include "common_coordinate_transformation.hpp"
+  #include "camera_interface.hpp"
   #include <librealsense2/rs.hpp>
 
   #endif //XARM7

@@ -42,7 +42,7 @@ target_link_libraries(${LF_MAIN_TARGET} cpp_files_common
 target_include_directories(${LF_MAIN_TARGET} PRIVATE 
                                     "${X_ARM_INCLUDE_PATH}"
                                     ${CMAKE_CURRENT_LIST_DIR}/common/
-                                    ${CMAKE_CURRENT_LIST_DIR}/common/camera)
+                                    ${CMAKE_CURRENT_LIST_DIR}/camera_library/)
                                     
 
 
