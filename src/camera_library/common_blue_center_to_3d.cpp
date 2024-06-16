@@ -2,6 +2,14 @@
 #define COMMON_BLUE_CENTER_HPP
 
 #include <queue>
+#include "camera_library_includes.hpp"
+
+int round_float_to_int(float x)
+{
+    x = x + 0.5 - (x < 0);
+    int y = (int)x;
+    return y;
+}
 
 rs2::vertex pixel_to_3d(const rs2::depth_frame &depth_frame, int x, int y)
 {

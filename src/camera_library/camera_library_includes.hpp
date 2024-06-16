@@ -1,0 +1,150 @@
+#ifndef PI
+#define PI 3.14159265358979323846
+#define PI_FL 3.141592f
+#endif
+
+#ifndef CAMERA_INTERFACE_HPP_INCL
+#define CAMERA_INTERFACE_HPP_INCL
+
+#define GL_SILENCE_DEPRECATION
+#define GLFW_INCLUDE_GLU
+
+#include <GLFW/glfw3.h>
+#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
+
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <algorithm>
+#include <iomanip>
+#include <cmath>
+#include <map>
+#include <functional>
+#include <cassert>
+
+#include "stb_easy_font.hpp"
+
+//consts
+const float IMU_FRAME_WIDTH = 1280.f;
+const float IMU_FRAME_HEIGHT = 720.f;
+//usings
+using pixel = std::pair<int, int>;
+
+
+
+//structs
+struct float3
+{
+    float x, y, z;
+    float3 operator*(float t)
+    {
+        return {x * t, y * t, z * t};
+    }
+
+    float3 operator-(float t)
+    {
+        return {x - t, y - t, z - t};
+    }
+
+    void operator*=(float t)
+    {
+        x = x * t;
+        y = y * t;
+        z = z * t;
+    }
+
+    void operator=(float3 other)
+    {
+        x = other.x;
+        y = other.y;
+        z = other.z;
+    }
+
+    void add(float t1, float t2, float t3)
+    {
+        x += t1;
+        y += t2;
+        z += t3;
+    }
+};
+
+struct float2
+{
+    float x, y;
+};
+struct rect
+{
+    float x, y;
+    float w, h;
+
+    // Create new rect within original boundaries with give aspect ration
+    rect adjust_ratio(float2 size) const
+    {
+        auto H = static_cast<float>(h), W = static_cast<float>(h) * size.x / size.y;
+        if (W > w)
+        {
+            auto scale = w / W;
+            W *= scale;
+            H *= scale;
+        }
+
+        return {x + (w - W) / 2, y + (h - H) / 2, W, H};
+    }
+};
+
+enum class Priority
+{
+    high = 0,
+    medium = -1,
+    low = -2
+};
+
+struct tile_properties
+{
+
+    unsigned int x, y; // location of tile in the grid
+    unsigned int w, h; // width and height by number of tiles
+    Priority priority; // when should the tile be drawn?: high priority is on top of all, medium is a layer under top layer, low is a layer under medium layer
+};
+struct frame_pixel
+{
+    int frame_idx;
+    float2 pixel;
+};
+
+int round_float_to_int(float x);
+inline void draw_text(int x, int y, const char *text);
+void set_viewport(const rect &r);
+struct text_renderer
+{
+    void put_text(const std::string &msg, float norm_x_pos, float norm_y_pos, const rect &r)
+    {
+        set_viewport(r);
+        draw_text(int(norm_x_pos * r.w), int(norm_y_pos * r.h), msg.c_str());
+    }
+};
+
+
+
+
+// blue_center
+rs2::vertex pixel_to_3d(const rs2::depth_frame &depth_frame, int x, int y);
+void print_vertex(const rs2::vertex &vertex);
+pixel calculate_center(std::vector<pixel> &pixels, int bound_x, int bound_y);
+std::vector<pixel> find_largest_blue_cluster(const std::vector<pixel> &blue_pixels, int grap_range);
+pixel calculate_center_wrapper(std::vector<pixel> &largest_cluster, int threshold_accept_cluster, int bound_x, int bound_y);
+// common
+bool device_with_streams(std::vector<rs2_stream> stream_requests, std::string &out_serial);
+
+using frame_and_tile_property = std::pair<rs2::frame, tile_properties>;
+using frames_mosaic = std::map<int, frame_and_tile_property>;
+
+#include "renderer.hpp"
+#include "texture.hpp"
+#include "window.hpp"
+
+// interface
+void init_camera(rs2::pipeline &pipe);
+void receive_current_target(rs2::pipeline &pipe, custom_benes_texture &color_image, window &app);
+
+#endif

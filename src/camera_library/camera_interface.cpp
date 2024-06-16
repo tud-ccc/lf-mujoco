@@ -9,32 +9,7 @@
 #define GL_SILENCE_DEPRECATION
 #define GLFW_INCLUDE_GLU
 
-#include <GLFW/glfw3.h>
-#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
-
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
-#include <cmath>
-#include <map>
-#include <functional>
-#include <cassert>
-
-const float IMU_FRAME_WIDTH = 1280.f;
-const float IMU_FRAME_HEIGHT = 720.f;
-
-#include "stb_easy_font.hpp"
-#include "data_structures.hpp"
-#include "common_blue_center_to_3d.hpp"
-#include "common.hpp"
-#include "renderer.hpp"
-#include "texture.hpp"
-#include "window.hpp"
-
-
-
+#include "camera_library_includes.hpp"
 
 void init_camera(rs2::pipeline& pipe) {
 

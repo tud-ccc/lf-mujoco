@@ -1,6 +1,8 @@
 // Copyright(c) 2015 Intel Corporation. All Rights Reserved.
 #ifndef COMMON_WINDOW_HPP
 #define COMMON_WINDOW_HPP
+#include "camera_library_includes.hpp"
+
 
 inline void draw_text(int x, int y, const char *text)
 {
@@ -26,18 +28,6 @@ void set_viewport(const rect &r)
     glMatrixMode(GL_PROJECTION);
     glOrtho(0, r.w, r.h, 0, -1, +1);
 }
-
-struct text_renderer
-{
-    // Provide textual representation only
-    void put_text(const std::string &msg, float norm_x_pos, float norm_y_pos, const rect &r)
-    {
-        set_viewport(r);
-        draw_text(int(norm_x_pos * r.w), int(norm_y_pos * r.h), msg.c_str());
-    }
-};
-
-
 
 bool device_with_streams(std::vector<rs2_stream> stream_requests, std::string &out_serial)
 {
@@ -98,6 +88,5 @@ bool device_with_streams(std::vector<rs2_stream> stream_requests, std::string &o
     }
     return false;
 }
-
 
 #endif

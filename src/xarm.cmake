@@ -16,6 +16,13 @@ find_package(OpenGL REQUIRED)
 
 find_path(X_ARM_INCLUDE_PATH xarm)
 
+ADD_LIBRARY(camera_library 
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/camera_interface.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/common_blue_center_to_3d.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/common.cpp)
+
+target_include_directories(camera_library PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src/camera_library/)
+
 # add cpp files to library
 ADD_LIBRARY(cpp_files_common
     ${CMAKE_CURRENT_LIST_DIR}/common/common_planner_sanity_checker_logic.cpp
@@ -29,7 +36,8 @@ target_include_directories(cpp_files_common PRIVATE
                 ${CMAKE_CURRENT_LIST_DIR}/common/) 
 
 # link the library 
-target_link_libraries(${LF_MAIN_TARGET} cpp_files_common
+target_link_libraries(${LF_MAIN_TARGET} camera_library
+                                        cpp_files_common
                                         ${CMAKE_THREAD_LIBS_INIT} 
                                         mujoco::mujoco
                                         glfw

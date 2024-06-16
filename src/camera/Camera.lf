@@ -6,7 +6,7 @@ public preamble {=
 
   #include "common_vector.hpp"
   #include "common_coordinate_transformation.hpp"
-  #include "camera_interface.hpp"
+  #include "camera_library_includes.hpp"
   #include <librealsense2/rs.hpp>
   #include <iostream>
 
