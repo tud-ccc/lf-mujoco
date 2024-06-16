@@ -1,16 +1,5 @@
 #ifndef DATA_STRUCTURES_HPP
 #define DATA_STRUCTURES_HPP
-#include <GLFW/glfw3.h>
-
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
-#include <cmath>
-#include <map>
-#include <functional>
-#include <queue>
 
 
 const float IMU_FRAME_WIDTH = 1280.f;

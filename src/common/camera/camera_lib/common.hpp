@@ -3,20 +3,8 @@
 #define COMMON_WINDOW_HPP
 
 
-#include <GLFW/glfw3.h>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
-#include <cmath>
-#include <map>
-#include <functional>
-#include <queue>
 
-#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
-#include "stb_easy_font.hpp"
-#include "data_structures.hpp"
+
 
 inline void draw_text(int x, int y, const char *text)
 {
@@ -53,25 +41,7 @@ struct text_renderer
     }
 };
 
-static void draw_circle(float xx, float xy, float xz, float yx, float yy, float yz, float radius = 1.1, float3 center = {0.0, 0.0, 0.0}, float intensity = 0.5f)
-{
-    const auto N = 50;
-    glColor3f(intensity, intensity, intensity);
-    glLineWidth(2);
-    glBegin(GL_LINE_STRIP);
 
-    for (int i = 0; i <= N; i++)
-    {
-        const double theta = (2 * PI / N) * i;
-        const auto cost = static_cast<float>(cos(theta));
-        const auto sint = static_cast<float>(sin(theta));
-        glVertex3f(
-            center.x + radius * (xx * cost + yx * sint),
-            center.y + radius * (xy * cost + yy * sint),
-            center.z + radius * (xz * cost + yz * sint));
-    }
-    glEnd();
-}
 
 bool device_with_streams(std::vector<rs2_stream> stream_requests, std::string &out_serial)
 {

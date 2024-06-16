@@ -1,49 +1,42 @@
-#ifndef COMMON_VECTOR
-#define COMMON_VECTOR
+#ifndef COMMON_CAMERA
+#define COMMON_CAMERA
 
-#include "common_texture.hpp" // Include short list of convenience functions for rendering
-#include "example.hpp"
 #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 
-rs2::vertex pixel_to_3d(const rs2::depth_frame& depth_frame, int x, int y) {
-  // Get the depth value at the specified pixel
-  if (x < 0 || y < 0) {
-    return rs2::vertex{};
-  }
-  float depth = depth_frame.get_distance(x, y);
-  if (depth == 0) {
-    std::cerr << "No depth data at this pixel" << std::endl;
-    return rs2::vertex{};
-  }
+#define GL_SILENCE_DEPRECATION
+#define GLFW_INCLUDE_GLU
+#include <GLFW/glfw3.h>
 
-  rs2_intrinsics intrinsics =
-      depth_frame.get_profile().as<rs2::video_stream_profile>().get_intrinsics(); // Calibration data
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <algorithm>
+#include <iomanip>
+#include <cmath>
+#include <map>
+#include <functional>
+#include <cassert>
 
-  // Convert from pixel coordinates to normalized coordinates ([-1, 1] range)
-  float pixel[2] = {static_cast<float>(x), static_cast<float>(y)};
-  float point[3];
+#include "camera_lib/stb_easy_font.hpp"
+#include "camera_lib/data_structures.hpp"
+#include "camera_lib/common_blue_center_to_3d.hpp"
+#include "camera_lib/common.hpp"
+#include "camera_lib/renderer.hpp"
+#include "camera_lib/texture.hpp"
+#include "camera_lib/window.hpp"
 
-  // Use RealSense SDK's deproject function
-  rs2_deproject_pixel_to_point(point, &intrinsics, pixel, depth);
-
-  // Return the 3D coordinate
-  return rs2::vertex{point[0], point[1], point[2]};
-}
-
-void print_vertex(const rs2::vertex& vertex) {
-  std::cout << "3D coordinate: (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")"
-<< std::endl;
-}
-
-void init_camera(rs2::pipeline& pipe ) {
+void init_camera(rs2::pipeline& pipe) {
 
   std::string serial;
-  if (!device_with_streams({RS2_STREAM_COLOR, RS2_STREAM_DEPTH}, serial))
-    return EXIT_SUCCESS;
+  if (!device_with_streams({RS2_STREAM_COLOR, RS2_STREAM_DEPTH}, serial)) {
+    std::cout << "The device does not have stream !" << std::endl;
+    assert(false && "No connection to camera establishes");
+    return;
+  }
 
   rs2::log_to_console(RS2_LOG_SEVERITY_ERROR);
   // Create a simple OpenGL window for rendering:
-  // Declare RealSense pipeline, encapsulating the actual device and sensors  
+  // Declare RealSense pipeline, encapsulating the actual device and sensors
 
   rs2::config cfg;
   if (!serial.empty())
@@ -61,17 +54,16 @@ void init_camera(rs2::pipeline& pipe ) {
   auto stream = profile.get_stream(RS2_STREAM_DEPTH).as<rs2::video_stream_profile>();
 
   window app(stream.width(), stream.height(), "RealSense Measure Example");
-
 }
 
-void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image) {
+void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, window& app) {
 
   rs2::frameset current_frameset = pipe.wait_for_frames();
 
   auto color = current_frameset.get_color_frame();
-  
+
   auto depth = current_frameset.get_depth_frame();
-  
+
   glEnable(GL_BLEND);
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -85,9 +77,8 @@ void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_ima
   print_vertex(coordiante_blue_center);
 
   glColor3f(1.f, 1.f, 1.f);
- 
-  glDisable(GL_BLEND);
 
+  glDisable(GL_BLEND);
 }
 
 #endif // COMMON_VECTOR

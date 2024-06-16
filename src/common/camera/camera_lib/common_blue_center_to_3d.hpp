@@ -1,19 +1,7 @@
 #ifndef COMMON_BLUE_CENTER_HPP
 #define COMMON_BLUE_CENTER_HPP
 
-#include <GLFW/glfw3.h>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
-#include <cmath>
-#include <map>
-#include <functional>
 #include <queue>
-#include "data_structures.hpp"
-
-
 
 rs2::vertex pixel_to_3d(const rs2::depth_frame &depth_frame, int x, int y)
 {

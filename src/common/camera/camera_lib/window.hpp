@@ -1,22 +1,9 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include <GLFW/glfw3.h>
 
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
-#include <cmath>
-#include <map>
-#include <functional>
-#include <queue>
 
-#include "common.hpp" 
-#include "window.hpp" 
-#include "data_structures.hpp"
-#include "texture.hpp"
+
 
 
 class window

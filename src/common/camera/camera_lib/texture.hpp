@@ -1,23 +1,6 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-#include <GLFW/glfw3.h>
-
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
-#include <cmath>
-#include <map>
-#include <functional>
-#include <queue>
-
-#include "common.hpp" // Include short list of convenience functions for rendering
-#include "data_structures.hpp"
-#include "renderer.hpp" 
-
-
 
 class texture
 {

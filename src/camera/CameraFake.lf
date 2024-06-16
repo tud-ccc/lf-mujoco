@@ -1,10 +1,9 @@
 target Cpp
 
 public preamble {=
-  #ifndef CAMERA
-  #define CAMERA
+  #ifndef CAMERA_FAKE
+  #define CAMERA_FAKE
   #include "common_vector.hpp"
-  #include "coordinate_transformation.hpp"
 
 
   #endif //XARM7

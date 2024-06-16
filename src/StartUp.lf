@@ -17,6 +17,7 @@ import RobotSanityChecker from "control/RoboSanityChecker.lf"
 import RobotSanityChecker from "control/RoboSanityChecker.lf"
 import CameraInterface from "camera/CameraInterface.lf"
 import CameraFake from "camera/CameraFake.lf"
+import Camera from "camera/Camera.lf"
 
 
 
@@ -33,11 +34,12 @@ private preamble {=  =}
 
 main reactor StartUp {
   // CAMERA
-  camera = new CameraFake (start_changing_target = 1s, changing_target_period = 4s, positions = {=
+  camera_fake = new CameraFake (start_changing_target = 1s, changing_target_period = 4s, positions = {=
     {
       Position{Vector{400, -175, 200 },Vector{180, 10, 0 }},Position{ Vector{525, 0, 200 },Vector{170, 0, 0 }}, Position{Vector{400, 175, 200},Vector{180, 0, 10 }}, Position{Vector{275, 0, 200},Vector{180, 10, 0 }}
     }
   =})
+  camera = new Camera(start_stream = 1s, frame_fetch_period = 2s)
 
   camera_interface = new CameraInterface()
 
@@ -83,7 +85,7 @@ main reactor StartUp {
 
 
   // Camera --> Interface --> Controller
-  camera.controller_interface_target -> camera_interface.interface_target
+  camera_fake.controller_interface_target -> camera_interface.interface_target
   camera_interface.controller_target -> controller.robot_control_target 
 
   // Controller --> Planner  

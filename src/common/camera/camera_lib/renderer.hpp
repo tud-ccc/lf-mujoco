@@ -1,20 +1,5 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
-#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
-#include <GLFW/glfw3.h>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
-#include <cmath>
-#include <map>
-#include <functional>
-#include <queue>
-
-#include "common_blue_center_to_3d.hpp"
-#include "common.hpp" // Include short list of convenience functions for rendering
-#include "data_structures.hpp"
 
 class imu_renderer
 {
