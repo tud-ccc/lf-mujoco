@@ -1,18 +1,20 @@
-target Cpp
+target Cpp;
 
 public preamble {=
-  #ifndef CAMERA
-  #define CAMERA
+  #ifndef CAMERA_LF
+  #define CAMERA_LF
+
   #include "common_vector.hpp"
   #include "common_coordinate_transformation.hpp"
   #include "camera_interface.hpp"
   #include <librealsense2/rs.hpp>
+  #include <iostream>
 
-  #endif //XARM7
+  #endif //CAMERA_LF
 =}
 
 private preamble {=
-  #include <iostream>
+
 =}
 
 reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 2s)
@@ -23,7 +25,7 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 2s)
 
 
   reaction(startup) {=
-  init_camera(this->pipe);
+  // init_camera(this->pipe);
   =}
 
   reaction(t) -> controller_interface_target {=

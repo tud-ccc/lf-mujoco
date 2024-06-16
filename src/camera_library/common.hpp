@@ -2,10 +2,6 @@
 #ifndef COMMON_WINDOW_HPP
 #define COMMON_WINDOW_HPP
 
-
-
-
-
 inline void draw_text(int x, int y, const char *text)
 {
     std::vector<char> buffer;

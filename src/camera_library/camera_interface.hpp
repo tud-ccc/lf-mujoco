@@ -1,11 +1,16 @@
-#ifndef COMMON_CAMERA
-#define COMMON_CAMERA
+#ifndef PI
+#define PI  3.14159265358979323846
+#define PI_FL  3.141592f
+#endif
 
-#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
+#ifndef CAMERA_INTERFACE_HPP
+#define CAMERA_INTERFACE_HPP
 
 #define GL_SILENCE_DEPRECATION
 #define GLFW_INCLUDE_GLU
+
 #include <GLFW/glfw3.h>
+#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 
 #include <string>
 #include <sstream>
@@ -17,6 +22,9 @@
 #include <functional>
 #include <cassert>
 
+const float IMU_FRAME_WIDTH = 1280.f;
+const float IMU_FRAME_HEIGHT = 720.f;
+
 #include "stb_easy_font.hpp"
 #include "data_structures.hpp"
 #include "common_blue_center_to_3d.hpp"
@@ -24,6 +32,9 @@
 #include "renderer.hpp"
 #include "texture.hpp"
 #include "window.hpp"
+
+
+
 
 void init_camera(rs2::pipeline& pipe) {
 
@@ -81,4 +92,4 @@ void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_ima
   glDisable(GL_BLEND);
 }
 
-#endif // COMMON_VECTOR
+#endif // Interface

@@ -1,14 +1,6 @@
 #ifndef DATA_STRUCTURES_HPP
 #define DATA_STRUCTURES_HPP
 
-
-const float IMU_FRAME_WIDTH = 1280.f;
-const float IMU_FRAME_HEIGHT = 720.f;
-#ifndef PI
-#define PI  3.14159265358979323846
-#define PI_FL  3.141592f
-#endif
-
 using pixel = std::pair<int, int>;
 
 

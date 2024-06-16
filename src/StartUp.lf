@@ -1,5 +1,5 @@
 target Cpp {
-  cmake-include: "xarm.cmake"
+  cmake-include: "xarm.cmake",
 }
 
 import RobotControl from "control/XArm7Controller.lf"
@@ -23,8 +23,8 @@ import Camera from "camera/Camera.lf"
 
 
 public preamble {=
-  #ifndef XARM7
-  #define XARM7
+  #ifndef START_UP
+  #define START_UP
   #include "common_vector.hpp"
 
   #endif //XARM7
