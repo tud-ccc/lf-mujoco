@@ -39,7 +39,7 @@ reactor Planner(max_step_length: double = 0, threshold_deaccelerate: double = 0,
                                                               position_current_position.get_coordinates(), 
                                                               position_raw_instruction.get_coordinates());
 
-    Vector next_roll_pitch_yaw = rpy_control.wrapper_compute_next_roll_pitch_yaw(position_current_position.get_roll_pitch_yaw(), 
+    Vector next_roll_pitch_yaw = rpy_control.compute_next_roll_pitch_yaw(position_current_position.get_roll_pitch_yaw(), 
                                                               position_raw_instruction.get_roll_pitch_yaw());
 
     Position next_position = Position{next_coordinates , next_roll_pitch_yaw};

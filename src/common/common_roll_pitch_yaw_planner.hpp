@@ -1,5 +1,5 @@
-#ifndef COMMON_ROLL_PTICH_YAW_CONTROL
-#define COMMON_ROLL_PTICH_YAW_CONTROL
+#ifndef COMMON_ROLL_PITCH_YAW
+#define COMMON_ROLL_PITCH_YAW
 
 #include "common_vector.hpp"
 #include <cassert>
@@ -20,25 +20,29 @@ public:
   }
   double distance(const Vector current_roll_pitch_yaw, const Vector target_roll_pitch_yaw) {
 
-    double dist_roll = (current_roll_pitch_yaw.X_ - target_roll_pitch_yaw.X_);
-    if (dist_roll < 0)
-      dist_roll = -dist_roll;
-    if (dist_roll > 180)
-      dist_roll = 360 - dist_roll;
+    double dis_roll = target_roll_pitch_yaw.X_ - current_roll_pitch_yaw.X_;
+    double dis_pitch = target_roll_pitch_yaw.Y_ - current_roll_pitch_yaw.Y_;
+    double dis_yaw = target_roll_pitch_yaw.Z_ - current_roll_pitch_yaw.Z_;
+    if (dis_roll < 0) {
+      dis_roll = -dis_roll;
+    }
+    if (dis_roll > 180) {
+      dis_roll -= 360;
+    }
+    if (dis_pitch < 0) {
+      dis_pitch = -dis_pitch;
+    }
+    if (dis_pitch > 180) {
+      dis_pitch -= 360;
+    }
+    if (dis_yaw < 0) {
+      dis_yaw = -dis_yaw;
+    }
+    if (dis_yaw > 180) {
+      dis_yaw -= 360;
+    }
 
-    double dist_pitch = (current_roll_pitch_yaw.Y_ - target_roll_pitch_yaw.Y_);
-    if (dist_pitch < 0)
-      dist_pitch = -dist_pitch;
-    if (dist_pitch > 180)
-      dist_pitch = 360 - dist_pitch;
-
-    double dist_yaw = (current_roll_pitch_yaw.Z_ - target_roll_pitch_yaw.Z_);
-    if (dist_yaw < 0)
-      dist_yaw = -dist_yaw;
-    if (dist_yaw > 180)
-      dist_yaw = 360 - dist_yaw;
-
-    double dis = sqrt(pow(dist_roll, 2) + pow(dist_pitch, 2) + pow(dist_yaw, 2));
+    double dis = sqrt(pow(dis_roll, 2) + pow(dis_pitch, 2) + pow(dis_yaw, 2));
     // std::cout << "here the distance: " << dis << std::endl;
     return dis;
   }
@@ -50,15 +54,12 @@ public:
     }
   }
   bool prefer_add(double source, double target) {
-    if (source < 0 || target < 0 || source > 360 || target > 360) {
-      std::cout << "src: " << source << " target: " << target << std::endl;
-      assert(false && "angle out of bounds");
-    } else {
-      double diff = (target - source);
-      if (diff < 0)
-        diff = -diff;
-      return diff > 180;
+
+    double dis = target - source;
+    if (dis < 0) {
+      dis = -dis;
     }
+    return dis > 180;
   }
 
   Vector get_adjusted_offset_vector(Vector current_roll_pitch_yaw, Vector target_roll_pitch_yaw) {
@@ -75,66 +76,54 @@ public:
     return offest_roll_pitch_yaw;
   }
 
-  Vector back_to_angles(Vector vec) {
-    if (vec.X_ >= 360)
+  Vector modulo_angles(Vector vec) {
+    if (vec.X_ > 180) {
       vec.X_ -= 360;
-    if (vec.X_ < 0)
+    } else if (vec.X_ < -180) {
       vec.X_ += 360;
-
-    if (vec.Y_ >= 360)
+    }
+    if (vec.Y_ > 180) {
       vec.Y_ -= 360;
-    if (vec.Y_ < 0)
+    } else if (vec.Y_ < -180) {
       vec.Y_ += 360;
-
-    if (vec.Z_ >= 360)
+    }
+    if (vec.Z_ > 180) {
       vec.Z_ -= 360;
-    if (vec.Z_ < 0)
+    } else if (vec.Z_ < -180) {
       vec.Z_ += 360;
+    }
     return vec;
   }
+
+  void test_value(double val) {
+    if (val < -180 || val > 180) {
+      assert(false && "angle out of bounds");
+    } else {
+      return;
+    }
+  }
+  void test_vector(Vector vec) {
+    test_value(vec.X_);
+    test_value(vec.Y_);
+    test_value(vec.Z_);
+  }
+
   Vector compute_next_roll_pitch_yaw(const Vector current_roll_pitch_yaw, const Vector target_roll_pitch_yaw) {
-    if (near_target(current_roll_pitch_yaw, target_roll_pitch_yaw)) {
+    test_vector(current_roll_pitch_yaw);
+    test_vector(target_roll_pitch_yaw);
+
+        if (near_target(current_roll_pitch_yaw, target_roll_pitch_yaw)) {
       std::cout << "Near Target !! " << std::endl;
       return current_roll_pitch_yaw;
-    } else {
+    }
+    else {
       Vector offest_roll_pitch_yaw = get_adjusted_offset_vector(current_roll_pitch_yaw, target_roll_pitch_yaw);
       offest_roll_pitch_yaw = offest_roll_pitch_yaw.normalize().scale(this->offest_scale_);
 
       Vector next_rol_pitch_yaw = this->va_.add_vectors(current_roll_pitch_yaw, offest_roll_pitch_yaw);
-      next_rol_pitch_yaw = back_to_angles(next_rol_pitch_yaw);
-      next_rol_pitch_yaw.to_string();
+      next_rol_pitch_yaw = next_rol_pitch_yaw = modulo_angles(next_rol_pitch_yaw);
       return next_rol_pitch_yaw;
     }
-  }
-  Vector convert_vector_forwards(Vector vec) {
-    if (vec.X_ < 0) {
-      vec.X_ += 360;
-    };
-    if (vec.Y_ < 0) {
-      vec.Y_ += 360;
-    };
-    if (vec.Z_ < 0) {
-      vec.Z_ += 360;
-    };
-    return vec;
-  }
-  Vector convert_vector_backwards(Vector vec) {
-    if (vec.X_ > 180) {
-      vec.X_ -= 360;
-    };
-    if (vec.Y_ > 180) {
-      vec.Y_ -= 360;
-    };
-    if (vec.Z_ > 180) {
-      vec.Z_ -= 360;
-    };
-    return vec;
-  }
-
-  Vector wrapper_compute_next_roll_pitch_yaw(const Vector current_roll_pitch_yaw, const Vector target_roll_pitch_yaw) {
-
-    return convert_vector_backwards(compute_next_roll_pitch_yaw(convert_vector_forwards(current_roll_pitch_yaw),
-                                                                convert_vector_forwards(target_roll_pitch_yaw)));
   }
 };
 #endif

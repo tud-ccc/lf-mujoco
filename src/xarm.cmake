@@ -22,6 +22,9 @@ ADD_LIBRARY(camera_library
     ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/common.cpp
     ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/data_structures.cpp)
 
+target_include_directories(camera_library PRIVATE 
+    ${CMAKE_CURRENT_LIST_DIR}/common/) 
+
 # add cpp files to library
 ADD_LIBRARY(cpp_files_common
     ${CMAKE_CURRENT_LIST_DIR}/common/common_planner_sanity_checker_logic.cpp
