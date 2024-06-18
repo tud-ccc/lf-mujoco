@@ -8,6 +8,7 @@ public:
     std::function<void(double, double)> on_mouse_move = [](double, double) {};
     std::function<void(int)>            on_key_release = [](int) {};
 
+    window(){}
     window(int width, int height, const char* title)
         : _width(width), _height(height), _canvas_left_top_x(0), _canvas_left_top_y(0), _canvas_width(width), _canvas_height(height)
     {

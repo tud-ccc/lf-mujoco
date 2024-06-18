@@ -10,8 +10,7 @@ public preamble {=
   #endif //VELOCITY_CONTROL
 =}
 
-reactor SanityChecker(acceleration_cap: double = 0, max_step_length: double = 0,
-                      roll_pitch_yaw_max_angle: double = 0, roll_pitch_yaw_acceleration_cap: double = 0) {
+reactor SanityChecker(acceleration_cap: double = 0, max_step_length: double = 0) {
   
   input sanity_checker_last_position: Position
   input sanity_checker_current_position: Position
@@ -25,10 +24,8 @@ reactor SanityChecker(acceleration_cap: double = 0, max_step_length: double = 0,
     Position next_position = (*sanity_checker_next_position.get());
 
     SanityCheckerLogic scl_coordinates = SanityCheckerLogic{acceleration_cap, max_step_length};
-    SanityCheckerLogic scl_roll_pitch_yaw = SanityCheckerLogic{roll_pitch_yaw_acceleration_cap, roll_pitch_yaw_max_angle};
 
     scl_coordinates.planner_sanity_check_next_position(last_position.get_coordinates(), current_position.get_coordinates(), next_position.get_coordinates());
-    scl_roll_pitch_yaw.planner_sanity_check_next_position(last_position.get_roll_pitch_yaw(), current_position.get_roll_pitch_yaw(), next_position.get_roll_pitch_yaw());
     
     next_position_checked.set(next_position);
     =}

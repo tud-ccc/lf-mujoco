@@ -14,7 +14,6 @@ import RoboXArm7Sim from "hardware/RoboXArm7Sim.lf"
 import LastPositionHolder from "control/LastPositionHolder.lf"
 import SanityChecker from "control/SanityChecker.lf"
 import RobotSanityChecker from "control/RoboSanityChecker.lf"
-import RobotSanityChecker from "control/RoboSanityChecker.lf"
 import CameraInterface from "camera/CameraInterface.lf"
 import CameraFake from "camera/CameraFake.lf"
 import Camera from "camera/Camera.lf"
@@ -36,7 +35,7 @@ main reactor StartUp {
   // CAMERA
   camera_fake = new CameraFake (start_changing_target = 1s, changing_target_period = 4s, positions = {=
     {
-      Position{Vector{400, -175, 200 },Vector{180, 10, 0 }},Position{ Vector{525, 0, 200 },Vector{170, 0, 0 }}, Position{Vector{400, 175, 200},Vector{180, 0, 10 }}, Position{Vector{275, 0, 200},Vector{180, 10, 0 }}
+      Position{Vector{400, -175, 200 },Vector{180, 0, 100 }},Position{ Vector{525, 0, 200 },Vector{180, 0, 0 }}, Position{Vector{400, 175, 200},Vector{180, 0, 0 }}, Position{Vector{275, 0, 200},Vector{180, 0, 0 }}
     }
   =})
   camera = new Camera(start_stream = 1s, frame_fetch_period = 2s)
@@ -53,19 +52,16 @@ main reactor StartUp {
                       threshold_deaccelerate = 20, 
                       threshold_near_target_stop_moving = 0.001, 
                       acceleration_cap = 0.1,
-                      roll_pitch_yaw_max_angle = 0.5,
-                      roll_pitch_yaw_threshold_deaccelerate = 5,
-                      roll_pitch_yaw_near_target_stop_moving = 0.01,
-                      roll_pitch_yaw_acceleration_cap = 0.2)
+                      roll_pitch_yaw_max_angle = 0.3,
+                      roll_pitch_yaw_threshold_stop_moving = 0.01)
   last_position_holder = new LastPositionHolder()
   controller = new RobotControl()
 
   // SANITY CHECKS
-  sanity_checker = new SanityChecker(max_step_length = 1, acceleration_cap = 0.2,
-                                    roll_pitch_yaw_max_angle = 0.5, roll_pitch_yaw_acceleration_cap = 0.3)
+  sanity_checker = new SanityChecker(max_step_length = 1, acceleration_cap = 0.2)
 
   robo_sanity_checker = new RobotSanityChecker (acceleration_cap = 0.2, 
-                                      roll_pitch_yaw_acceleration_cap = 0.3)
+                                      sanity_check_active = true)
 
 
   // DATA

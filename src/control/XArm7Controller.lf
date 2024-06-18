@@ -21,6 +21,8 @@ reactor RobotControl {
   state last_target: Position
 
   reaction(robot_control_target) {=
+      this->last_target.get_coordinates().to_string();
+      this->last_target.get_roll_pitch_yaw().to_string();
       this->last_target = *robot_control_target.get();
     =}
 

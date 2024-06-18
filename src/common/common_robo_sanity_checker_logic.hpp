@@ -29,8 +29,8 @@ public:
           this->va_.add_vectors(preceding_current_position, delta_penultimate_preceding_position);
 
       std::cout << " *---------* Entering the error case, the robot pretended to stop *---------* " << std::endl;
-
-      std::cout << "Here the length of da : " << deacceleration_vector.get_arithmetic_length() << std::endl;
+      std::cout << "Here the length of da : " << deacceleration_vector.get_arithmetic_length() << " > "
+                << this->acceleration_cap_ << std::endl;
 
       std::cout << "Penultimate current position: ";
       penultimate_current_position.to_string();

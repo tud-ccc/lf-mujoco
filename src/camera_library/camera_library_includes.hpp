@@ -90,8 +90,8 @@ using frames_mosaic = std::map<int, frame_and_tile_property>;
 #include "class_header_files/window.hpp"
 
 // interface
-void init_camera(rs2::pipeline& pipe);
-void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, int window_width,
-                            int window_height);
+window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height);
+void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, window& app);
+
 
 #endif

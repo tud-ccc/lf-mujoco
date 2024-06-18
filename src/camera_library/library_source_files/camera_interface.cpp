@@ -11,13 +11,13 @@
 
 #include "../camera_library_includes.hpp"
 
-void init_camera(rs2::pipeline& pipe) {
+window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height)
+ {
 
   std::string serial;
   if (!device_with_streams({RS2_STREAM_COLOR, RS2_STREAM_DEPTH}, serial)) {
     std::cout << "The device does not have stream !" << std::endl;
     assert(false && "No connection to camera establishes");
-    return;
   }
 
   rs2::log_to_console(RS2_LOG_SEVERITY_ERROR);
@@ -27,10 +27,10 @@ void init_camera(rs2::pipeline& pipe) {
   rs2::config cfg;
   if (!serial.empty())
     cfg.enable_device(serial);
-  cfg.enable_stream(RS2_STREAM_DEPTH, 640, 480, RS2_FORMAT_Z16,
+  cfg.enable_stream(RS2_STREAM_DEPTH, stream_width, stream_height, RS2_FORMAT_Z16,
                     30); // Enable depth stream at 640x480 resolution, Z16 format, and 30 FPS    // For the color
                          // stream, set format to RGBA To allow blending of the color frame on top of the depth frame
-  cfg.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_RGBA8,
+  cfg.enable_stream(RS2_STREAM_COLOR, stream_width, stream_height, RS2_FORMAT_RGBA8,
                     30); // Enable color stream at 640x480 resolution, RGB8 format, and 30 FPS
 
   rs2::align align_to(RS2_STREAM_COLOR); // Align depth frame to color frame
@@ -40,9 +40,11 @@ void init_camera(rs2::pipeline& pipe) {
   auto stream = profile.get_stream(RS2_STREAM_DEPTH).as<rs2::video_stream_profile>();
 
   window app(stream.width(), stream.height(), "RealSense Measure Example");
+
+  return app;
 }
 
-void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, int window_width, int window_height) {
+void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, window& app) {
 
   rs2::frameset current_frameset = pipe.wait_for_frames();
 
@@ -54,7 +56,7 @@ void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_ima
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  pixel center_blue = color_image.render(color, {0, 0, window_width, window_height});
+  pixel center_blue = color_image.render(color, {0, 0, app.width(), app.height()});
 
   std::cout << center_blue.first << ", " << center_blue.second << std::endl;
 

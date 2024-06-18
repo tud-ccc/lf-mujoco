@@ -9,7 +9,7 @@ public preamble {=
 =}
 
 
-reactor RobotSanityChecker(acceleration_cap: double = 0.1, roll_pitch_yaw_acceleration_cap:double = 0) {
+reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bool = false) {
   input rsc_holder_current_position: Position
 
   output current_position: Position
@@ -25,6 +25,8 @@ reactor RobotSanityChecker(acceleration_cap: double = 0.1, roll_pitch_yaw_accele
 
   reaction(rsc_holder_current_position) -> current_position {=
     Position current_position_in = *rsc_holder_current_position.get();
+    Position current_position_out;
+
     if (this->currently_first_iteration){ 
       this->penultimate_current_position = current_position_in;
       this->preceding_current_position = current_position_in;
@@ -34,19 +36,20 @@ reactor RobotSanityChecker(acceleration_cap: double = 0.1, roll_pitch_yaw_accele
       this->preceding_current_position = current_position_in;
       this->currently_second_iteration = false;
     }
+    if(sanity_check_active){
+      RoboSanityChecker rsc_coordinates = RoboSanityChecker{acceleration_cap};
+      Vector current_coordinates_out = rsc_coordinates.robo_sanity_check_current_position(this->penultimate_current_position.get_coordinates(),
+                                                                          this->preceding_current_position.get_coordinates() , 
+                                                                          current_position_in.get_coordinates());
 
-    RoboSanityChecker rsc_coordinates = RoboSanityChecker{acceleration_cap};
-    Vector current_coordinates_out = rsc_coordinates.robo_sanity_check_current_position(this->penultimate_current_position.get_coordinates(),
-                                                                         this->preceding_current_position.get_coordinates() , 
-                                                                         current_position_in.get_coordinates());
-
-    RoboSanityChecker rsc_roll_pitch_yaw = RoboSanityChecker{roll_pitch_yaw_acceleration_cap};
-    Vector current_roll_pitch_yaw_out = rsc_roll_pitch_yaw.robo_sanity_check_current_position(this->penultimate_current_position.get_roll_pitch_yaw(),
-                                                                         this->preceding_current_position.get_roll_pitch_yaw() , 
-                                                                         current_position_in.get_roll_pitch_yaw());
-
-    Position current_position_out = Position{current_coordinates_out, current_roll_pitch_yaw_out};
-    current_position.set(current_position_out);
+      Vector current_roll_pitch_yaw_out = current_position_in.get_roll_pitch_yaw();
+      current_position_out = Position{current_coordinates_out, current_roll_pitch_yaw_out};
+      current_position.set(current_position_out);
+    }
+    else{
+      current_position_out = current_position_in;
+      current_position.set(current_position_in);
+    }
     this->penultimate_current_position =  this->preceding_current_position;
     this->preceding_current_position = current_position_out;
 
