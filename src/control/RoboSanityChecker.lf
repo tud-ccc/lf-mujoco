@@ -9,7 +9,7 @@ public preamble {=
 =}
 
 
-reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bool = false) {
+reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bool = false, accept_robot_stop_threshold: int = 3) {
   input rsc_holder_current_position: Position
 
   output current_position: Position
@@ -19,6 +19,8 @@ reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bo
 
   state currently_first_iteration: bool = true
   state currently_second_iteration: bool = true
+
+  state stop_counter:int  = 0;
 
 
   reaction(startup) {=  =}
@@ -37,14 +39,27 @@ reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bo
       this->currently_second_iteration = false;
     }
     if(sanity_check_active){
-      RoboSanityChecker rsc_coordinates = RoboSanityChecker{acceleration_cap};
-      Vector current_coordinates_out = rsc_coordinates.robo_sanity_check_current_position(this->penultimate_current_position.get_coordinates(),
+      RoboSanityChecker rsc_coordinates = RoboSanityChecker{acceleration_cap, true};
+      bool error_case = rsc_coordinates.robo_sanity_check_current_position_malfunctioning(
+                                                                          this->penultimate_current_position.get_coordinates(),
                                                                           this->preceding_current_position.get_coordinates() , 
                                                                           current_position_in.get_coordinates());
-
-      Vector current_roll_pitch_yaw_out = current_position_in.get_roll_pitch_yaw();
-      current_position_out = Position{current_coordinates_out, current_roll_pitch_yaw_out};
-      current_position.set(current_position_out);
+      if (error_case && stop_counter <= accept_robot_stop_threshold)
+        { 
+          //predict position
+          VectorArithmetics va = VectorArithmetics{};
+          Vector last_coord = preceding_current_position.get_coordinates();
+          Vector curr_coord = current_position_in.get_coordinates(); 
+          Vector next_coordinates = va.add_vectors(curr_coord, va.get_delta_vector(last_coord, curr_coord));
+          current_position_out = Position{next_coordinates, current_position_in.get_roll_pitch_yaw()};
+          stop_counter += 1;
+        }
+      else{
+          current_position_out = current_position_in;
+          //reset stop counter
+          stop_counter = 0;
+        }
+          current_position.set(current_position_out);
     }
     else{
       current_position_out = current_position_in;

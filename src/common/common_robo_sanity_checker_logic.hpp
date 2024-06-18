@@ -29,7 +29,6 @@ public:
 
     if (deacceleration_vector.get_arithmetic_length() > this->acceleration_cap_) {
 
-
       if (this->print_error_active_) {
         std::cout << " *---------* Entering the error case, the robot pretended to stop *---------* " << std::endl;
         std::cout << "Here the length of da : " << deacceleration_vector.get_arithmetic_length() << " > "
@@ -46,6 +45,7 @@ public:
 
         std::cout << "Current position(by Planner): ";
         current_position_by_prediction.to_string();
+      
       }
 
       return false;
