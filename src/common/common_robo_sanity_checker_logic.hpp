@@ -43,9 +43,6 @@ public:
         std::cout << "Current position(by Robot): ";
         current_position_by_robot.to_string();
 
-        std::cout << "Current position(by Planner): ";
-        current_position_by_prediction.to_string();
-      
       }
 
       return false;

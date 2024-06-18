@@ -26,7 +26,7 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
   state texture: {=custom_benes_texture=}
   state app:{=window=}
   
-  state current_target: Vector 
+  state current_target_camera_pov: Vector 
 
 
   reaction(startup) {=
@@ -34,13 +34,11 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
   =}
 
   reaction(t) -> controller_interface_target {=
-    this->current_target = receive_current_target(this->pipe, this->texture, this->app);
+    this->current_target_camera_pov = receive_current_target(this->pipe);
   =}
   reaction(camera_current_position){=
     TransformationArithmetics ta = TransformationArithmetics{};
     Position position_current_position = *camera_current_position.get();
-    Vector target = ta.compute_respective_point_in_coordinate_system_wrapper(this->current_target, position_current_position); 
-    // std::cout << "<------> Here the respective Target transformed ! <------>" << std::endl; 
-    // target.to_string(); 
+    Vector target = ta.compute_respective_point_in_coordinate_system_wrapper(this->current_target_camera_pov, position_current_position); 
   =}
 }

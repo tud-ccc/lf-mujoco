@@ -9,15 +9,15 @@
 #define GL_SILENCE_DEPRECATION
 #define GLFW_INCLUDE_GLU
 
+#include "common_vector.hpp"
 #include <GLFW/glfw3.h>
-#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
-
 #include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <functional>
 #include <iomanip>
 #include <iostream>
+#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 #include <map>
 #include <sstream>
 #include <string>
@@ -84,14 +84,18 @@ bool device_with_streams(std::vector<rs2_stream> stream_requests, std::string& o
 
 using frame_and_tile_property = std::pair<rs2::frame, tile_properties>;
 using frames_mosaic = std::map<int, frame_and_tile_property>;
-
+int mark_blue_pixels(std::vector<uint8_t>& marked_data, std::vector<pixel>& largest_cluster, int width);
+int find_blue_pixels(const rs2::video_frame& frame, int width, int height, int grap_range,
+                     std::vector<uint8_t>& marked_data, std::vector<pixel>& blue_pixels);
+pixel fetch_position_wrapper(const rs2::frame& frame);
+pixel fetch_position(const rs2::video_frame& frame, int width, int height);
 #include "class_header_files/renderer.hpp"
 #include "class_header_files/texture.hpp"
 #include "class_header_files/window.hpp"
 
 // interface
 window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height);
-void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, window& app);
-
+Vector receive_current_target_show(rs2::pipeline& pipe);
+Vector receive_current_target(rs2::pipeline& pipe);
 
 #endif

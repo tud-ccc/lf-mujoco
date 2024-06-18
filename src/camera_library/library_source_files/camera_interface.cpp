@@ -10,6 +10,7 @@
 #define GLFW_INCLUDE_GLU
 
 #include "../camera_library_includes.hpp"
+#include <optional>
 
 window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height)
  {
@@ -44,7 +45,7 @@ window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int st
   return app;
 }
 
-void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_image, window& app) {
+Vector receive_current_target_show(rs2::pipeline& pipe) {
 
   rs2::frameset current_frameset = pipe.wait_for_frames();
 
@@ -56,17 +57,30 @@ void receive_current_target(rs2::pipeline& pipe, custom_benes_texture& color_ima
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  pixel center_blue = color_image.render(color, {0, 0, app.width(), app.height()});
+  pixel center_blue = fetch_position_wrapper(color);
 
-  std::cout << center_blue.first << ", " << center_blue.second << std::endl;
-
-  auto coordiante_blue_center = pixel_to_3d(depth, center_blue.first, center_blue.second);
-
-  print_vertex(coordiante_blue_center);
+  auto coordinate_blue_center = pixel_to_3d(depth, center_blue.first, center_blue.second);
 
   glColor3f(1.f, 1.f, 1.f);
 
   glDisable(GL_BLEND);
+  
+  return Vector{coordinate_blue_center.x ,coordinate_blue_center.y ,coordinate_blue_center.z};
+}
+
+Vector receive_current_target(rs2::pipeline& pipe) {
+
+  rs2::frameset current_frameset = pipe.wait_for_frames();
+
+  auto color = current_frameset.get_color_frame();
+
+  auto depth = current_frameset.get_depth_frame();
+
+  pixel center_blue = fetch_position_wrapper(color);
+
+  auto coordinate_blue_center = pixel_to_3d(depth, center_blue.first, center_blue.second);
+  
+  return Vector{coordinate_blue_center.x ,coordinate_blue_center.y ,coordinate_blue_center.z};
 }
 
 #endif // Interface
