@@ -113,7 +113,7 @@ public:
     test_vector(target_roll_pitch_yaw);
 
         if (near_target(current_roll_pitch_yaw, target_roll_pitch_yaw)) {
-      std::cout << "Near Target !! " << std::endl;
+      // std::cout << "Near Target !! " << std::endl;
       return current_roll_pitch_yaw;
     }
     else {

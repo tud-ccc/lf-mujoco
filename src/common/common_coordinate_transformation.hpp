@@ -24,8 +24,6 @@ public:
     Eigen::Quaternion<double> q = rollAngle * yawAngle * pitchAngle;
 
     Eigen::Matrix3d rotationMatrix = q.matrix();
-    std::cout << rotationMatrix << std::endl;
-
     return rotationMatrix;
   };
 

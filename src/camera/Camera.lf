@@ -20,10 +20,13 @@ private preamble {=
 reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_width: int = 0, stream_height: int = 0)
  {
   timer t(start_stream, frame_fetch_period)
+  input camera_current_position: Position
   output controller_interface_target: Position
   state pipe: {=rs2::pipeline=}
   state texture: {=custom_benes_texture=}
   state app:{=window=}
+  
+  state current_target: Vector 
 
 
   reaction(startup) {=
@@ -31,6 +34,13 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
   =}
 
   reaction(t) -> controller_interface_target {=
-    receive_current_target(this->pipe, this->texture, this->app);
+    this->current_target = receive_current_target(this->pipe, this->texture, this->app);
+  =}
+  reaction(camera_current_position){=
+    TransformationArithmetics ta = TransformationArithmetics{};
+    Position position_current_position = *camera_current_position.get();
+    Vector target = ta.compute_respective_point_in_coordinate_system_wrapper(this->current_target, position_current_position); 
+    // std::cout << "<------> Here the respective Target transformed ! <------>" << std::endl; 
+    // target.to_string(); 
   =}
 }
