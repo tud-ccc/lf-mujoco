@@ -51,7 +51,7 @@ main reactor StartUp {
   
   // HARDWARE : FAKE ROBO <--> Interface
   // CONTROL
-  planner = new Planner(max_step_length = 1.5,
+  planner = new Planner(max_step_length = 1.2,
                       threshold_deaccelerate = 20, 
                       threshold_near_target_stop_moving = 0.001, 
                       acceleration_cap = 0.2,
@@ -61,10 +61,10 @@ main reactor StartUp {
   controller = new RobotControl()
 
   // SANITY CHECKS
-  sanity_checker = new SanityChecker(max_step_length = 1.5, acceleration_cap = 0.3)
+  sanity_checker = new SanityChecker(max_step_length = 1.2, acceleration_cap = 0.3)
 
   robo_sanity_checker = new RobotSanityChecker (acceleration_cap = 0.3, 
-                                      sanity_check_active = false)
+                                      sanity_check_active = true)
 
 
   // DATA

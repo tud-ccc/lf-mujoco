@@ -30,15 +30,15 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
 
 
   reaction(startup) {=
-      this->app = init_camera_generate_window(this->pipe, stream_width, stream_height);
+      // this->app = init_camera_generate_window(this->pipe, stream_width, stream_height);
   =}
 
   reaction(t) -> controller_interface_target {=
-    this->current_target_camera_pov = receive_current_target(this->pipe);
+    // this->current_target_camera_pov = receive_current_target(this->pipe);
   =}
   reaction(camera_current_position){=
-    TransformationArithmetics ta = TransformationArithmetics{};
-    Position position_current_position = *camera_current_position.get();
-    Vector target = ta.compute_respective_point_in_coordinate_system_wrapper(this->current_target_camera_pov, position_current_position); 
+    // TransformationArithmetics ta = TransformationArithmetics{};
+    // Position position_current_position = *camera_current_position.get();
+    // Vector target = ta.compute_respective_point_in_coordinate_system_wrapper(this->current_target_camera_pov, position_current_position); 
   =}
 }

@@ -35,8 +35,8 @@ void Vector::to_string() const {
 void Position::to_string() const {
   Vector coord = this->get_coordinates();
   Vector roll_pitch_yaw = this->get_coordinates();
-  std::cout << "X : " << coord.X_ << ", Y : " << coord.Y_ << ", Z: " << coord.Z_ << "Roll: " << roll_pitch_yaw.X_
-            << ", Pitch : " << roll_pitch_yaw.Y_ << ", Yaw " << roll_pitch_yaw.Z_ << std::endl;
+  std::cout << "X: " << coord.X_ << ", Y: " << coord.Y_ << ", Z: " << coord.Z_ << ", Roll: " << roll_pitch_yaw.X_
+            << ", Pitch: " << roll_pitch_yaw.Y_ << ", Yaw: " << roll_pitch_yaw.Z_ << std::endl;
 }
 
 std::vector<std::string> Vector::to_vector() const {

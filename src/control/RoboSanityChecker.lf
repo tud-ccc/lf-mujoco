@@ -22,9 +22,7 @@ reactor RobotSanityChecker(
   state currently_first_iteration: bool = true
   state currently_second_iteration: bool = true
 
-  //stopping conditions
-  state stop_handling_active: bool = false
-  state stop_counter: int = 0
+  state stop_handling_active: bool = false  // stopping conditions
   state robot_stop_position: Position
 
   reaction(startup) {=  =}
@@ -37,86 +35,57 @@ reactor RobotSanityChecker(
       this->penultimate_current_position = current_position_in;
       this->preceding_current_position = current_position_in;
       this->currently_first_iteration = false;
+      current_position.set(current_position_in);
     }
     else if (this->currently_second_iteration){
       this->preceding_current_position = current_position_in;
       this->currently_second_iteration = false;
+      current_position.set(current_position_in);
     }
-    if(sanity_check_active)
+    else if(sanity_check_active)
     {
       RoboSanityChecker rsc = RoboSanityChecker{acceleration_cap, true};
-      if(!this->stop_handling_active){
-        //check whether stop handling has to be initiated
-        this->stop_handling_active = rsc.robot_pretended_to_stop(this->penultimate_current_position,
-                                                                 this->preceding_current_position,                                                                  
-                                                                 current_position_in);
-      }
+
       if(this->stop_handling_active)
       {
-          Position predicted_position = rsc.predict_position(this->penultimate_current_position, 
-                                                               this->preceding_current_position);      
-
-          if (this->stop_counter == 0){
-            this->robot_stop_position = current_position_in;
-            this->stop_counter += 1;
-
-            current_position_out = predicted_position;
-            current_position.set(current_position_out);
-            return;
-          }
-          //we are yet to accept the stop motion
-          else if (this->stop_counter > 0 
-          && this->stop_counter <= accept_robot_stop_threshold){
-            if(current_position_in.equals(this->robot_stop_position)){         
-              this->stop_counter += 1;
-              current_position_out = predicted_position;
-              current_position.set(current_position_out);
-              return;
-              
-            }
-            else {         
-              //reset stopping conditions
-              stop_counter = 0;
-              this->stop_handling_active = false;
-              this->robot_stop_position = Position{};
-
-              current_position_out = current_position_in;
-              current_position.set(current_position_out);
-              return;
-            }
-          }
-          else if (this->stop_counter > accept_robot_stop_threshold){
-              //we accepted the stop motion
-            
-              //reset stopping conditions
-              stop_counter = 0;
-              this->stop_handling_active = false;
-              this->robot_stop_position = Position{};
-
-              current_position_out = current_position_in;
-              current_position.set(current_position_out);
-              return;
-          }
-      } else // sanity checking active: no irregular behavior detected  
+        if(current_position_in.equals(this->robot_stop_position))
+        {
+          this->penultimate_current_position = this->robot_stop_position;
+          this->preceding_current_position = this->robot_stop_position;
+          this->stop_handling_active = false;
+          current_position.set(this->robot_stop_position);
+        }
+        else
+        {
+          this->penultimate_current_position =  this->preceding_current_position;
+          this->preceding_current_position = current_position_out;
+          this->stop_handling_active = false;
+          current_position.set(current_position_in);
+        }
+      } else 
       {
-        //reset stopping conditions
-        stop_counter = 0;
-        this->stop_handling_active = false;
-        this->robot_stop_position = Position{};
-
-        current_position_out = current_position_in;
-        current_position.set(current_position_out);
-        return;
+          if(rsc.robot_pretended_to_stop(this->penultimate_current_position, this->preceding_current_position, current_position_in))
+          {
+            current_position_out = rsc.predict_position(this->penultimate_current_position, this->preceding_current_position);
+            this->penultimate_current_position =  this->preceding_current_position;
+            this->preceding_current_position = current_position_out;
+            this->robot_stop_position = current_position_in;
+            this->stop_handling_active = true;
+            current_position.set(current_position_out);
+          } else {
+            current_position_out = current_position_in;
+            current_position.set(current_position_in);  
+            this->penultimate_current_position =  this->preceding_current_position;
+            this->preceding_current_position = current_position_out;
+          }
       }
-    } else // sanity checking not active, do nothing
+      
+    } else
     {
-      current_position_out = current_position_in;
-      current_position.set(current_position_in);
-      return;
+        current_position_out = current_position_in;
+        current_position.set(current_position_in);
+        this->penultimate_current_position = this->preceding_current_position;
+        this->preceding_current_position = current_position_out;
     }
-
-    this->penultimate_current_position =  this->preceding_current_position;
-    this->preceding_current_position = current_position_out;
-    
   =}
 }

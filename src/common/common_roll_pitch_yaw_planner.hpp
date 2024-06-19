@@ -76,29 +76,29 @@ public:
     return offest_roll_pitch_yaw;
   }
 
-
-  void test_value(double val) {
+  bool test_value(double val) {
     if (val < -180 || val > 180) {
-      assert(false && "angle out of bounds");
+      return false;
     } else {
-      return;
+      return true;
     }
   }
   void test_vector(Vector vec) {
-    test_value(vec.X_);
-    test_value(vec.Y_);
-    test_value(vec.Z_);
+    if (!test_value(vec.X_) && !test_value(vec.Y_) && !test_value(vec.Z_)) {
+      std::cout << "Values not supported" << std::endl;
+      vec.to_string();
+    }
+    return;
   }
 
   Vector compute_next_roll_pitch_yaw(const Vector current_roll_pitch_yaw, const Vector target_roll_pitch_yaw) {
     test_vector(current_roll_pitch_yaw);
     test_vector(target_roll_pitch_yaw);
 
-        if (near_target(current_roll_pitch_yaw, target_roll_pitch_yaw)) {
+    if (near_target(current_roll_pitch_yaw, target_roll_pitch_yaw)) {
       // std::cout << "Near Target !! " << std::endl;
       return current_roll_pitch_yaw;
-    }
-    else {
+    } else {
       Vector offest_roll_pitch_yaw = get_adjusted_offset_vector(current_roll_pitch_yaw, target_roll_pitch_yaw);
       offest_roll_pitch_yaw = offest_roll_pitch_yaw.normalize().scale(this->offest_scale_);
 
