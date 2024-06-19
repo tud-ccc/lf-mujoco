@@ -57,7 +57,7 @@ Vector receive_current_target_show(rs2::pipeline& pipe) {
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  pixel center_blue = fetch_position_wrapper(color);
+  pixel center_blue = fetch_blue_center_pixel_wrapper(color);
 
   auto coordinate_blue_center = pixel_to_3d(depth, center_blue.first, center_blue.second);
 
@@ -76,7 +76,7 @@ Vector receive_current_target(rs2::pipeline& pipe) {
 
   auto depth = current_frameset.get_depth_frame();
 
-  pixel center_blue = fetch_position_wrapper(color);
+  pixel center_blue = fetch_blue_center_pixel_wrapper(color);
 
   auto coordinate_blue_center = pixel_to_3d(depth, center_blue.first, center_blue.second);
   

@@ -87,7 +87,7 @@ using frames_mosaic = std::map<int, frame_and_tile_property>;
 int mark_blue_pixels(std::vector<uint8_t>& marked_data, std::vector<pixel>& largest_cluster, int width);
 int find_blue_pixels(const rs2::video_frame& frame, int width, int height, int grap_range,
                      std::vector<uint8_t>& marked_data, std::vector<pixel>& blue_pixels);
-pixel fetch_position_wrapper(const rs2::frame& frame);
+pixel fetch_blue_center_pixel_wrapper(const rs2::frame& frame);
 pixel fetch_position(const rs2::video_frame& frame, int width, int height);
 #include "class_header_files/renderer.hpp"
 #include "class_header_files/texture.hpp"

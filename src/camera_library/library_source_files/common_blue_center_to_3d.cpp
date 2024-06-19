@@ -162,7 +162,7 @@ pixel calculate_center_wrapper(std::vector<pixel>& largest_cluster, int threshol
   }
 }
 
-pixel fetch_position_wrapper(const rs2::frame& frame) {
+pixel fetch_blue_center_pixel_wrapper(const rs2::frame& frame) {
   if (auto video_frame = frame.as<rs2::video_frame>()) {
     auto width = video_frame.get_width();
     auto height = video_frame.get_height();
