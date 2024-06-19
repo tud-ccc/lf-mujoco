@@ -98,7 +98,7 @@ private:
 
 public:
 
-  pixel analyze_frame_and_mark_blue_objects_and_pipe_to_frame_buffer(const rs2::video_frame& frame, int width, int height) {
+  std::optional<pixel> analyze_frame_and_mark_blue_objects_and_pipe_to_frame_buffer(const rs2::video_frame& frame, int width, int height) {
 
     // Allocate a buffer for the marked image
     std::vector<uint8_t> marked_data(width * height * 4);
@@ -116,12 +116,11 @@ public:
 
     glBindTexture(GL_TEXTURE_2D, _gl_handle);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, marked_data.data());
-    pixel center_blue = calculate_center_wrapper(largest_cluster, threshold, width, height);
     glBindTexture(GL_TEXTURE_2D, 0);
-    return center_blue;
+    return calculate_center_wrapper(largest_cluster, threshold, width, height);
   }
 
-  pixel upload(const rs2::video_frame& frame) {
+  std::optional<pixel> upload(const rs2::video_frame& frame) {
     if (!frame)
       return {std::make_pair(-1, -1)};
 
@@ -164,12 +163,12 @@ public:
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
-    pixel center_blue =
-        analyze_frame_and_mark_blue_objects_and_pipe_to_frame_buffer(frame, width, height); // Analyze and mark blue objects after texture upload
-
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return center_blue;
+    return analyze_frame_and_mark_blue_objects_and_pipe_to_frame_buffer(frame, width, height); // Analyze and mark blue objects after texture upload
+
+
+   
   }
 
   void show(const rect& r, float alpha = 1.f) const {
@@ -198,7 +197,7 @@ public:
 
   pixel render(const rs2::frame& frame, const rect& rect, float alpha = 1.f) {
     if (auto vf = frame.as<rs2::video_frame>()) {
-      pixel center_blue = upload(vf);
+      pixel center_blue = upload(vf).value();
       show(rect.adjust_ratio({(float)vf.get_width(), (float)vf.get_height()}), alpha);
       return center_blue;
     } else

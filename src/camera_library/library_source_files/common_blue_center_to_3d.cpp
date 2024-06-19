@@ -82,9 +82,9 @@ void print_vertex(const rs2::vertex& vertex) {
   std::cout << "3D coordinate: (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
 }
 
-pixel calculate_center(std::vector<pixel>& pixels, int bound_x, int bound_y) {
+std::optional<pixel> calculate_center(std::vector<pixel>& pixels, int bound_x, int bound_y) {
   if (pixels.empty())
-    return {-1, -1};
+    return {};
 
   long double sum_x = 0;
   long double sum_y = 0;
@@ -144,34 +144,33 @@ std::vector<pixel> find_largest_blue_cluster(const std::vector<pixel>& blue_pixe
   return largest_cluster;
 }
 
-pixel calculate_center_wrapper(std::vector<pixel>& largest_cluster, int threshold_accept_cluster, int bound_x,
+std::optional<pixel> calculate_center_wrapper(std::vector<pixel>& largest_cluster, int threshold_accept_cluster, int bound_x,
                                int bound_y) {
   if (largest_cluster.size() >= threshold_accept_cluster) {
     std::cout << "Size of largest cluster: " << largest_cluster.size() << std::endl;
-    pixel center_blue = calculate_center(largest_cluster, bound_x, bound_y);
-    if (center_blue.first < 0 || center_blue.first > bound_x || center_blue.second < 0 ||
-        center_blue.second > bound_y) {
-      std::cout << center_blue.first << ", " << center_blue.second << std::endl;
+    std::optional<pixel> center_blue = calculate_center(largest_cluster, bound_x, bound_y);
+    if (center_blue.value().first < 0 || center_blue.value().first > bound_x || center_blue.value().second < 0 ||
+        center_blue.value().second > bound_y) {
+      std::cout << center_blue.value().first << ", " << center_blue.value().second << std::endl;
       std::cout << "Bounds: " << bound_x << ", " << bound_y << std::endl;
       throw std::runtime_error("The cluster center is out of bounds !");
     }
     return center_blue;
   } else {
     std::cout << "Only found single points in the picture, not large enough to construct a cluster !" << std::endl;
-    return {std::make_pair(-1, -1)};
+    return {};
   }
 }
 
-pixel fetch_blue_center_pixel_wrapper(const rs2::frame& frame) {
+std::optional<pixel> fetch_blue_center_pixel_wrapper(const rs2::frame& frame) {
   if (auto video_frame = frame.as<rs2::video_frame>()) {
     auto width = video_frame.get_width();
     auto height = video_frame.get_height();
-    pixel center_blue = fetch_position(video_frame, width, height);
-    return center_blue;
+    return fetch_blue_center_pixel(video_frame, width, height);
   } else
     throw std::runtime_error("Rendering is currently supported for video, motion and pose frames only");
 }
-pixel fetch_position(const rs2::video_frame& frame, int width, int height) {
+std::optional<pixel> fetch_blue_center_pixel(const rs2::video_frame& frame, int width, int height) {
   // Allocate buffer
   std::vector<uint8_t> marked_data(width * height * 4);
   std::vector<pixel> blue_pixels;
@@ -180,9 +179,8 @@ pixel fetch_position(const rs2::video_frame& frame, int width, int height) {
   find_blue_pixels(frame, width, height, grap_range, marked_data, blue_pixels);
   std::vector<pixel> largest_cluster = find_largest_blue_cluster(blue_pixels, grap_range);
   int threshold = 20;
-  pixel center_blue = calculate_center_wrapper(largest_cluster, threshold, width, height);
-  
-  return center_blue;
+  return calculate_center_wrapper(largest_cluster, threshold, width, height);
+ 
 }
 
 #endif

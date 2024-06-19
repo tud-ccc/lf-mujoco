@@ -1,6 +1,6 @@
 #ifndef PI
-#define PI  3.14159265358979323846
-#define PI_FL  3.141592f
+#define PI 3.14159265358979323846
+#define PI_FL 3.141592f
 #endif
 
 #ifndef CAMERA_INTERFACE_HPP
@@ -12,8 +12,7 @@
 #include "../camera_library_includes.hpp"
 #include <optional>
 
-window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height)
- {
+window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height) {
 
   std::string serial;
   if (!device_with_streams({RS2_STREAM_COLOR, RS2_STREAM_DEPTH}, serial)) {
@@ -45,7 +44,7 @@ window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int st
   return app;
 }
 
-Vector receive_current_target_show(rs2::pipeline& pipe) {
+std::optional<Vector> receive_current_target_show(rs2::pipeline& pipe) {
 
   rs2::frameset current_frameset = pipe.wait_for_frames();
 
@@ -57,18 +56,23 @@ Vector receive_current_target_show(rs2::pipeline& pipe) {
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  pixel center_blue = fetch_blue_center_pixel_wrapper(color);
-
-  auto coordinate_blue_center = pixel_to_3d(depth, center_blue.first, center_blue.second);
-
   glColor3f(1.f, 1.f, 1.f);
-
   glDisable(GL_BLEND);
+
+  std::optional<pixel> center_blue = fetch_blue_center_pixel_wrapper(color);
   
-  return Vector{coordinate_blue_center.x ,coordinate_blue_center.y ,coordinate_blue_center.z};
+  if(center_blue.has_value()){
+    auto coordinate_blue_center = pixel_to_3d(depth, center_blue.value().first, center_blue.value().second);
+    return Vector{coordinate_blue_center.x, coordinate_blue_center.y, coordinate_blue_center.z};
+  }
+  else{
+
+    return {};
+  }
+
 }
 
-Vector receive_current_target(rs2::pipeline& pipe) {
+std::optional<Vector> receive_current_target(rs2::pipeline& pipe) {
 
   rs2::frameset current_frameset = pipe.wait_for_frames();
 
@@ -76,11 +80,16 @@ Vector receive_current_target(rs2::pipeline& pipe) {
 
   auto depth = current_frameset.get_depth_frame();
 
-  pixel center_blue = fetch_blue_center_pixel_wrapper(color);
+  std::optional<pixel> center_blue = fetch_blue_center_pixel_wrapper(color);
 
-  auto coordinate_blue_center = pixel_to_3d(depth, center_blue.first, center_blue.second);
+  if(center_blue.has_value()){
+    auto coordinate_blue_center = pixel_to_3d(depth, center_blue.value().first, center_blue.value().second);
+    return Vector{coordinate_blue_center.x, coordinate_blue_center.y, coordinate_blue_center.z};
+  }
+  else{
+    return {};
+  }
   
-  return Vector{coordinate_blue_center.x ,coordinate_blue_center.y ,coordinate_blue_center.z};
 }
 
 #endif // Interface

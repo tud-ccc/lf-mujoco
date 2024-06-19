@@ -21,6 +21,7 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <optional>
 
 #include "header_files/stb_easy_font.hpp"
 // consts
@@ -75,9 +76,9 @@ struct text_renderer {
 // blue_center
 rs2::vertex pixel_to_3d(const rs2::depth_frame& depth_frame, int x, int y);
 void print_vertex(const rs2::vertex& vertex);
-pixel calculate_center(std::vector<pixel>& pixels, int bound_x, int bound_y);
+std::optional<pixel> calculate_center(std::vector<pixel>& pixels, int bound_x, int bound_y);
 std::vector<pixel> find_largest_blue_cluster(const std::vector<pixel>& blue_pixels, int grap_range);
-pixel calculate_center_wrapper(std::vector<pixel>& largest_cluster, int threshold_accept_cluster, int bound_x,
+std::optional<pixel> calculate_center_wrapper(std::vector<pixel>& largest_cluster, int threshold_accept_cluster, int bound_x,
                                int bound_y);
 // common
 bool device_with_streams(std::vector<rs2_stream> stream_requests, std::string& out_serial);
@@ -87,15 +88,15 @@ using frames_mosaic = std::map<int, frame_and_tile_property>;
 int mark_blue_pixels(std::vector<uint8_t>& marked_data, std::vector<pixel>& largest_cluster, int width);
 int find_blue_pixels(const rs2::video_frame& frame, int width, int height, int grap_range,
                      std::vector<uint8_t>& marked_data, std::vector<pixel>& blue_pixels);
-pixel fetch_blue_center_pixel_wrapper(const rs2::frame& frame);
-pixel fetch_position(const rs2::video_frame& frame, int width, int height);
+std::optional<pixel> fetch_blue_center_pixel_wrapper(const rs2::frame& frame);
+std::optional<pixel> fetch_blue_center_pixel(const rs2::video_frame& frame, int width, int height);
 #include "class_header_files/renderer.hpp"
 #include "class_header_files/texture.hpp"
 #include "class_header_files/window.hpp"
 
 // interface
 window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height);
-Vector receive_current_target_show(rs2::pipeline& pipe);
-Vector receive_current_target(rs2::pipeline& pipe);
+std::optional<Vector> receive_current_target_show(rs2::pipeline& pipe);
+std::optional<Vector> receive_current_target(rs2::pipeline& pipe);
 
 #endif
