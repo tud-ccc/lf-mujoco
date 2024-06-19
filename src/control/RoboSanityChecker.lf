@@ -8,88 +8,52 @@ public preamble {=
   #endif //XARM7
 =}
 
-reactor RobotSanityChecker(
-    acceleration_cap: double = 0,
-    sanity_check_active: bool = false,
-    accept_robot_stop_threshold: int = 3) {
+
+reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bool = false) {
   input rsc_holder_current_position: Position
 
   output current_position: Position
-  output overwrite_last_position_holder:Position
 
-  state penultimate_current_position: Position
-  state preceding_current_position: Position
+  state penultimate_current_position: Position  ;
+  state preceding_current_position: Position  ;
 
   state currently_first_iteration: bool = true
   state currently_second_iteration: bool = true
 
-  state stop_handling_active: bool = false  // stopping conditions
-  state robot_stop_position: Position
 
   reaction(startup) {=  =}
 
-  reaction(rsc_holder_current_position) -> current_position, overwrite_last_position_holder {=
+  reaction(rsc_holder_current_position) -> current_position {=
     Position current_position_in = *rsc_holder_current_position.get();
     Position current_position_out;
 
-    if (this->currently_first_iteration){
+    if (this->currently_first_iteration){ 
       this->penultimate_current_position = current_position_in;
       this->preceding_current_position = current_position_in;
       this->currently_first_iteration = false;
-      current_position.set(current_position_in);
     }
     else if (this->currently_second_iteration){
       this->preceding_current_position = current_position_in;
       this->currently_second_iteration = false;
-      current_position.set(current_position_in);
     }
-    else if(sanity_check_active)
-    {
-      RoboSanityChecker rsc = RoboSanityChecker{acceleration_cap, true};
+    if(sanity_check_active){
+      RoboSanityChecker rsc_coordinates = RoboSanityChecker{acceleration_cap};
+      Vector current_coordinates_out = rsc_coordinates.robo_sanity_check_current_position(this->penultimate_current_position.get_coordinates(),
+                                                                          this->preceding_current_position.get_coordinates() , 
+                                                                          current_position_in.get_coordinates());
 
-      if(this->stop_handling_active)
-      {
-        if(current_position_in.equals(this->robot_stop_position))
-        {
-          this->penultimate_current_position = this->robot_stop_position;
-          this->preceding_current_position = this->robot_stop_position;
-          this->robot_stop_position ={};
-          this->stop_handling_active = false;
-          current_position.set(this->robot_stop_position);
-          overwrite_last_position_holder.set(this->robot_stop_position);
-        }
-        else
-        {
-          this->penultimate_current_position =  this->preceding_current_position;
-          this->preceding_current_position = current_position_out;
-          this->robot_stop_position ={};
-          this->stop_handling_active = false;
-          current_position.set(current_position_in);
-        }
-      } else 
-      {
-          if(rsc.robot_pretended_to_stop(this->penultimate_current_position, this->preceding_current_position, current_position_in))
-          {
-            current_position_out = rsc.predict_position(this->penultimate_current_position, this->preceding_current_position);
-            this->penultimate_current_position =  this->preceding_current_position;
-            this->preceding_current_position = current_position_out;
-            this->robot_stop_position = current_position_in;
-            this->stop_handling_active = true;
-            current_position.set(current_position_out);
-          } else {
-            current_position_out = current_position_in;
-            current_position.set(current_position_in);  
-            this->penultimate_current_position =  this->preceding_current_position;
-            this->preceding_current_position = current_position_out;
-          }
-      }
-      
-    } else
-    {
+      Vector current_roll_pitch_yaw_out = current_position_in.get_roll_pitch_yaw();
+      current_position_out = Position{current_coordinates_out, current_roll_pitch_yaw_out};
+      current_position.set(current_position_out);
+    }
+    else{
       current_position_out = current_position_in;
       current_position.set(current_position_in);
-      this->penultimate_current_position = this->preceding_current_position;
-      this->preceding_current_position = current_position_out;
     }
+    this->penultimate_current_position =  this->preceding_current_position;
+    this->preceding_current_position = current_position_out;
+
   =}
+
+  
 }

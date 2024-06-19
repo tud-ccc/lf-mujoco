@@ -103,7 +103,6 @@ main reactor StartUp {
   decoder.current_position -> robo_sanity_checker.rsc_holder_current_position
 
   // Robo sanity checker --> Last Position Holder | Controller | Velocity Control | Sanity Checker
-  robo_sanity_checker.overwrite_last_position_holder -> last_position_holder.overwrite_last_position
   robo_sanity_checker.current_position -> last_position_holder.holder_current_position
   robo_sanity_checker.current_position -> controller.robot_control_current_position
   robo_sanity_checker.current_position -> planner.planner_current_position
