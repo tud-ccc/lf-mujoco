@@ -48,9 +48,9 @@ reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bo
         { 
           //predict position
           VectorArithmetics va = VectorArithmetics{};
-          Vector last_coord = preceding_current_position.get_coordinates();
-          Vector curr_coord = current_position_in.get_coordinates(); 
-          Vector next_coordinates = va.add_vectors(curr_coord, va.get_delta_vector(last_coord, curr_coord));
+          Vector pen_coord = penultimate_current_position.get_coordinates();
+          Vector prec_coord = preceding_current_position.get_coordinates(); 
+          Vector next_coordinates = va.add_vectors(prec_coord, va.get_delta_vector(pen_coord, prec_coord));
           current_position_out = Position{next_coordinates, current_position_in.get_roll_pitch_yaw()};
           stop_counter += 1;
         }

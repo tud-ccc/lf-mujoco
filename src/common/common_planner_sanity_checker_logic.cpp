@@ -34,7 +34,7 @@ int SanityCheckerLogic::planner_sanity_check_next_position(Vector last_position,
     std::cout << "Next position: ";
     next_position.to_string();
 
-    assert(false);
+    // assert(false);
   }
 
   return 0;

@@ -175,8 +175,7 @@ pixel fetch_position(const rs2::video_frame& frame, int width, int height) {
   // Allocate buffer
   std::vector<uint8_t> marked_data(width * height * 4);
   std::vector<pixel> blue_pixels;
-  int grap_range = 2;
-  
+  int grap_range = 2;  
 
   find_blue_pixels(frame, width, height, grap_range, marked_data, blue_pixels);
   std::vector<pixel> largest_cluster = find_largest_blue_cluster(blue_pixels, grap_range);
