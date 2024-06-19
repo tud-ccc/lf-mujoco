@@ -100,8 +100,6 @@ std::optional<pixel> calculate_center(std::vector<pixel>& pixels, int bound_x, i
     sum_y += pixel.second;
   }
 
-  std::cout << "Sum x:" << sum_x << "Sum y: " << sum_y << std::endl;
-
   return std::make_pair(round_float_to_int(sum_x / pixels.size()), round_float_to_int(sum_y / pixels.size()));
 }
 
@@ -174,11 +172,11 @@ std::optional<pixel> fetch_blue_center_pixel(const rs2::video_frame& frame, int 
   // Allocate buffer
   std::vector<uint8_t> marked_data(width * height * 4);
   std::vector<pixel> blue_pixels;
-  int grap_range = 2;  
+  int grap_range = 5;  
 
   find_blue_pixels(frame, width, height, grap_range, marked_data, blue_pixels);
   std::vector<pixel> largest_cluster = find_largest_blue_cluster(blue_pixels, grap_range);
-  int threshold = 20;
+  int threshold = 10;
   return calculate_center_wrapper(largest_cluster, threshold, width, height);
  
 }

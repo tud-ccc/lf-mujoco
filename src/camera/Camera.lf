@@ -43,6 +43,8 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
      TransformationArithmetics ta = TransformationArithmetics{};
      Position position_current_position = *camera_current_position.get();
      Vector target = ta.compute_respective_point_in_coordinate_system_wrapper(this->current_target_camera_pov.value(), position_current_position); 
+     std::cout << "This is the current target" << std::endl;
+     target.to_string();
      // build proppper Position
     }
     else{

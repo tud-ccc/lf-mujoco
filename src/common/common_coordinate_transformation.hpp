@@ -17,9 +17,9 @@ public:
 
     // Create an AngleAxis rotation vector and convert it to a rotation matrix
 
-    Eigen::AngleAxisd rollAngle(roll_in_rad, Eigen::Vector3d::UnitZ());
+    Eigen::AngleAxisd rollAngle(roll_in_rad, Eigen::Vector3d::UnitX());
     Eigen::AngleAxisd yawAngle(pitch_in_rad, Eigen::Vector3d::UnitY());
-    Eigen::AngleAxisd pitchAngle(yaw_in_rad, Eigen::Vector3d::UnitX());
+    Eigen::AngleAxisd pitchAngle(yaw_in_rad, Eigen::Vector3d::UnitZ());
 
     Eigen::Quaternion<double> q = rollAngle * yawAngle * pitchAngle;
 
@@ -43,13 +43,13 @@ public:
                                                              double trgt_roll_not_aligned,
                                                              double trgt_pitch_not_aligned,
                                                              double trgt_yaw_not_aligned) {
-    double trgt_roll = trgt_yaw_not_aligned;
-    double trgt_pitch = trgt_pitch_not_aligned;
-    double trgt_yaw = trgt_roll_not_aligned;
+    double src_roll = - trgt_pitch_not_aligned;
+    double src_pitch = - trgt_roll_not_aligned;
+    double src_yaw = trgt_yaw_not_aligned;
 
     Eigen::Vector3d src_vec3d_coordinates;
 
-    src_vec3d_coordinates << src_vec_coordinates.X_, src_vec_coordinates.Y_, src_vec_coordinates.Z_;
+    src_vec3d_coordinates << src_vec_coordinates.Y_ * -100, src_vec_coordinates.X_ * -100, src_vec_coordinates.Z_ * 100;
 
     Eigen::Vector3d trgt_vec3d_offset_from_origin;
 
@@ -57,12 +57,14 @@ public:
         trgt_vec_offset_from_origin.Z_;
 
     Eigen::Vector3d resp_point = compute_respective_point_in_coordinate_system(
-        src_vec3d_coordinates, trgt_vec3d_offset_from_origin, trgt_roll, trgt_pitch, trgt_yaw);
+        src_vec3d_coordinates, trgt_vec3d_offset_from_origin, src_roll, src_pitch, src_yaw);
     Vector vec_position_in_xArm_coordinate_system = Vector{resp_point.x(), resp_point.y(), resp_point.z()};
     return vec_position_in_xArm_coordinate_system;
   }
   Vector compute_respective_point_in_coordinate_system_wrapper(Vector src_vec_coordinates, Position current_position) {
     Vector roll_pitch_yaw = current_position.get_roll_pitch_yaw();
+    std::cout << "This is the current roll pitch yaw" << std::endl;
+    roll_pitch_yaw.to_string();
     return compute_respective_point_in_coordinate_system_align(src_vec_coordinates, current_position.get_coordinates(),
                                                                roll_pitch_yaw.X_, roll_pitch_yaw.Y_, roll_pitch_yaw.Z_);
   }

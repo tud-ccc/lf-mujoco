@@ -35,10 +35,10 @@ main reactor StartUp {
   // CAMERA
   camera_fake = new CameraFake (start_changing_target = 1s, changing_target_period = 4s, positions = {=
     {
-      Position{Vector{400, -175, 250 },Vector{180, 0, 0 }},
-      Position{ Vector{525, 0, 250 },Vector{180, 0, 0 }}, 
-      Position{Vector{400, 175, 250},Vector{180, 0, 0 }}, 
-      Position{Vector{275, 0, 250},Vector{180, 0, 0 }}
+      Position{Vector{400, -175, 250 },Vector{180, -60, 0 }},
+      Position{ Vector{525, 0, 250 },Vector{180, -60, 0 }}, 
+      Position{Vector{400, 175, 250},Vector{180, -60, 0 }}, 
+      Position{Vector{275, 0, 250},Vector{180, -60 , 0 }}
     }
   =})
   camera = new Camera(start_stream = 1s, frame_fetch_period = 2s)
@@ -55,7 +55,7 @@ main reactor StartUp {
                       threshold_deaccelerate = 20, 
                       threshold_near_target_stop_moving = 0.001, 
                       acceleration_cap = 0.2,
-                      roll_pitch_yaw_max_angle = 0.3,
+                      roll_pitch_yaw_max_angle = 0.1,
                       roll_pitch_yaw_threshold_stop_moving = 0.01)
   last_position_holder = new LastPositionHolder()
   controller = new RobotControl()
@@ -73,7 +73,7 @@ main reactor StartUp {
   data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
 
   // HARDWARE : REAL ROBO <--> Interface
-  hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 8ms);
+  hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 15ms);
   interface.robo_next_position_checked -> hardware.robo_next_position_checked;
   hardware.interface_world_data -> interface.interface_world_data;
   

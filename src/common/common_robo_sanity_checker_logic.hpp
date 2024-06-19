@@ -8,9 +8,13 @@ class RoboSanityChecker {
 private:
   double acceleration_cap_;
   VectorArithmetics va_;
+  double max_step_len_;
 
 public:
-  RoboSanityChecker(double acceleration_cap) { this->acceleration_cap_ = acceleration_cap; }
+  RoboSanityChecker(double acceleration_cap, double max_step_len) {
+    this->max_step_len_ = max_step_len;
+    this->acceleration_cap_ = acceleration_cap;
+  }
   Vector robo_sanity_check_current_position(Vector penultimate_current_position, Vector preceding_current_position,
                                             Vector current_position_by_robot) {
 
@@ -22,8 +26,9 @@ public:
 
     Vector deacceleration_vector =
         this->va_.get_delta_vector(delta_penultimate_preceding_position, delta_preceding_current_position_by_robot);
-
-    if (deacceleration_vector.get_arithmetic_length() > this->acceleration_cap_ && current_position_by_robot.equals(preceding_current_position) ) {
+    
+    if (deacceleration_vector.get_arithmetic_length() > this->acceleration_cap_ &&
+        current_position_by_robot.equals(preceding_current_position)) {
 
       Vector current_position_by_prediction =
           this->va_.add_vectors(preceding_current_position, delta_penultimate_preceding_position);

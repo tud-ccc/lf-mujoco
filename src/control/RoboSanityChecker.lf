@@ -9,7 +9,7 @@ public preamble {=
 =}
 
 
-reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bool = false) {
+reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bool = false, max_step_length: double = 1) {
   input rsc_holder_current_position: Position
 
   output current_position: Position
@@ -37,7 +37,7 @@ reactor RobotSanityChecker(acceleration_cap: double = 0, sanity_check_active: bo
       this->currently_second_iteration = false;
     }
     if(sanity_check_active){
-      RoboSanityChecker rsc_coordinates = RoboSanityChecker{acceleration_cap};
+      RoboSanityChecker rsc_coordinates = RoboSanityChecker{acceleration_cap, max_step_length};
       Vector current_coordinates_out = rsc_coordinates.robo_sanity_check_current_position(this->penultimate_current_position.get_coordinates(),
                                                                           this->preceding_current_position.get_coordinates() , 
                                                                           current_position_in.get_coordinates());
