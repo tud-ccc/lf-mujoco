@@ -76,24 +76,6 @@ public:
     return offest_roll_pitch_yaw;
   }
 
-  Vector modulo_angles(Vector vec) {
-    if (vec.X_ > 180) {
-      vec.X_ -= 360;
-    } else if (vec.X_ < -180) {
-      vec.X_ += 360;
-    }
-    if (vec.Y_ > 180) {
-      vec.Y_ -= 360;
-    } else if (vec.Y_ < -180) {
-      vec.Y_ += 360;
-    }
-    if (vec.Z_ > 180) {
-      vec.Z_ -= 360;
-    } else if (vec.Z_ < -180) {
-      vec.Z_ += 360;
-    }
-    return vec;
-  }
 
   void test_value(double val) {
     if (val < -180 || val > 180) {
@@ -121,7 +103,7 @@ public:
       offest_roll_pitch_yaw = offest_roll_pitch_yaw.normalize().scale(this->offest_scale_);
 
       Vector next_rol_pitch_yaw = this->va_.add_vectors(current_roll_pitch_yaw, offest_roll_pitch_yaw);
-      next_rol_pitch_yaw = next_rol_pitch_yaw = modulo_angles(next_rol_pitch_yaw);
+      next_rol_pitch_yaw = next_rol_pitch_yaw.modulo_angles();
       return next_rol_pitch_yaw;
     }
   }

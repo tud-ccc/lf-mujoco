@@ -24,6 +24,7 @@ public:
   double get_arithmetic_length() const;
   Vector normalize() const;
   Vector scale(double scalar) const;
+  Vector modulo_angles()const;
 };
 
 class VectorArithmetics {
@@ -38,6 +39,7 @@ public:
   Vector get_delta_vector(Vector vec1, Vector vec2) const;
   Vector get_normalized_delta_vector(Vector vec1, Vector vec2) const;
   Vector add_vectors(Vector vec1, Vector vec2) const;
+  Vector add_roll_pitch_yaw(Vector vec1, Vector vec2) const;
   bool linear_dependent(Vector vec1, Vector vec2) const;
 };
 
@@ -77,6 +79,12 @@ public:
   }
   Vector get_coordinates() const { return this->coordinates_; }
   Vector get_roll_pitch_yaw() const { return this->roll_pitch_yaw_; }
+  bool equals(Position pos) const {
+    return this->get_coordinates().equals(pos.get_coordinates()) &&
+           this->get_roll_pitch_yaw().equals(pos.get_roll_pitch_yaw());
+  }
+  void to_string() const ;
+
 
   std::vector<std::string> to_vector() const {
     std::vector<std::string> vector_of_x_Y_Z;

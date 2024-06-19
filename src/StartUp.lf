@@ -51,20 +51,20 @@ main reactor StartUp {
   
   // HARDWARE : FAKE ROBO <--> Interface
   // CONTROL
-  planner = new Planner(max_step_length = 1,
+  planner = new Planner(max_step_length = 1.5,
                       threshold_deaccelerate = 20, 
                       threshold_near_target_stop_moving = 0.001, 
-                      acceleration_cap = 0.1,
+                      acceleration_cap = 0.2,
                       roll_pitch_yaw_max_angle = 0.3,
                       roll_pitch_yaw_threshold_stop_moving = 0.01)
   last_position_holder = new LastPositionHolder()
   controller = new RobotControl()
 
   // SANITY CHECKS
-  sanity_checker = new SanityChecker(max_step_length = 1, acceleration_cap = 0.2)
+  sanity_checker = new SanityChecker(max_step_length = 1.5, acceleration_cap = 0.3)
 
-  robo_sanity_checker = new RobotSanityChecker (acceleration_cap = 0.2, 
-                                      sanity_check_active = true)
+  robo_sanity_checker = new RobotSanityChecker (acceleration_cap = 0.3, 
+                                      sanity_check_active = false)
 
 
   // DATA
@@ -73,7 +73,7 @@ main reactor StartUp {
   data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
 
   // HARDWARE : REAL ROBO <--> Interface
-  hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 16ms);
+  hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 8ms);
   interface.robo_next_position_checked -> hardware.robo_next_position_checked;
   hardware.interface_world_data -> interface.interface_world_data;
   

@@ -2,8 +2,8 @@
 #include "common_error_handling.hpp"
 #include <cmath>
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
 #define PI 3.14159265
 
@@ -32,6 +32,13 @@ void Vector::to_string() const {
   std::cout << "X : " << this->X_ << ", Y : " << this->Y_ << ", Z: " << this->Z_ << std::endl;
 }
 
+void Position::to_string() const {
+  Vector coord = this->get_coordinates();
+  Vector roll_pitch_yaw = this->get_coordinates();
+  std::cout << "X : " << coord.X_ << ", Y : " << coord.Y_ << ", Z: " << coord.Z_ << "Roll: " << roll_pitch_yaw.X_
+            << ", Pitch : " << roll_pitch_yaw.Y_ << ", Yaw " << roll_pitch_yaw.Z_ << std::endl;
+}
+
 std::vector<std::string> Vector::to_vector() const {
   std::vector<std::string> vector_of_x_Y_Z;
   vector_of_x_Y_Z.push_back(std::to_string(this->X_));
@@ -58,6 +65,28 @@ Vector Vector::scale(double scalar) const {
   assert_for_NaNs(*this);
   assert_for_NaNs(scalar);
   return Vector(this->X_ * scalar, this->Y_ * scalar, this->Z_ * scalar);
+}
+
+Vector Vector::modulo_angles() const {
+  double x = this->X_;
+  double y = this->Y_;
+  double z = this->Z_;
+  if (x > 180) {
+    x -= 360;
+  } else if (x < -180) {
+    x += 360;
+  }
+  if (y > 180) {
+    y -= 360;
+  } else if (y < -180) {
+    y += 360;
+  }
+  if (z > 180) {
+    z -= 360;
+  } else if (z < -180) {
+    z += 360;
+  }
+  return Vector(x, y, z);
 }
 
 double VectorArithmetics::get_distance_between_point_vectors(Vector vec1, Vector vec2) const {
