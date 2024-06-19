@@ -15,6 +15,7 @@ reactor RobotSanityChecker(
   input rsc_holder_current_position: Position
 
   output current_position: Position
+  output overwrite_last_position_holder:Position
 
   state penultimate_current_position: Position
   state preceding_current_position: Position
@@ -27,7 +28,7 @@ reactor RobotSanityChecker(
 
   reaction(startup) {=  =}
 
-  reaction(rsc_holder_current_position) -> current_position {=
+  reaction(rsc_holder_current_position) -> current_position, overwrite_last_position_holder {=
     Position current_position_in = *rsc_holder_current_position.get();
     Position current_position_out;
 
@@ -52,13 +53,16 @@ reactor RobotSanityChecker(
         {
           this->penultimate_current_position = this->robot_stop_position;
           this->preceding_current_position = this->robot_stop_position;
+          this->robot_stop_position ={};
           this->stop_handling_active = false;
           current_position.set(this->robot_stop_position);
+          overwrite_last_position_holder.set(this->robot_stop_position);
         }
         else
         {
           this->penultimate_current_position =  this->preceding_current_position;
           this->preceding_current_position = current_position_out;
+          this->robot_stop_position ={};
           this->stop_handling_active = false;
           current_position.set(current_position_in);
         }
@@ -82,10 +86,10 @@ reactor RobotSanityChecker(
       
     } else
     {
-        current_position_out = current_position_in;
-        current_position.set(current_position_in);
-        this->penultimate_current_position = this->preceding_current_position;
-        this->preceding_current_position = current_position_out;
+      current_position_out = current_position_in;
+      current_position.set(current_position_in);
+      this->penultimate_current_position = this->preceding_current_position;
+      this->preceding_current_position = current_position_out;
     }
   =}
 }

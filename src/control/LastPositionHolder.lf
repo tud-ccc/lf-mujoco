@@ -12,6 +12,7 @@ private preamble {=  =}
 
 reactor LastPositionHolder{
   input holder_current_position: Position
+  input overwrite_last_position: Position
   output planner_last_position: Position
   state last_position: Position 
   state currently_first_iteration: bool = true
@@ -26,5 +27,8 @@ reactor LastPositionHolder{
     }
     planner_last_position.set(this->last_position);
     this->last_position = cur_pos;
+  =}
+  reaction (overwrite_last_position) {=
+    this->last_position = *overwrite_last_position.get();  
   =}
 }
