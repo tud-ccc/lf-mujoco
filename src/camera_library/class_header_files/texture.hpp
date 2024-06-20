@@ -97,10 +97,11 @@ private:
   int _stream_index{};
 
 public:
-
-  std::optional<pixel> analyze_frame_and_mark_blue_objects_and_pipe_to_frame_buffer(const rs2::video_frame& frame, int width, int height) {
+  std::optional<pixel> analyze_frame_and_mark_blue_objects_and_pipe_to_frame_buffer(const rs2::video_frame& frame,
+                                                                                    int width, int height) {
 
     // Allocate a buffer for the marked image
+    std::cout << "access analyze frame and mark blue objects " << std::endl;
     std::vector<uint8_t> marked_data(width * height * 4);
     std::vector<pixel> blue_pixels;
     int grap_range = 2;
@@ -116,13 +117,17 @@ public:
 
     glBindTexture(GL_TEXTURE_2D, _gl_handle);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, marked_data.data());
+    std::optional<pixel> center_blue = calculate_center_wrapper(largest_cluster, threshold, width, height);
     glBindTexture(GL_TEXTURE_2D, 0);
-    return calculate_center_wrapper(largest_cluster, threshold, width, height);
+    std::cout << "Gl Handle: " << _gl_handle << std::endl;
+    return center_blue;
   }
 
   std::optional<pixel> upload(const rs2::video_frame& frame) {
-    if (!frame)
-      return {std::make_pair(-1, -1)};
+    if (!frame) {
+      std::cout << "Frame error prone" << std::endl;
+      return {};
+    }
 
     if (!_gl_handle)
       glGenTextures(1, &_gl_handle);
@@ -138,20 +143,8 @@ public:
     glBindTexture(GL_TEXTURE_2D, _gl_handle);
 
     switch (format) {
-    // case RS2_FORMAT_RGB8:
-    //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame.get_data());
-    //     std::cout << "1" << std::endl;
-    //     break;
     case RS2_FORMAT_RGBA8:
-      // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, frame.get_data());
-      break;
-      // case RS2_FORMAT_Y8:
-      //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, frame.get_data());
-      //     std::cout<< "3" << std::endl;
-      //     break;
-      // case RS2_FORMAT_Y10BPACK:
-      //     glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT,
-      //     frame.get_data()); std::cout <<"4" << std::endl;
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, frame.get_data());
       break;
     default:
       throw std::runtime_error("The requested format is not supported by this demo!");
@@ -162,18 +155,24 @@ public:
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    // Analyze and mark blue objects after texture upload
+    std::optional<pixel> blue_center =
+        analyze_frame_and_mark_blue_objects_and_pipe_to_frame_buffer(frame, width, height);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return analyze_frame_and_mark_blue_objects_and_pipe_to_frame_buffer(frame, width, height); // Analyze and mark blue objects after texture upload
-
-
-   
+    return blue_center;
   }
 
   void show(const rect& r, float alpha = 1.f) const {
-    if (!_gl_handle)
-      return;
+
+    std::cout << "Access show" << std::endl;
+
+    if (!_gl_handle){
+      std::cout << "GL _handle not set, return" << std::endl;
+    return;
+    }
+    std::cout << "passed _gl_handle" << std::endl;
 
     set_viewport(r);
 
@@ -197,12 +196,19 @@ public:
 
   pixel render(const rs2::frame& frame, const rect& rect, float alpha = 1.f) {
     if (auto vf = frame.as<rs2::video_frame>()) {
-      pixel center_blue = upload(vf).value();
+      std::cout << "Access render" << std::endl;
+      std::optional<pixel> pixel_optional = upload(vf);
       show(rect.adjust_ratio({(float)vf.get_width(), (float)vf.get_height()}), alpha);
-      return center_blue;
+      if (pixel_optional.has_value()) {
+        pixel center_blue = pixel_optional.value();
+        return center_blue;
+      } else {
+        return {};
+      }
+
     } else
       throw std::runtime_error("Rendering is currently supported for video, motion and pose frames only");
   }
- };
+};
 
 #endif

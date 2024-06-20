@@ -54,5 +54,7 @@ data_analysis/.venv/
 data_analysis/one_trajectory_analysis/__pycache__
 testing/testing_output_data
 testing/testing_analysis/__pycache__
+camera_library/CMakeLists.txt
+camera_library/main.cpp
 
 *.pyc
