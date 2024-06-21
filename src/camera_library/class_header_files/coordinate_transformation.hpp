@@ -1,5 +1,5 @@
-#ifndef COMMON_COORDIANTE_TRANSFORMATION
-#define COMMON_COORDIANTE_TRANSFORMATION
+#ifndef SECND_TRY_COORD_TRANS
+#define SECND_TRY_COORD_TRANS
 
 #include "common_vector.hpp"
 #include <Eigen/Dense>
@@ -11,38 +11,67 @@ private:
 public:
   CoordinateTransformations(){};
 
-  Vector transform_coordinates(Vector pos_by_cam, Vector end_eff_pos, double trgt_roll, double trgt_pitch,
-                               double trgt_yaw) {
-    Eigen::Vector3d coordinates_by_camera;
-    coordinates_by_camera << pos_by_cam.X_ * 1000, pos_by_cam.Y_ * 1000, pos_by_cam.Z_ * 1000;
-    Eigen::Vector3d coordinates_of_end_effector;
-    coordinates_of_end_effector << end_eff_pos.X_, end_eff_pos.Y_, end_eff_pos.Z_;
-    Eigen::Matrix3d R = eulerAnglesToRotationMatrix(trgt_roll, trgt_pitch, trgt_yaw);
-    Eigen::Vector3d world_coords = R * coordinates_by_camera + coordinates_of_end_effector;
-    return Vector{world_coords.x(), world_coords.y(), world_coords.z()};
-  }
-
-  Vector transform_coordinates_wrapper(Vector pos_by_cam, Position cur_pos) {
-    Vector end_eff_coords = cur_pos.get_coordinates();
-    Vector end_eff_roll_pitch_yaw = cur_pos.get_roll_pitch_yaw();
-    double trgt_roll = end_eff_roll_pitch_yaw.X_;
-    double trgt_pitch = end_eff_roll_pitch_yaw.Y_;
-    double trgt_yaw = end_eff_roll_pitch_yaw.Z_;
-    return transform_coordinates(pos_by_cam, end_eff_coords, trgt_roll, trgt_pitch, trgt_yaw);
-  }
-
   double degreesToRadians(double degrees) { return degrees * (PI / 180.0); }
 
-  Eigen::Matrix3d eulerAnglesToRotationMatrix(double roll, double pitch, double yaw) {
+  Eigen::Matrix4f createTransformationMatrix(float roll, float pitch, float yaw, Eigen::Vector3f translation) {
+
     roll = degreesToRadians(roll);
     pitch = degreesToRadians(pitch);
     yaw = degreesToRadians(yaw);
 
-    Eigen::Matrix3d Rx, Ry, Rz;
-    Rx << 1, 0, 0, 0, cos(roll), -sin(roll), 0, sin(roll), cos(roll);
-    Ry << cos(pitch), 0, sin(pitch), 0, 1, 0, -sin(pitch), 0, cos(pitch);
-    Rz << cos(yaw), -sin(yaw), 0, sin(yaw), cos(yaw), 0, 0, 0, 1;
-    return Rz * Ry * Rx;
+    Eigen::Matrix3f R_x, R_y, R_z;
+
+    // Rotationsmatrix um die X-Achse (Roll)
+    R_x << 1, 0, 0, 0, cos(roll), -sin(roll), 0, sin(roll), cos(roll);
+
+    // Rotationsmatrix um die Y-Achse (Pitch)
+    R_y << cos(pitch), 0, sin(pitch), 0, 1, 0, -sin(pitch), 0, cos(pitch);
+
+    // Rotationsmatrix um die Z-Achse (Yaw)
+    R_z << cos(yaw), -sin(yaw), 0, sin(yaw), cos(yaw), 0, 0, 0, 1;
+
+    // Gesamte Rotationsmatrix
+    Eigen::Matrix3f R = R_z * R_y * R_x;
+
+    // Transformationsmatrix 4x4
+    Eigen::Matrix4f T = Eigen::Matrix4f::Identity();
+    T.block<3, 3>(0, 0) = R;
+    T.block<3, 1>(0, 3) = translation;
+
+    return T;
+  }
+  Eigen::Vector3f transform_coordinates(Eigen::Matrix4f T, Eigen::Vector3f point) {
+    Eigen::Vector4f point_h;
+    point_h << point, 1.0f;
+    Eigen::Vector4f transformed_point_h = T * point_h;
+    return transformed_point_h.head<3>();
+  }
+
+  Vector transform_coordinates_wrapper(Vector pos_by_cam, Position cur_pos) {
+
+    Eigen::Vector3f coordinates_by_camera;
+    coordinates_by_camera << pos_by_cam.X_ * 1000, pos_by_cam.Y_ * 1000, pos_by_cam.Z_ * 1000;
+
+    Vector end_eff_coords = cur_pos.get_coordinates();
+    Eigen::Vector3f coordinates_of_end_effector;
+    coordinates_of_end_effector << end_eff_coords.X_, end_eff_coords.Y_, end_eff_coords.Z_;
+
+    Vector end_eff_roll_pitch_yaw = cur_pos.get_roll_pitch_yaw();
+    double trgt_roll = end_eff_roll_pitch_yaw.X_;
+    double trgt_pitch = end_eff_roll_pitch_yaw.Y_;
+    double trgt_yaw = end_eff_roll_pitch_yaw.Z_;
+
+    Eigen::Matrix4f T = createTransformationMatrix(trgt_roll, trgt_pitch, trgt_yaw, coordinates_of_end_effector);
+    Eigen::Vector3f object_position_robot = transform_coordinates(T, coordinates_by_camera);
+    return Vector{object_position_robot.x(), object_position_robot.y(), object_position_robot.z()};
+  }
+
+  void start_main_() {
+    Vector pos_by_cam;
+    Position cur_pos;
+    pos_by_cam = Vector{0, 0, 0.6};
+    cur_pos = Position{Vector{0, -500, 175}, Vector{-34, 87, -121}};
+    transform_coordinates_wrapper(pos_by_cam, cur_pos);
   }
 };
 
