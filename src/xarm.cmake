@@ -20,7 +20,9 @@ ADD_LIBRARY(camera_library
     ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/camera_interface.cpp
     ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/common_blue_center_to_3d.cpp
     ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/common.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/data_structures.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/data_structures.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/camera_library/library_source_files/calibrate_camera.cpp)
+
 
 target_include_directories(camera_library PRIVATE 
     ${CMAKE_CURRENT_LIST_DIR}/common/) 
@@ -31,7 +33,6 @@ ADD_LIBRARY(cpp_files_common
     ${CMAKE_CURRENT_LIST_DIR}/common/common_vector.cpp
     ${CMAKE_CURRENT_LIST_DIR}/common/common_world_data.cpp
     ${CMAKE_CURRENT_LIST_DIR}/common/common_deacceleration_controller.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/common/common_coordinate_transformation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/common/common.cpp
     )
 
