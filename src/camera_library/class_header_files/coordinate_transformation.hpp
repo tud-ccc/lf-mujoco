@@ -47,8 +47,8 @@ public:
     return transformed_point_h.head<3>();
   }
   Vector align_vector(Vector pos_by_cam) {
-    Vector ref = Vector{pos_by_cam.Y_, -pos_by_cam.X_, pos_by_cam.Z_};
-    return ref;
+    Vector xarm_system_ref = Vector{pos_by_cam.Y_, -pos_by_cam.X_, pos_by_cam.Z_};
+    return xarm_system_ref;
   }
 
   Vector transform_coordinates_wrapper(Vector pos_by_cam, Position cur_pos) {

@@ -47,7 +47,7 @@ main reactor StartUp {
       Position{Vector{275, 0, 175},Vector{0, 100 , 0 }}
     }
   =})
-  camera = new Camera(start_stream = 1s, frame_fetch_period = 2s)
+  camera = new Camera(start_stream = 1s, frame_fetch_period = 100ms)
 
   camera_interface = new CameraInterface()
   camera_init = new InitStartPosition(init_counter = 100)

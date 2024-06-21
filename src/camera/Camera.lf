@@ -29,6 +29,8 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
   state app:{=window=}
   
   state coords3d_target_by_camera: std::optional<Vector> 
+  state current_target: Position 
+
 
 
   reaction(startup) {=
@@ -49,12 +51,13 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
       Vector target = ta.transform_coordinates_wrapper(this->coords3d_target_by_camera.value(), position_current_position); 
       std::cout << "The corresponding coordinates:" << std::endl; 
       target.to_string();
-      offset_target.set(Position{target, Vector{0, 100 , 0 }});
+      this->current_target = Position{target, Vector{0, 100 , 0 }};
+      offset_target.set(this->current_target);
     }
     else {
       //target is not set, target is the current position
       std::cout << "Not moving, no target set" << std::endl; 
-      controller_interface_target.set(position_current_position);
+      offset_target.set(this->current_target);
     }
     =}
 }
