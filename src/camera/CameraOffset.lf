@@ -1,0 +1,28 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef CAMERA_OFFSET
+#define CAMERA_OFFSET
+#include "common_vector.hpp"
+
+#endif //CAMERA_INTERFACE_LF
+=}
+
+
+reactor CameraOffset {
+
+  output interface_target: Position;
+  input offset_target: Position;  
+
+
+  reaction(offset_target) -> interface_target{=
+      Position pos = *offset_target.get();
+      Vector target_coords = pos.get_coordinates(); 
+      Vector target_roll_pitch_yaw = pos.get_roll_pitch_yaw(); 
+      target_coords = Vector{target_coords.X_ - 500,target_coords.Y_, target_coords.Z_};
+      interface_target.set(Position{target_coords, target_roll_pitch_yaw});  
+
+=}
+
+}
