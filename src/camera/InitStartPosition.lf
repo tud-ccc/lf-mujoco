@@ -10,7 +10,7 @@ public preamble {=
 =}
 
 
-reactor InitStartPosition {
+reactor InitStartPosition (init_counter:int = 100){
 
   output controller_target: Position;
   input current_position: Position;  
@@ -22,7 +22,7 @@ reactor InitStartPosition {
   reaction(current_position, init_current_target) -> controller_target{=
       Position pos = *current_position.get();
       Position trgt = *init_current_target.get();
-      if (counter < 100 ){
+      if (counter < init_counter ){
         controller_target.set(pos);  
         counter += 1 ;
       } else {
