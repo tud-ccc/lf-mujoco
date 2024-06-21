@@ -32,6 +32,7 @@ ADD_LIBRARY(cpp_files_common
     ${CMAKE_CURRENT_LIST_DIR}/common/common_world_data.cpp
     ${CMAKE_CURRENT_LIST_DIR}/common/common_deacceleration_controller.cpp
     ${CMAKE_CURRENT_LIST_DIR}/common/common_coordinate_transformation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/common/common.cpp
     )
 
 # add hpp files to library

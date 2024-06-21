@@ -18,6 +18,7 @@ import CameraInterface from "camera/CameraInterface.lf"
 import CameraFake from "camera/CameraFake.lf"
 import Camera from "camera/Camera.lf"
 import InitStartPosition from "camera/InitStartPosition.lf"
+import CameraSanityChecks from "camera/CameraSanityCheck.lf"
 
 
 
@@ -49,6 +50,7 @@ main reactor StartUp {
 
   camera_interface = new CameraInterface()
   camera_init = new InitStartPosition(init_counter = 100)
+  camera_sanity_checker = new CameraSanityChecks()
 
   // INTERFACE
   decoder = new WorldDataDecoder()
@@ -88,10 +90,10 @@ main reactor StartUp {
   // fake_hardware.interface_world_data -> interface.interface_world_data
 
 
-  // Camera --> Interface --> Init --> Controller
+  // Camera --> Interface --> Sanity Check  --> Init --> Controller
   camera_fake.controller_interface_target -> camera_interface.interface_target
-  // camera.controller_interface_target -> camera_interface.interface_target
-  camera_interface.init_target -> camera_init.init_current_target  
+  camera_interface.init_target -> camera_sanity_checker.current_target
+  camera_sanity_checker.interface_current_target_checked -> camera_init.init_current_target  
   camera_init.controller_target -> controller.robot_control_target 
 
   // Controller --> Planner  

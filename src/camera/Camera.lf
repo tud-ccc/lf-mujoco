@@ -27,8 +27,8 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
   state texture: {=custom_benes_texture=}
   state app:{=window=}
   
-  state current_target_camera_pov: std::optional<Vector> 
-  state current_target_position: Position = {=Position{Vector{400, 0 , 200 },Vector{0, 100 , 0 }}=}
+  state coords3d_target_by_camera: std::optional<Vector> 
+  state current_target_position: Position 
 
 
   reaction(startup) {=
@@ -36,19 +36,21 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
   =}
 
   reaction(t)  {=
-    this->current_target_camera_pov = receive_current_target(this->pipe);
+    this->coords3d_target_by_camera = receive_current_target(this->pipe);
   =}
   reaction(camera_current_position)-> controller_interface_target {=
     Position position_current_position = *camera_current_position.get();
-    if(this->current_target_camera_pov.has_value()){
-     TransformationArithmetics ta = TransformationArithmetics{};
-     Position position_current_position = *camera_current_position.get();
-     Vector target = ta.transform_coordinates_wrapper(this->current_target_camera_pov.value(), position_current_position); 
-     Vector adjusted_target = ta.sanity_check_coordinates(target);
-     target.to_string();
-     Position target_pos = Position{adjusted_target, Vector{0, 100 , 0 }};
-     this->current_target_position = target_pos;
+
+    if(this->coords3d_target_by_camera.has_value()){
+      // target is set, target has to be reached out for
+      TransformationArithmetics ta = TransformationArithmetics{};
+      Vector target = ta.transform_coordinates_wrapper(this->coords3d_target_by_camera.value(), position_current_position); 
+      this->current_target_position = Position{target, Vector{0, 100 , 0 }};
+      controller_interface_target.set(this->current_target_position);
     }
-     controller_interface_target.set(this->current_target_position);
+    else {
+      //target is not set, target is the current position
+      controller_interface_target.set(position_current_position);
+    }
     =}
 }

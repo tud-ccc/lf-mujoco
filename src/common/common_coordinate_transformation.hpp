@@ -20,7 +20,6 @@ public:
                         double trgt_pitch,
                         double trgt_yaw);
     Vector transform_coordinates_wrapper(Vector pos_by_cam, Position cur_pos);
-    Vector sanity_check_coordinates(Vector coord) ;
 }
 
 ;

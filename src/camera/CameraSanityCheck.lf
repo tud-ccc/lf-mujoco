@@ -1,0 +1,36 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef CAM_SAN_CHECK
+#define CAM_SAN_CHECK
+#include "common_vector.hpp"
+#include "common.hpp"
+#include <iostream>
+
+#endif //CAM_SAN_CHECK
+=}
+
+
+reactor CameraSanityChecks (init_counter:int = 100){
+
+  output interface_current_target_checked: Position;
+  input current_target: Position;  
+
+  reaction(current_target) -> interface_current_target_checked{=
+
+    Position current_target_pos = *current_target.get();
+
+    Vector target_roll_pitch_yaw = current_target_pos.get_roll_pitch_yaw();
+    Vector target_coord = current_target_pos.get_coordinates();
+
+    Vector checked_target_coords = sanity_check_coordinates(target_coord);
+    std::cout << "Sanity Checked current target: "<< std::endl;
+    checked_target_coords.to_string();
+
+    Position checked_target_position = Position{checked_target_coords,target_roll_pitch_yaw };
+
+    interface_current_target_checked.set(checked_target_position);
+  
+    =}
+}
