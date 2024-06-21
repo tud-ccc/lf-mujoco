@@ -14,20 +14,19 @@ private preamble {=
 =}
 
 reactor RobotControl {
-  output target_unchecked: Position
+  output current_target: Position
   input robot_control_current_position: Position
   input robot_control_target: Position
 
   state last_target: Position
 
   reaction(robot_control_target) {=
-      this->last_target.get_coordinates().to_string();
-      this->last_target.get_roll_pitch_yaw().to_string();
+
       this->last_target = *robot_control_target.get();
     =}
 
-  reaction(robot_control_current_position) -> target_unchecked {=
-    target_unchecked.set(this->last_target);
+  reaction(robot_control_current_position) -> current_target {=
+    current_target.set(this->last_target);
   =}
 
 }

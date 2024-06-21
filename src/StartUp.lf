@@ -91,13 +91,13 @@ main reactor StartUp {
 
 
   // Camera --> Interface --> Sanity Check  --> Init --> Controller
-  camera_fake.controller_interface_target -> camera_interface.interface_target
+  camera.controller_interface_target -> camera_interface.interface_target
   camera_interface.init_target -> camera_sanity_checker.current_target
   camera_sanity_checker.interface_current_target_checked -> camera_init.init_current_target  
   camera_init.controller_target -> controller.robot_control_target 
 
   // Controller --> Planner  
-  controller.target_unchecked -> planner.planner_raw_instruction
+  controller.current_target -> planner.planner_raw_instruction
 
   // Planner --> Sanity Checker
   planner.sanity_checker_next_position -> sanity_checker.sanity_checker_next_position
@@ -128,7 +128,7 @@ main reactor StartUp {
   planner.data_collector_velocity_control_vector_collection -> data_collector_traffic.csv_vector_collection
   decoder.current_position -> data_collector_traffic.csv_current_position
   last_position_holder.planner_last_position -> data_collector_traffic.csv_last_position
-  controller.target_unchecked -> data_collector_traffic.csv_raw_instruction
+  controller.current_target -> data_collector_traffic.csv_raw_instruction
   sanity_checker.next_position_checked -> data_collector_traffic.csv_next_position_checked
 
   // CSV DATA : World data
