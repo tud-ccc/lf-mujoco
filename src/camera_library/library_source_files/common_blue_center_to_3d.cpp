@@ -16,7 +16,7 @@ int find_blue_pixels(const rs2::video_frame& frame, int width, int height, int g
       uint8_t b = data[index + 2];
       uint8_t a = data[index + 3];
 
-      if (b > 65 && g < 30 && r < 20) // A simple threshold to detect blue objects
+      if (r > 150 && g > 100 && b < 75) // A simple threshold to detect blue objects
       {
         // Mark the pixel in red for visual debugging
         marked_data[index] = 255;
