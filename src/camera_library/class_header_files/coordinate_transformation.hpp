@@ -19,7 +19,7 @@ public:
     pitch = degreesToRadians(pitch);
     yaw = degreesToRadians(yaw);
 
-    Eigen::Matrix3f R_x, R_y, R_z;
+    Eigen::Matrix3f Pre_rot, R_x, R_y, R_z;
 
     // Rotationsmatrix um die X-Achse (Roll)
     R_x << 1, 0, 0, 0, cos(roll), -sin(roll), 0, sin(roll), cos(roll);
@@ -46,9 +46,14 @@ public:
     Eigen::Vector4f transformed_point_h = T * point_h;
     return transformed_point_h.head<3>();
   }
+  Vector align_vector(Vector pos_by_cam) {
+    Vector ref = Vector{pos_by_cam.Y_, -pos_by_cam.X_, pos_by_cam.Z_};
+    return ref;
+  }
 
   Vector transform_coordinates_wrapper(Vector pos_by_cam, Position cur_pos) {
 
+    pos_by_cam = align_vector(pos_by_cam);
     Eigen::Vector3f coordinates_by_camera;
     coordinates_by_camera << pos_by_cam.X_ * 1000, pos_by_cam.Y_ * 1000, pos_by_cam.Z_ * 1000;
 
@@ -63,14 +68,15 @@ public:
 
     Eigen::Matrix4f T = createTransformationMatrix(trgt_roll, trgt_pitch, trgt_yaw, coordinates_of_end_effector);
     Eigen::Vector3f object_position_robot = transform_coordinates(T, coordinates_by_camera);
+    std::cout << object_position_robot.transpose() << std::endl;
     return Vector{object_position_robot.x(), object_position_robot.y(), object_position_robot.z()};
   }
 
   void start_main_() {
     Vector pos_by_cam;
     Position cur_pos;
-    pos_by_cam = Vector{0, 0, 0.6};
-    cur_pos = Position{Vector{0, -500, 175}, Vector{-34, 87, -121}};
+    pos_by_cam = Vector{0.5, 0, 0.5};
+    cur_pos = Position{Vector{0, 0, 0}, Vector{0, 0, 0}};
     transform_coordinates_wrapper(pos_by_cam, cur_pos);
   }
 };

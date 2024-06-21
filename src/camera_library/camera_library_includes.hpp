@@ -38,7 +38,7 @@ const int GLOBAL_GREEN_THRESHOLD_GT = 120;
 const int GLOBAL_GREEN_THRESHOLD_LT = 255;
 
 const int GLOBAL_BLUE_THRESHOLD_GT = 0;
-const int GLOBAL_BLUE_THRESHOLD_LT = 80;
+const int GLOBAL_BLUE_THRESHOLD_LT = 100;
 
 // usings
 using pixel = std::pair<int, int>;

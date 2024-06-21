@@ -43,7 +43,7 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
 
     if(this->coords3d_target_by_camera.has_value()){
       // target is set, target has to be reached out for
-      std::cout << "Moving, there is a target" << std::endl; 
+      std::cout << "Moving, there is a target: " << std::endl; 
       this->coords3d_target_by_camera.value().to_string();
       CoordinateTransformations ta = CoordinateTransformations{};
       Vector target = ta.transform_coordinates_wrapper(this->coords3d_target_by_camera.value(), position_current_position); 
