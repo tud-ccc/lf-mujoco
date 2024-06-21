@@ -101,7 +101,6 @@ public:
                                                                                     int width, int height) {
 
     // Allocate a buffer for the marked image
-    std::cout << "access analyze frame and mark blue objects " << std::endl;
     std::vector<uint8_t> marked_data(width * height * 4);
     std::vector<pixel> blue_pixels;
     int grap_range = 2;
@@ -119,7 +118,6 @@ public:
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, marked_data.data());
     std::optional<pixel> center_blue = calculate_center_wrapper(largest_cluster, threshold, width, height);
     glBindTexture(GL_TEXTURE_2D, 0);
-    std::cout << "Gl Handle: " << _gl_handle << std::endl;
     return center_blue;
   }
 
@@ -166,13 +164,11 @@ public:
 
   void show(const rect& r, float alpha = 1.f) const {
 
-    std::cout << "Access show" << std::endl;
 
     if (!_gl_handle){
       std::cout << "GL _handle not set, return" << std::endl;
     return;
     }
-    std::cout << "passed _gl_handle" << std::endl;
 
     set_viewport(r);
 
@@ -196,7 +192,6 @@ public:
 
   pixel render(const rs2::frame& frame, const rect& rect, float alpha = 1.f) {
     if (auto vf = frame.as<rs2::video_frame>()) {
-      std::cout << "Access render" << std::endl;
       std::optional<pixel> pixel_optional = upload(vf);
       show(rect.adjust_ratio({(float)vf.get_width(), (float)vf.get_height()}), alpha);
       if (pixel_optional.has_value()) {

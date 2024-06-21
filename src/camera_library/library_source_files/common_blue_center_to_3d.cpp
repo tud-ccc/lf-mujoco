@@ -145,17 +145,16 @@ std::vector<pixel> find_largest_blue_cluster(const std::vector<pixel>& blue_pixe
 std::optional<pixel> calculate_center_wrapper(std::vector<pixel>& largest_cluster, int threshold_accept_cluster, int bound_x,
                                int bound_y) {
   if (largest_cluster.size() >= threshold_accept_cluster) {
-    std::cout << "Size of largest cluster: " << largest_cluster.size() << std::endl;
+    // std::cout << "Size of largest cluster: " << largest_cluster.size() << std::endl;
     std::optional<pixel> center_blue = calculate_center(largest_cluster, bound_x, bound_y);
     if (center_blue.value().first < 0 || center_blue.value().first > bound_x || center_blue.value().second < 0 ||
         center_blue.value().second > bound_y) {
       std::cout << center_blue.value().first << ", " << center_blue.value().second << std::endl;
-      std::cout << "Bounds: " << bound_x << ", " << bound_y << std::endl;
+      // std::cout << "Bounds: " << bound_x << ", " << bound_y << std::endl;
       throw std::runtime_error("The cluster center is out of bounds !");
     }
     return center_blue;
   } else {
-    std::cout << "Only found single points in the picture, not large enough to construct a cluster !" << std::endl;
     return {};
   }
 }

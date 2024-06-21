@@ -84,7 +84,8 @@ main reactor StartUp {
 
 
   // Camera --> Interface --> Controller
-  camera.controller_interface_target -> camera_interface.interface_target
+  camera_fake.controller_interface_target -> camera_interface.interface_target
+  // camera.controller_interface_target -> camera_interface.interface_target
   camera_interface.controller_target -> controller.robot_control_target 
 
   // Controller --> Planner  
