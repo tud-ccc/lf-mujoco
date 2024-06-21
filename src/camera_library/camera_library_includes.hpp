@@ -98,5 +98,6 @@ std::optional<pixel> fetch_blue_center_pixel(const rs2::video_frame& frame, int 
 window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height);
 std::optional<Vector> receive_current_target_show(rs2::pipeline& pipe);
 std::optional<Vector> receive_current_target(rs2::pipeline& pipe);
+std::optional<Vector> sanity_check_position_by_camera(Vector vec);
 
 #endif

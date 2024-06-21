@@ -63,7 +63,7 @@ std::optional<Vector> receive_current_target_show(rs2::pipeline& pipe) {
   
   if(center_blue.has_value()){
     auto coordinate_blue_center = pixel_to_3d(depth, center_blue.value().first, center_blue.value().second);
-    return Vector{coordinate_blue_center.x, coordinate_blue_center.y, coordinate_blue_center.z};
+    return sanity_check_position_by_camera(Vector{coordinate_blue_center.x, coordinate_blue_center.y, coordinate_blue_center.z});
   }
   else{
 
@@ -84,12 +84,21 @@ std::optional<Vector> receive_current_target(rs2::pipeline& pipe) {
 
   if(center_blue.has_value()){
     auto coordinate_blue_center = pixel_to_3d(depth, center_blue.value().first, center_blue.value().second);
-    return Vector{coordinate_blue_center.x, coordinate_blue_center.y, coordinate_blue_center.z};
+    return sanity_check_position_by_camera(Vector{coordinate_blue_center.x, coordinate_blue_center.y, coordinate_blue_center.z});
   }
   else{
     return {};
   }
   
 }
+
+std::optional<Vector> sanity_check_position_by_camera(Vector vec) {
+  
+  if ( vec.Z_ < 0.3 ||vec.Z_ > 1.5){
+    return {};
+  }
+  else return vec;
+}
+
 
 #endif // Interface
