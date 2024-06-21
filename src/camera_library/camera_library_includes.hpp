@@ -31,14 +31,14 @@
 const float IMU_FRAME_WIDTH = 1280.f;
 const float IMU_FRAME_HEIGHT = 720.f;
 
-const int GLOBAL_RED_THRESHOLD_GT = 180;
+const int GLOBAL_RED_THRESHOLD_GT = 140;
 const int GLOBAL_RED_THRESHOLD_LT = 255;
 
-const int GLOBAL_GREEN_THRESHOLD_GT = 140;
+const int GLOBAL_GREEN_THRESHOLD_GT = 120;
 const int GLOBAL_GREEN_THRESHOLD_LT = 255;
 
 const int GLOBAL_BLUE_THRESHOLD_GT = 0;
-const int GLOBAL_BLUE_THRESHOLD_LT = 20;
+const int GLOBAL_BLUE_THRESHOLD_LT = 80;
 
 // usings
 using pixel = std::pair<int, int>;

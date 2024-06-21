@@ -157,6 +157,7 @@ std::optional<pixel> calculate_center_wrapper(std::vector<pixel>& largest_cluste
     }
     return center_blue;
   } else {
+    std::cout << "Size of largest cluster: " << largest_cluster.size() << std::endl;
     return {};
   }
 }
@@ -177,7 +178,7 @@ std::optional<pixel> fetch_blue_center_pixel(const rs2::video_frame& frame, int 
 
   find_blue_pixels(frame, width, height, grap_range, marked_data, blue_pixels);
   std::vector<pixel> largest_cluster = find_largest_blue_cluster(blue_pixels, grap_range);
-  int threshold = 10;
+  int threshold = 5;
   return calculate_center_wrapper(largest_cluster, threshold, width, height);
  
 }
