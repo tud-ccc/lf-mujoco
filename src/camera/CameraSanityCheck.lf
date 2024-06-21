@@ -25,9 +25,7 @@ reactor CameraSanityChecks (init_counter:int = 100){
     Vector target_coord = current_target_pos.get_coordinates();
 
     Vector checked_target_coords = sanity_check_coordinates(target_coord);
-    std::cout << "Sanity Checked current target: "<< std::endl;
-    checked_target_coords.to_string();
-
+ 
     Position checked_target_position = Position{checked_target_coords,target_roll_pitch_yaw };
 
     interface_current_target_checked.set(checked_target_position);
