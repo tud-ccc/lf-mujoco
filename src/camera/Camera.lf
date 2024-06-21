@@ -5,7 +5,6 @@ public preamble {=
   #define CAMERA_LF
 
   #include "common_vector.hpp"
-  #include "common_coordinate_transformation.hpp"
   #include "camera_library_includes.hpp"
   #include <librealsense2/rs.hpp>
   #include <iostream>
@@ -28,7 +27,6 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
   state app:{=window=}
   
   state coords3d_target_by_camera: std::optional<Vector> 
-  state current_target_position: Position 
 
 
   reaction(startup) {=
@@ -43,13 +41,13 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
 
     if(this->coords3d_target_by_camera.has_value()){
       // target is set, target has to be reached out for
-      TransformationArithmetics ta = TransformationArithmetics{};
+      CoordinateTransformations ta = CoordinateTransformations{};
       Vector target = ta.transform_coordinates_wrapper(this->coords3d_target_by_camera.value(), position_current_position); 
-      this->current_target_position = Position{target, Vector{0, 100 , 0 }};
-      controller_interface_target.set(this->current_target_position);
+      controller_interface_target.set(Position{target, Vector{0, 100 , 0 }});
     }
     else {
       //target is not set, target is the current position
+      std::cout << "Not moving, no target set" << std::endl; 
       controller_interface_target.set(position_current_position);
     }
     =}

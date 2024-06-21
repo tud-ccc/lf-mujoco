@@ -22,6 +22,9 @@
 #include <sstream>
 #include <string>
 #include <optional>
+#include <chrono>               // Include for timing functions
+#include <thread>               // Include for sleep functions
+
 
 #include "header_files/stb_easy_font.hpp"
 // consts
@@ -93,11 +96,14 @@ std::optional<pixel> fetch_blue_center_pixel(const rs2::video_frame& frame, int 
 #include "class_header_files/renderer.hpp"
 #include "class_header_files/texture.hpp"
 #include "class_header_files/window.hpp"
+#include "class_header_files/coordinate_transformation.hpp"
 
 // interface
 window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int stream_height);
-std::optional<Vector> receive_current_target_show(rs2::pipeline& pipe);
 std::optional<Vector> receive_current_target(rs2::pipeline& pipe);
 std::optional<Vector> sanity_check_position_by_camera(Vector vec);
+void calibrate_camera(rs2::pipeline& pipe, int duration_seconds);
+void print_3d_coords_in_camera_testings_and_transform(rs2::video_frame depth, std::optional<pixel> center_blue, std::optional<pixel> center_blue_by_fetch);
+
 
 #endif
