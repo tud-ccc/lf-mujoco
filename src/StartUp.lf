@@ -48,7 +48,7 @@ main reactor StartUp {
   camera = new Camera(start_stream = 1s, frame_fetch_period = 2s)
 
   camera_interface = new CameraInterface()
-  camera_init = new InitStartPosition()
+  camera_init = new InitStartPosition(init_counter = 100)
 
   // INTERFACE
   decoder = new WorldDataDecoder()
