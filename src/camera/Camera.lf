@@ -21,7 +21,9 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
  {
   timer t(start_stream, frame_fetch_period)
   input camera_current_position: Position
+  output offset_target: Position
   output controller_interface_target: Position
+
   state pipe: {=rs2::pipeline=}
   state texture: {=custom_benes_texture=}
   state app:{=window=}
@@ -36,7 +38,7 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
   reaction(t)  {=
     this->coords3d_target_by_camera = receive_current_target(this->pipe);
   =}
-  reaction(camera_current_position)-> controller_interface_target {=
+  reaction(camera_current_position)-> controller_interface_target, offset_target {=
     Position position_current_position = *camera_current_position.get();
 
     if(this->coords3d_target_by_camera.has_value()){
@@ -45,7 +47,7 @@ reactor Camera(start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_w
       CoordinateTransformations ta = CoordinateTransformations{};
       Vector target = ta.transform_coordinates_wrapper(this->coords3d_target_by_camera.value(), position_current_position); 
       target.to_string();
-      controller_interface_target.set(Position{target, Vector{0, 100 , 0 }});
+      offset_target.set(Position{target, Vector{0, 100 , 0 }});
     }
     else {
       //target is not set, target is the current position

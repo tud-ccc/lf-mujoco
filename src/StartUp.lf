@@ -93,8 +93,9 @@ main reactor StartUp {
 
   // Camera --> Interface --> Sanity Check  --> Init --> Controller
 
-  camera.controller_interface_target -> camera_offset.offset_target
-  camera_offset.interface_target -> camera_interface.interface_target
+  camera.offset_target -> camera_offset.offset_target
+  camera.controller_interface_target -> camera_interface.interface_target_from_Camera
+  camera_offset.interface_target -> camera_interface.interface_target_from_Offset
   //camera_fake.controller_interface_target -> camera_interface.interface_target
   camera_interface.init_target -> camera_sanity_checker.current_target
   camera_sanity_checker.interface_current_target_checked -> camera_init.init_current_target  
