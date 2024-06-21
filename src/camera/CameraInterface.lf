@@ -12,13 +12,13 @@ public preamble {=
 
 reactor CameraInterface {
 
-  output controller_target: Position;
+  output init_target: Position;
   input interface_target: Position;  
 
 
-  reaction(interface_target) -> controller_target{=
+  reaction(interface_target) -> init_target{=
       Position pos = *interface_target.get();
-      controller_target.set(pos);  
+      init_target.set(pos);  
 =}
 
 }

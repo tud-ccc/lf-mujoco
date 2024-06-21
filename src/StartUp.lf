@@ -17,6 +17,7 @@ import RobotSanityChecker from "control/RoboSanityChecker.lf"
 import CameraInterface from "camera/CameraInterface.lf"
 import CameraFake from "camera/CameraFake.lf"
 import Camera from "camera/Camera.lf"
+import InitStartPosition from "camera/InitStartPosition.lf"
 
 
 
@@ -33,7 +34,10 @@ private preamble {=  =}
 
 main reactor StartUp {
   // CAMERA
-  camera_fake = new CameraFake (start_changing_target = 1s, changing_target_period = 4s, stay_at_first_position = false,positions = {=
+  camera_fake = new CameraFake (start_changing_target = 1s, 
+                               changing_target_period = 4s, 
+                               stay_at_first_position = false,
+                               positions = {=
     {
       Position{Vector{400, -200, 175 },Vector{0, 100 , 0 }},
       Position{ Vector{525, 0, 175 },Vector{0, 100, 0 }}, 
@@ -44,6 +48,7 @@ main reactor StartUp {
   camera = new Camera(start_stream = 1s, frame_fetch_period = 2s)
 
   camera_interface = new CameraInterface()
+  camera_init = new InitStartPosition()
 
   // INTERFACE
   decoder = new WorldDataDecoder()
@@ -83,10 +88,11 @@ main reactor StartUp {
   // fake_hardware.interface_world_data -> interface.interface_world_data
 
 
-  // Camera --> Interface --> Controller
+  // Camera --> Interface --> Init --> Controller
   camera_fake.controller_interface_target -> camera_interface.interface_target
   // camera.controller_interface_target -> camera_interface.interface_target
-  camera_interface.controller_target -> controller.robot_control_target 
+  camera_interface.init_target -> camera_init.init_current_target  
+  camera_init.controller_target -> controller.robot_control_target 
 
   // Controller --> Planner  
   controller.target_unchecked -> planner.planner_raw_instruction
@@ -109,6 +115,8 @@ main reactor StartUp {
   robo_sanity_checker.current_position -> planner.planner_current_position
   robo_sanity_checker.current_position -> sanity_checker.sanity_checker_current_position
   robo_sanity_checker.current_position -> camera.camera_current_position
+  robo_sanity_checker.current_position -> camera_init.current_position
+
 
   // Last Position Holder  --> Planner
   last_position_holder.planner_last_position -> planner.planner_last_position

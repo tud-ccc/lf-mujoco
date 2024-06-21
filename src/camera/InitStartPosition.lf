@@ -1,0 +1,33 @@
+target Cpp;
+
+public preamble {=
+
+#ifndef INIT_START_POSITION
+#define INIT_START_POSITION
+#include "common_vector.hpp"
+
+#endif //CAMERA_INTERFACE_LF
+=}
+
+
+reactor InitStartPosition {
+
+  output controller_target: Position;
+  input current_position: Position;  
+  input init_current_target: Position;
+  state start_position: Position;
+  state counter : int = 0;
+
+
+  reaction(current_position, init_current_target) -> controller_target{=
+      Position pos = *current_position.get();
+      Position trgt = *init_current_target.get();
+      if (counter < 100 ){
+        controller_target.set(pos);  
+        counter += 1 ;
+      } else {
+        controller_target.set(trgt);  
+        counter += 1 ;
+      } 
+      =}
+}
