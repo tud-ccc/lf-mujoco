@@ -13,7 +13,7 @@ private preamble {=
 
 =}
 
-reactor CameraFake(start_changing_target: time = 1s, changing_target_period = 2s, positions:
+reactor CameraFake(start_changing_target: time = 1s, changing_target_period = 2s, stay_at_first_position:bool = true ,positions:
                {= Position[4] =} = {=
             {
               Position{Vector{0, 0, 0 },Vector{0, 0, 0 }},Position{ Vector{0, 0, 0 },Vector{0, 0, 0 }}, Position{Vector{0, 0, 0},Vector{0, 0, 0 }}, Position{Vector{0, 0, 0},Vector{0, 0, 0 }}
@@ -32,8 +32,9 @@ reactor CameraFake(start_changing_target: time = 1s, changing_target_period = 2s
 
   reaction(t) -> controller_interface_target {=
 
-    this->last_target = positions[counter];
-
+    if(!stay_at_first_position){
+      this->last_target = positions[counter];
+    }
     controller_interface_target.set(this->last_target);
 
     this->counter = (counter + 1) % 4;

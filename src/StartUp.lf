@@ -33,12 +33,12 @@ private preamble {=  =}
 
 main reactor StartUp {
   // CAMERA
-  camera_fake = new CameraFake (start_changing_target = 1s, changing_target_period = 4s, positions = {=
+  camera_fake = new CameraFake (start_changing_target = 1s, changing_target_period = 4s, stay_at_first_position = false,positions = {=
     {
-      Position{Vector{400, -175, 250 },Vector{180, -60, 0 }},
-      Position{ Vector{525, 0, 250 },Vector{180, -60, 0 }}, 
-      Position{Vector{400, 175, 250},Vector{180, -60, 0 }}, 
-      Position{Vector{275, 0, 250},Vector{180, -60 , 0 }}
+      Position{Vector{400, -200, 175 },Vector{0, 100 , 0 }},
+      Position{ Vector{525, 0, 175 },Vector{0, 100, 0 }}, 
+      Position{Vector{400, 200, 175},Vector{0, 100, 0 }}, 
+      Position{Vector{275, 0, 175},Vector{0, 100 , 0 }}
     }
   =})
   camera = new Camera(start_stream = 1s, frame_fetch_period = 2s)
@@ -55,7 +55,7 @@ main reactor StartUp {
                       threshold_deaccelerate = 20, 
                       threshold_near_target_stop_moving = 0.001, 
                       acceleration_cap = 0.2,
-                      roll_pitch_yaw_max_angle = 0.1,
+                      roll_pitch_yaw_max_angle = 0.3,
                       roll_pitch_yaw_threshold_stop_moving = 0.01)
   last_position_holder = new LastPositionHolder()
   controller = new RobotControl()
@@ -84,7 +84,7 @@ main reactor StartUp {
 
 
   // Camera --> Interface --> Controller
-  camera_fake.controller_interface_target -> camera_interface.interface_target
+  camera.controller_interface_target -> camera_interface.interface_target
   camera_interface.controller_target -> controller.robot_control_target 
 
   // Controller --> Planner  
