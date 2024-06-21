@@ -3,9 +3,6 @@
 #define PI_FL 3.141592f
 #endif
 
-#ifndef CAMERA_INTERFACE_HPP
-#define CAMERA_INTERFACE_HPP
-
 #define GL_SILENCE_DEPRECATION
 #define GLFW_INCLUDE_GLU
 
@@ -44,33 +41,6 @@ window init_camera_generate_window(rs2::pipeline& pipe, int stream_width, int st
   return app;
 }
 
-std::optional<Vector> receive_current_target_show(rs2::pipeline& pipe) {
-
-  rs2::frameset current_frameset = pipe.wait_for_frames();
-
-  auto color = current_frameset.get_color_frame();
-
-  auto depth = current_frameset.get_depth_frame();
-
-  glEnable(GL_BLEND);
-
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  glColor3f(1.f, 1.f, 1.f);
-  glDisable(GL_BLEND);
-
-  std::optional<pixel> center_blue = fetch_blue_center_pixel_wrapper(color);
-  
-  if(center_blue.has_value()){
-    auto coordinate_blue_center = pixel_to_3d(depth, center_blue.value().first, center_blue.value().second);
-    return sanity_check_position_by_camera(Vector{coordinate_blue_center.x, coordinate_blue_center.y, coordinate_blue_center.z});
-  }
-  else{
-
-    return {};
-  }
-
-}
 
 std::optional<Vector> receive_current_target(rs2::pipeline& pipe) {
 
@@ -101,4 +71,3 @@ std::optional<Vector> sanity_check_position_by_camera(Vector vec) {
 }
 
 
-#endif // Interface
