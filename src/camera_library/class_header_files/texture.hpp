@@ -190,7 +190,7 @@ public:
   }
   GLuint get_gl_handle() { return _gl_handle; }
 
-  pixel render(const rs2::frame& frame, const rect& rect, float alpha = 1.f) {
+  std::optional<pixel> render(const rs2::frame& frame, const rect& rect, float alpha = 1.f) {
     if (auto vf = frame.as<rs2::video_frame>()) {
       std::optional<pixel> pixel_optional = upload(vf);
       show(rect.adjust_ratio({(float)vf.get_width(), (float)vf.get_height()}), alpha);

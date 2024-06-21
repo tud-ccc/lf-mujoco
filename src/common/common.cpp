@@ -23,3 +23,4 @@ Vector sanity_check_coordinates(Vector coord) {
   } 
   return coord;
 }
+  
