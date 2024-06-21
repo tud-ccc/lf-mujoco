@@ -33,7 +33,7 @@ ADD_LIBRARY(cpp_files_common
     ${CMAKE_CURRENT_LIST_DIR}/common/common_vector.cpp
     ${CMAKE_CURRENT_LIST_DIR}/common/common_world_data.cpp
     ${CMAKE_CURRENT_LIST_DIR}/common/common_deacceleration_controller.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/common/common.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/common/common_camera_sanity_check.cpp
     )
 
 # add hpp files to library

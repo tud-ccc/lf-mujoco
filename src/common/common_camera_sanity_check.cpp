@@ -1,10 +1,10 @@
-#include "common.hpp"
+#include "common_camera_sanity_check.hpp"
 #include "common_vector.hpp"
 
 Vector sanity_check_coordinates(Vector coord) {
   
-  if ( coord.X_ < 100 ){
-    coord.X_ = 100;
+  if ( coord.X_ < 250 ){
+    coord.X_ = 250;
   }
   if ( coord.X_ > 500 ){
     coord.X_ = 500;
