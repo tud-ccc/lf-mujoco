@@ -14,10 +14,10 @@ public preamble {=
 
 reactor CameraSanityChecks (init_counter:int = 100){
 
-  output interface_current_target_checked: Position;
+  output validated_target: Position;
   input current_target: Position;  
 
-  reaction(current_target) -> interface_current_target_checked{=
+  reaction(current_target) -> validated_target{=
 
     Position current_target_pos = *current_target.get();
 
@@ -28,7 +28,7 @@ reactor CameraSanityChecks (init_counter:int = 100){
  
     Position checked_target_position = Position{checked_target_coords,target_roll_pitch_yaw };
 
-    interface_current_target_checked.set(checked_target_position);
+    validated_target.set(checked_target_position);
   
     =}
 }

@@ -12,21 +12,21 @@ public preamble {=
 
 reactor InitStartPosition (init_counter:int = 100){
 
-  output controller_target: Position;
+  output validator_target: Position;
   input current_position: Position;  
   input init_current_target: Position;
   state start_position: Position;
   state counter : int = 0;
 
 
-  reaction(current_position, init_current_target) -> controller_target{=
+  reaction(current_position, init_current_target) -> validator_target{=
       Position pos = *current_position.get();
       Position trgt = *init_current_target.get();
       if (counter < init_counter ){
-        controller_target.set(pos);  
+        validator_target.set(pos);  
         counter += 1 ;
       } else {
-        controller_target.set(trgt);  
+        validator_target.set(trgt);  
         counter += 1 ;
       } 
       =}

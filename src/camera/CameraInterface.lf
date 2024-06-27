@@ -12,19 +12,19 @@ public preamble {=
 
 reactor CameraInterface {
 
-  output init_target: Position;
+  output current_target: Position;
   input interface_no_target_set: Position;  
   input interface_target_set: Position;  
 
 
 
-  reaction(interface_no_target_set) -> init_target{=
+  reaction(interface_no_target_set) -> current_target{=
       Position pos = *interface_no_target_set.get();
-      init_target.set(pos);  
+      current_target.set(pos);  
 =}
-  reaction(interface_target_set) -> init_target{=
+  reaction(interface_target_set) -> current_target{=
     Position pos = *interface_target_set.get();
-    init_target.set(pos);  
+    current_target.set(pos);  
 =}
 
 }

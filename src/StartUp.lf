@@ -54,7 +54,7 @@ main reactor StartUp {
   camera_interface = new CameraInterface()
   camera_init = new InitStartPosition(init_counter = 100)
   camera_sanity_checker = new CameraSanityChecks()
-  camera_offset = new TargetHandling() 
+  target_handling = new TargetHandling() 
   coordinate_transformation = new CoordinateTransformation()
   no_target_handler = new NoTargetHandler()
 
@@ -103,12 +103,13 @@ main reactor StartUp {
 
   //no Target Hand --> {offset --> interface | interface} 
   no_target_handler.controller_interface_target-> camera_interface.interface_no_target_set
-  no_target_handler.controller_interface_target -> camera_offset.offset_target
-  camera_offset.interface_target -> camera_interface.interface_target_set
+  no_target_handler.controller_interface_target -> target_handling.offset_target
+  target_handling.interface_target -> camera_interface.interface_target_set
 
-  camera_interface.init_target -> camera_sanity_checker.current_target
-  camera_sanity_checker.interface_current_target_checked -> camera_init.init_current_target  
-  camera_init.controller_target -> controller.robot_control_target 
+  //interface --> init -> validation 
+  camera_interface.current_target -> camera_init.init_current_target 
+  camera_init.validator_target ->  camera_sanity_checker.current_target
+  camera_sanity_checker.validated_target-> controller.robot_control_target 
 
   // Controller --> Planner  
   controller.current_target -> planner.planner_raw_instruction
