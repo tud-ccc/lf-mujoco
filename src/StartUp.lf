@@ -20,6 +20,8 @@ import Camera from "camera/Camera.lf"
 import InitStartPosition from "camera/InitStartPosition.lf"
 import CameraSanityChecks from "camera/CameraSanityCheck.lf"
 import CameraOffset from "camera/CameraOffset.lf"
+import NoTargetHandler from "camera/NoTargetHandler.lf"
+import CoordinateTransformation from "camera/CoordinateTransformation.lf"
 
 
 
@@ -53,6 +55,9 @@ main reactor StartUp {
   camera_init = new InitStartPosition(init_counter = 100)
   camera_sanity_checker = new CameraSanityChecks()
   camera_offset = new CameraOffset() 
+  coordinate_transformation = new CoordinateTransformation()
+  no_target_handler = new NoTargetHandler()
+
 
   // INTERFACE
   decoder = new WorldDataDecoder()
@@ -91,12 +96,16 @@ main reactor StartUp {
   // interface.robo_next_position_checked -> fake_hardware.robo_next_position_checked
   // fake_hardware.interface_world_data -> interface.interface_world_data
 
-  // Camera --> Interface --> Sanity Check  --> Init --> Controller
+  //Camera --> Coord Trafo
+  camera.coord_trafo_cam_position -> coordinate_transformation.coordinates_by_camera
+  //Coord Trafo --> No target Hand
+  coordinate_transformation.coordinates_target_system -> no_target_handler.transformed_coords
 
-  camera.offset_target -> camera_offset.offset_target
-  camera.controller_interface_target -> camera_interface.interface_target_from_Camera
-  camera_offset.interface_target -> camera_interface.interface_target_from_Offset
-  //camera_fake.controller_interface_target -> camera_interface.interface_target
+  //no Target Hand --> {offset --> interface | interface} 
+  no_target_handler.controller_interface_target-> camera_interface.interface_no_target_set
+  no_target_handler.controller_interface_target -> camera_offset.offset_target
+  camera_offset.interface_target -> camera_interface.interface_target_set
+
   camera_interface.init_target -> camera_sanity_checker.current_target
   camera_sanity_checker.interface_current_target_checked -> camera_init.init_current_target  
   camera_init.controller_target -> controller.robot_control_target 
@@ -121,7 +130,8 @@ main reactor StartUp {
   robo_sanity_checker.current_position -> controller.robot_control_current_position
   robo_sanity_checker.current_position -> planner.planner_current_position
   robo_sanity_checker.current_position -> sanity_checker.sanity_checker_current_position
-  robo_sanity_checker.current_position -> camera.camera_current_position
+  robo_sanity_checker.current_position -> no_target_handler.robo_current_position
+  robo_sanity_checker.current_position -> coordinate_transformation.current_position
   robo_sanity_checker.current_position -> camera_init.current_position
 
 

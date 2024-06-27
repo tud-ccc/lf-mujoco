@@ -1,0 +1,62 @@
+target Cpp;
+
+public preamble {=
+  #ifndef NO_TARGET_HANDLER
+  #define NO_TARGET_HANDLER
+
+  #include "common_vector.hpp"
+  #include "camera_library_includes.hpp"
+  #include <librealsense2/rs.hpp>
+  #include <iostream>
+  #include <optional>
+
+  #endif //CAMERA_LF
+=}
+
+private preamble {=
+
+=}
+
+reactor NoTargetHandler(counter_no_target:int = 8, start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_width: int = 0, stream_height: int = 0)
+ {
+  input transformed_coords: std::optional<Vector>
+  input robo_current_position: Position
+  
+  output offset_target: Position
+  output controller_interface_target: Position
+
+  
+  state coords3d_target_by_camera: std::optional<Vector> 
+  state current_target: Position 
+  state counter: int = 0 
+
+  reaction(transformed_coords, robo_current_position)-> controller_interface_target, offset_target {=
+    std::optional<Vector> optional_transformed_coordinates = *transformed_coords.get();
+
+    if(optional_transformed_coordinates.has_value()){
+      // target is set, target has to be reached out for
+      std::cout << "Moving, there is a target: " << std::endl; 
+      this->current_target = Position{optional_transformed_coordinates.value(), Vector{0, 100 , 0 }};
+      offset_target.set(this->current_target);
+      this->counter = 0;
+    }
+    else
+    {
+      if (counter <= counter_no_target)
+      {
+      std::cout << "Not moving, no target set" << std::endl; 
+      offset_target.set(this->current_target);
+      this->counter += 1;
+      }
+      
+      else if (counter > counter_no_target)
+      {
+      //target is not set, target is the current position
+      Position position_robo_current_position = *robo_current_position.get(); 
+      std::cout << "Not moving, no target set" << std::endl; 
+      controller_interface_target.set(position_robo_current_position);
+      this->counter += 1;
+      }
+    }
+    =}
+}

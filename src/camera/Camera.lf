@@ -20,55 +20,20 @@ private preamble {=
 reactor Camera(counter_no_target:int = 8, start_stream: time = 1s, frame_fetch_period: time = 5ms, stream_width: int = 0, stream_height: int = 0)
  {
   timer t(start_stream, frame_fetch_period)
-  input camera_current_position: Position
-  output offset_target: Position
-  output controller_interface_target: Position
+
+  output coord_trafo_cam_position: std::optional<Vector> 
 
   state pipe: {=rs2::pipeline=}
   state texture: {=custom_benes_texture=}
   state app:{=window=}
   
-  state coords3d_target_by_camera: std::optional<Vector> 
-  state current_target: Position 
-  state counter: int = 0 
-
-
-
   reaction(startup) {=
     this->app = init_camera_generate_window(this->pipe, stream_width, stream_height);
   =}
 
-  reaction(t)  {=
-    this->coords3d_target_by_camera = receive_current_target(this->pipe);
+  reaction(t) -> coord_trafo_cam_position {=
+    std::optional<Vector> coordinates_by_camera = receive_current_target(this->pipe);
+    coord_trafo_cam_position.set(coordinates_by_camera);
   =}
-  reaction(camera_current_position)-> controller_interface_target, offset_target {=
-    Position position_current_position = *camera_current_position.get();
-
-    if(this->coords3d_target_by_camera.has_value()){
-      // target is set, target has to be reached out for
-      std::cout << "Moving, there is a target: " << std::endl; 
-      this->coords3d_target_by_camera.value().to_string();
-      CoordinateTransformations ta = CoordinateTransformations{};
-      Vector target = ta.transform_coordinates_wrapper(this->coords3d_target_by_camera.value(), position_current_position); 
-      std::cout << "The corresponding coordinates:" << std::endl; 
-      target.to_string();
-      this->current_target = Position{target, Vector{0, 100 , 0 }};
-      offset_target.set(this->current_target);
-      this->counter = 0;
-    }
-    else {
-
-      if (counter <= counter_no_target){
-      std::cout << "Not moving, no target set" << std::endl; 
-      offset_target.set(this->current_target);
-      this->counter += 1;
-    }
-      //target is not set, target is the current position
-      else if (counter > counter_no_target){
-      std::cout << "Not moving, no target set" << std::endl; 
-      offset_target.set(position_current_position);
-      this->counter += 1;
-    }
-    }
-    =}
+ 
 }
