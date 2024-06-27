@@ -19,7 +19,7 @@ import CameraFake from "camera/CameraFake.lf"
 import Camera from "camera/Camera.lf"
 import InitStartPosition from "camera/InitStartPosition.lf"
 import CameraSanityChecks from "camera/CameraSanityCheck.lf"
-import CameraOffset from "camera/CameraOffset.lf"
+import TargetHandling from "camera/TargetHandling.lf"
 import NoTargetHandler from "camera/NoTargetHandler.lf"
 import CoordinateTransformation from "camera/CoordinateTransformation.lf"
 
@@ -54,7 +54,7 @@ main reactor StartUp {
   camera_interface = new CameraInterface()
   camera_init = new InitStartPosition(init_counter = 100)
   camera_sanity_checker = new CameraSanityChecks()
-  camera_offset = new CameraOffset() 
+  camera_offset = new TargetHandling() 
   coordinate_transformation = new CoordinateTransformation()
   no_target_handler = new NoTargetHandler()
 

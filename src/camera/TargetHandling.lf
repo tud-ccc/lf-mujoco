@@ -10,7 +10,7 @@ public preamble {=
 =}
 
 
-reactor CameraOffset {
+reactor TargetHandling {
 
   output interface_target: Position;
   input offset_target: Position;  
