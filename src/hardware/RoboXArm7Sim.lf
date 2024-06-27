@@ -13,6 +13,7 @@ public preamble {=
 #include <fstream>
 
 #include "common/common_world_data.hpp"
+#include "common/common_vector.hpp"
 
 // structs that handle user input
 struct KeyboardInput {
@@ -131,12 +132,11 @@ reactor RoboXArm7Sim(
   state terminate: bool = false;
 
   // communicating controll inputs from controller to simulator thread
-  state last_controll_input: std::vector<double>;
+  state last_controll_input: Position;
   state last_controll_input_lock: std::mutex;
-
-  // communcation with the interface
-  output simulator_world_data: WorldData;
-  input controll_signals: {=std::vector<double>=}
+   
+  input robo_next_position_checked: Position;
+  output interface_world_data: WorldData;
 
   // the simulator thread pushes data into this physical action
   physical action world_data: WorldData;
@@ -196,14 +196,15 @@ reactor RoboXArm7Sim(
 
           {
             std::lock_guard<std::mutex> lock(this->last_controll_input_lock);
-            std::cout << "SIM: ";
-            for (auto i = 0; i < this->last_controll_input.size(); i++) {
-              std::cout << (((float)last_controll_input[i]) / 1000.0) << ",";
-              global_data->ctrl[i] = (((float)last_controll_input[i]) / 1000.0);
-            }
-            std::cout << std::endl;
-            
-            last_controll_input.clear();
+            auto coords = last_controll_input.get_coordinates();
+            auto angles = last_controll_input.get_roll_pitch_yaw();
+
+            global_data->ctrl[0] = coords.X_ / 1000.0;
+            global_data->ctrl[1] = coords.Y_ / 1000.0;
+            global_data->ctrl[2] = coords.Z_ / 1000.0;
+            global_data->ctrl[3] = angles.X_ / 1000.0;
+            global_data->ctrl[4] = angles.Y_ / 1000.0;
+            global_data->ctrl[5] = angles.Z_ / 1000.0;
           }
 
           if (visualize) {
@@ -234,15 +235,15 @@ reactor RoboXArm7Sim(
       });
   =}
 
-  reaction forward_world_data(world_data) -> simulator_world_data {=
-      simulator_world_data.set(*world_data.get());
+  reaction forward_world_data(world_data) -> interface_world_data {=
+      interface_world_data.set(*world_data.get());
       
   =}
 
-  reaction handle_controll_signals(controll_signals) {=
+  reaction handle_controll_signals(robo_next_position_checked) {=
     std::cout << "getting signals" << std::endl;
     std::lock_guard<std::mutex> lock(this->last_controll_input_lock);
-    last_controll_input = *controll_signals.get();
+    last_controll_input = *robo_next_position_checked.get();
   =}
 
   reaction deconstruct(shutdown) {=

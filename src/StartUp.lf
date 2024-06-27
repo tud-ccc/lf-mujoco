@@ -82,7 +82,8 @@ main reactor StartUp {
   data_collector_world_data = new CSV_WorldData(data_path="data_analysis/data/data.csv")
 
   // HARDWARE : REAL ROBO <--> Interface
-  hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 12ms);
+  //hardware = new RoboXArm7(timer_start_moving = 1s, timer_initiate_movin_period = 12ms);
+  hardware = new RoboXArm7Sim(file="models/xarm7_xyz/xarm7_nohand.xml");
   interface.robo_next_position_checked -> hardware.robo_next_position_checked;
   hardware.interface_world_data -> interface.interface_world_data;
   
@@ -121,7 +122,7 @@ main reactor StartUp {
   robo_sanity_checker.current_position -> controller.robot_control_current_position
   robo_sanity_checker.current_position -> planner.planner_current_position
   robo_sanity_checker.current_position -> sanity_checker.sanity_checker_current_position
-  robo_sanity_checker.current_position -> camera.camera_current_position
+  //robo_sanity_checker.current_position -> camera.camera_current_position
   robo_sanity_checker.current_position -> camera_init.current_position
 
 

@@ -35,30 +35,31 @@ stdenv.mkDerivation {
   ];
 
   buildInputs = with pkgs; [ 
-    #which 
+    which 
     gcc 
     cmake
-    #git 
+    git 
     mujoco 
     jdk17_headless 
     #freeglut
     #xorg.libX11
     #xorg.libXext
     #libGL
-    #libGLU
+    libGLU
     #libxkbcommon
     #libdecor
     glfw
+    eigen
+    opencv
     #glfw-wayland
 		xarm7
   ];
 
   configurePhase = ''
-    echo "Test"
+    export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
   '';
 
   buildPhase = ''
-    #export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
     #echo "Starting compiling"
     #mkdir -p include/reactor-cpp/
     #cp -r ${reactor-cpp}/include/reactor-cpp/* include/reactor-cpp/

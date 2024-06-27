@@ -2,6 +2,7 @@
   description = "build script for the lingua-franca alarm clock";
 
   inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     utils.url = "github:numtide/flake-utils";
     reactor-cpp.url = "github:lf-lang/reactor-cpp";
   };

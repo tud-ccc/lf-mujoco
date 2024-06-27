@@ -88,16 +88,18 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1693145325,
-        "narHash": "sha256-Gat9xskErH1zOcLjYMhSDBo0JTBZKfGS0xJlIRnj6Rc=",
-        "owner": "NixOS",
+        "lastModified": 1719145550,
+        "narHash": "sha256-K0i/coxxTEl30tgt4oALaylQfxqbotTSNb1/+g+mKMQ=",
+        "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "cddebdb60de376c1bdb7a4e6ee3d98355453fe56",
+        "rev": "e4509b3a560c87a8d4cb6f9992b8915abf9e36d8",
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
+        "owner": "nixos",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs_2": {
@@ -143,11 +145,11 @@
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1690455240,
-        "narHash": "sha256-IqUcgzkSb+eG5WWBg/Y50Iw1FYP1A7IZxUcJq4wteIE=",
+        "lastModified": 1718874536,
+        "narHash": "sha256-Gt1/ZV8Tit4bgxl0VUjnXvCk9FLM8GB/ZQBrU+sKu9Y=",
         "owner": "lf-lang",
         "repo": "reactor-cpp",
-        "rev": "521f1d852b6b3dc5850d3dcfc669ea812296db94",
+        "rev": "cbb62dd621c17e4d0f9a532fcd0b66bcc2b599d5",
         "type": "github"
       },
       "original": {
@@ -229,11 +231,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1692799911,
-        "narHash": "sha256-3eihraek4qL744EvQXsK1Ha6C3CR7nnT8X2qWap4RNk=",
+        "lastModified": 1710146030,
+        "narHash": "sha256-SZ5L6eA7HJ/nmkzGG7/ISclqe6oZdOZTNoesiInkXPQ=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "f9e7cf818399d17d347f847525c5a5a8032e4e44",
+        "rev": "b1d9ab70662946ef0850d488da1c9019f3a9752a",
         "type": "github"
       },
       "original": {
